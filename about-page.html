@@ -1,0 +1,277 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>О проекте — Наследие Вятки</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+.section { max-width: 1000px; }
+
+.page-hero { position: relative; height: 40vh; min-height: 300px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.page-hero::before { content: ''; position: absolute; inset: 0; background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Kirov_Uspensky_Trifonov_Monastery.jpg/1280px-Kirov_Uspensky_Trifonov_Monastery.jpg'); background-size: cover; background-position: center; filter: sepia(60%) brightness(0.7); z-index: 0; }
+.page-hero .overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(60,122,140,0.3) 0%, rgba(42,33,24,0.65) 100%); z-index: 1; }
+.page-hero .content { position: relative; z-index: 2; text-align: center; max-width: 700px; padding: var(--space-3); }
+.page-hero .content .kicker { font-family: var(--font-body); font-size: 13px; font-weight: 300; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-oak); margin-bottom: var(--space-2); }
+.page-hero .content h1 { color: var(--color-bg); margin-bottom: var(--space-2); }
+
+.text-block p { margin-bottom: 1.2em; font-size: 16px; line-height: 1.8; }
+.text-block h2 { margin-top: var(--space-4); margin-bottom: var(--space-2); }
+
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); margin: var(--space-4) 0; }
+.stat-item { text-align: center; padding: var(--space-3); border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); }
+.stat-item strong { display: block; font-family: var(--font-display); font-size: 36px; color: var(--color-teal); }
+.stat-item span { font-size: 14px; color: var(--color-muted); }
+
+.modules-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-2); margin: var(--space-3) 0; }
+.module-ref { padding: var(--space-2); border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); background: var(--color-surface); }
+.module-ref h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.module-ref p { font-size: 13px; color: var(--color-muted); }
+
+@media (max-width: 767px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .modules-list { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content-target">Перейти к основному содержанию</a>
+
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        <circle cx="20" cy="12" r="1.5" fill="var(--color-bg)"/>
+        <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+        <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+      </svg>
+      <span>Наследие Вятки</span>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Главная</a>
+      <a href="victory-faces.html">Лица Победы</a>
+      <a href="ethnography.html">Этнография</a>
+      <a href="historic-cities.html">Города</a>
+      <a href="nature.html">Природа</a>
+      <a href="archeology.html">Археология</a>
+      <a href="architecture.html">Архитектура</a>
+      <a href="about-page.html" class="active">О проекте</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<main id="main-content-target">
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-sidebar" id="navSidebar">
+  <button class="close-btn" id="closeSidebar" aria-label="Закрыть">✕</button>
+  <a href="index.html">Главная</a>
+  <a href="victory-faces.html">Лица Победы</a>
+  <a href="ethnography.html">Этнографическое наследие</a>
+  <a href="historic-cities.html">Исторические города</a>
+  <a href="nature.html">Памятники природы</a>
+  <a href="archeology.html">Памятники археологии</a>
+  <a href="architecture.html">Архитектура Кирова</a>
+  <a href="about-page.html" class="active">О проекте</a>
+</nav>
+
+<section class="page-hero">
+  <div class="overlay"></div>
+  <div class="content">
+    <p class="kicker">К 90-летию Кировской области · 1936–2026</p>
+    <h1>О проекте</h1>
+  </div>
+</section>
+
+<section class="section text-block anim-fade-up">
+  <h2 class="section-title">Историко-культурное наследие<br>Вятского края</h2>
+  <p><strong>«Наследие Вятки»</strong> — просветительский проект, приуроченный к 90-летию образования Кировской области (5 декабря 1936 — 5 декабря 2026). Его цель — собрать, сохранить и сделать доступными для широкой аудитории уникальные материалы по истории, культуре и природе Вятской земли.</p>
+
+  <p>Вятский край — один из самобытнейших регионов России, где на протяжении столетий переплетались культурные традиции русских, татар, удмуртов, марийцев и коми. Здесь формировался уникальный архитектурный облик городов, возникли прославленные народные промыслы — дымковская игрушка, вятское кружево, изделия из капокорня. Земля вятская дала России выдающихся деятелей науки, культуры и военного дела.</p>
+
+  <p>Проект объединяет семь тематических модулей, каждый из которых посвящён одному из аспектов наследия региона: от средневековой археологии до современной архитектуры, от воинской славы до этнографического многообразия. Все материалы основаны на научных источниках, архивных данных и многолетних полевых исследованиях.</p>
+</section>
+
+<section class="section dymka-pattern" style="background-color:var(--color-birch);">
+  <h2 class="section-title">Проект в цифрах</h2>
+  <div class="stats-row anim-fade-up">
+    <div class="stat-item"><strong>7</strong><span>тематических модулей</span></div>
+    <div class="stat-item"><strong>10+</strong><span>страниц контента</span></div>
+    <div class="stat-item"><strong>более 70</strong><span>описанных объектов</span></div>
+  </div>
+  <div class="stats-row anim-fade-up anim-fade-up-delay-1">
+    <div class="stat-item"><strong>~150</strong><span>памятников археологии</span></div>
+    <div class="stat-item"><strong>более 100</strong><span>памятников природы</span></div>
+    <div class="stat-item"><strong>5</strong><span>народов региона</span></div>
+  </div>
+</section>
+
+<section class="section text-block anim-fade-up">
+  <h2>Модули проекта</h2>
+
+  <div class="modules-list">
+    <div class="module-ref">
+      <h3>Лица Победы</h3>
+      <p>Живая летопись ратной славы Вятской земли с XIV века до наших дней — портреты и судьбы защитников Отечества.</p>
+    </div>
+    <div class="module-ref">
+      <h3>Исторические города</h3>
+      <p>Интерактивные ленты времени семи городов: Кирова, Котельнича, Орлова, Слободского, Яранска, Малмыжа и Уржума.</p>
+    </div>
+    <div class="module-ref">
+      <h3>Памятники археологии</h3>
+      <p>Около 150 памятников от эпохи мезолита до позднего Средневековья: городища, селища, стоянки, могильники.</p>
+    </div>
+    <div class="module-ref">
+      <h3>Этнографическое наследие</h3>
+      <p>Коллекция предметов быта, костюмов и обрядов народов Вятского края, собранная экспедициями вузов Кирова.</p>
+    </div>
+    <div class="module-ref">
+      <h3>Архитектура Кирова</h3>
+      <p>Цифровой архив зданий и памятников областного центра — от сохранившихся шедевров до утраченных храмов.</p>
+    </div>
+    <div class="module-ref">
+      <h3>Памятники природы</h3>
+      <p>Более 100 уникальных природных объектов: озёра, скальные обнажения, водопады, пещеры и ботанические редкости.</p>
+    </div>
+    <div class="module-ref">
+      <h3>Археология Кирова</h3>
+      <p>Раскопки в историческом центре Кирова, открывающие следы средневековой Хлынова: керамику, монеты, предметы быта.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section text-block anim-fade-up">
+  <h2>Научная основа</h2>
+  <p>Материалы проекта базируются на многолетних исследованиях:</p>
+  <ul style="margin-left:var(--space-3); margin-bottom:1em;">
+    <li>Археологические экспедиции Кировского государственного педагогического института им. В.И. Ленина</li>
+    <li>Этнографические экспедиции Вятского государственного гуманитарного университета</li>
+    <li>Раскопки Кировского областного краеведческого музея</li>
+    <li>Работы архитекторов и краеведов Кировской организации Союза архитекторов России</li>
+    <li>Исследования природных заказников и памятников природы регионального значения</li>
+  </ul>
+  <p>Каждый объект или экспонат сопровождается ссылками на источники, указанием места хранения и данными о реставрации или консервации.</p>
+</section>
+
+<section class="section text-block anim-fade-up">
+  <h2>Партнёры и поддержка</h2>
+  <p>Проект реализован при поддержке:</p>
+  <ul style="margin-left:var(--space-3); margin-bottom:1em;">
+    <li>Правительства Кировской области</li>
+    <li>Кировского областного краеведческого музея</li>
+    <li>Вятского государственного университета</li>
+    <li>Кировской организации Союза архитекторов России</li>
+  </ul>
+
+  <h3>Как помочь проекту</h3>
+  <p>Если у вас есть фотографии, документы, письма или предметы быта, связанные с историей Вятского края, — пришлите их нам для оцифровки и публикации. Каждый вклад будет сохранён с указанием авторства.</p>
+  <div style="margin-top:var(--space-2);">
+    <span class="btn">Связаться с проектом</span>
+  </div>
+</section>
+
+<section class="section dymka-pattern" style="background-color:var(--color-birch); text-align:center;">
+  <h2 class="section-title">Сохраним наследие вместе</h2>
+  <p class="section-subtitle">Проект «Наследие Вятки» — это живой архив, который будет пополняться новыми материалами</p>
+  <p style="max-width:600px; margin:0 auto var(--space-3);">
+    Каждый может внести свой вклад в сохранение исторической памяти. Если вы знаете интересные факты из истории региона, обладаете архивными материалами — свяжитесь с нами.
+  </p>
+  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <a href="mailto:info@vyatka-heritage.ru" class="btn">Написать нам</a>
+    <span style="display:inline-flex; align-items:center; gap:8px; padding:8px 0; color:var(--color-muted);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      info@vyatka-heritage.ru
+    </span>
+  </div>
+</section></main>
+
+<footer class="footer">
+  <svg class="footer-ornament" viewBox="0 0 1200 24" preserveAspectRatio="none">
+    <rect x="0" y="10" width="100%" height="2" fill="currentColor" opacity="0.3"/>
+    <circle cx="100" cy="12" r="4" fill="currentColor"/>
+    <circle cx="300" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="500" cy="12" r="5" fill="currentColor"/>
+    <circle cx="700" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="900" cy="12" r="4" fill="currentColor"/>
+    <circle cx="1100" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+  </svg>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>
+        <svg viewBox="0 0 40 40" width="24" height="24" fill="var(--color-ochre)">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        </svg>
+        Наследие Вятки
+      </h4>
+      <p>Просветительский проект к 90-летию Кировской области. 2026</p>
+    </div>
+    <div class="footer-col">
+      <strong style="font-size:14px;">Разделы</strong>
+      <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+        <a href="index.html">Главная</a>
+        <a href="victory-faces.html">Лица Победы</a>
+        <a href="ethnography.html">Этнографическое наследие</a>
+        <a href="historic-cities.html">Исторические города</a>
+        <a href="nature.html">Памятники природы</a>
+        <a href="archeology.html">Памятники археологии</a>
+        <a href="architecture.html">Архитектура Кирова</a>
+        <a href="about-page.html">О проекте</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <p>Проект реализован при поддержке Правительства Кировской области и Кировского областного краеведческого музея.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Историко-культурное наследие Кировской области. Все права защищены.
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var sidebar = document.getElementById('navSidebar');
+  var overlay = document.getElementById('navOverlay');
+  var closeBtn = document.getElementById('closeSidebar');
+  function openMenu(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+  if(burger) burger.addEventListener('click', openMenu);
+  if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+  if(overlay) overlay.addEventListener('click', closeMenu);
+
+  // --- Sticky header: transparent over hero, solid when scrolled ---
+  var header = document.getElementById('header');
+  function updateHeader() {
+    if (window.scrollY > 80) {
+      header.classList.add('scrolled');
+      header.classList.remove('transparent');
+    } else {
+      header.classList.remove('scrolled');
+      header.classList.add('transparent');
+    }
+  }
+  updateHeader(); // run on load
+  window.addEventListener('scroll', updateHeader, { passive: true });
+
+  var animate = document.querySelectorAll('.anim-fade-up');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.15});
+    animate.forEach(function(el){ obs.observe(el); });
+  } else { animate.forEach(function(el){ el.classList.add('visible'); }); }
+})();
+</script>
+</body>
+</html>

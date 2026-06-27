@@ -1,0 +1,193 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Наследие Вятки · Дизайн-система</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+.ds-page { padding: var(--space-5) var(--space-3); max-width: 1100px; margin: 0 auto; }
+.ds-header { text-align: center; margin-bottom: var(--space-5); }
+.ds-header h1 { margin-bottom: var(--space-1); }
+.ds-header p { color: var(--color-muted); max-width: 600px; margin: 0 auto; }
+.ds-section { margin-bottom: var(--space-5); }
+.ds-section h2 { border-bottom: 2px solid var(--color-ochre); padding-bottom: var(--space-1); margin-bottom: var(--space-3); }
+.ds-grid-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--space-2); }
+.ds-swatch { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--color-oak); }
+.ds-swatch-color { height: 80px; }
+.ds-swatch-label { padding: var(--space-1); font-size: 12px; text-align: center; background: var(--color-bg); }
+.ds-swatch-label code { font-family: monospace; font-size: 11px; color: var(--color-muted); }
+.ds-grid-spacing { display: flex; gap: var(--space-1); align-items: flex-end; flex-wrap: wrap; }
+.ds-space-block { background: var(--color-ochre); opacity: 0.3; border-radius: 2px; flex-shrink: 0; }
+.ds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-3); }
+.ds-component { border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); padding: var(--space-3); background: var(--color-surface); }
+.ds-component h3 { margin-bottom: var(--space-2); font-weight: 700; }
+.ds-component-row { display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center; }
+.ds-code { font-family: monospace; font-size: 13px; background: var(--color-birch); padding: var(--space-2); border-radius: var(--radius); overflow-x: auto; white-space: pre; margin-top: var(--space-2); color: var(--color-ink); }
+.ds-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; line-height: 1.4; }
+.ds-tag-teal { background: var(--color-teal); color: var(--color-bg); }
+.ds-tag-ochre { background: var(--color-ochre); color: var(--color-bg); }
+
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--color-teal); font-size: 14px; margin-bottom: var(--space-3); }
+.back-link:hover { color: var(--color-ochre); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content-target">Перейти к основному содержанию</a>
+<main id="main-content-target">
+
+<div class="ds-page">
+
+  <a href="index.html" class="back-link">← На главную</a>
+
+  <div class="ds-header">
+    <h1>Дизайн-система</h1>
+    <p>Концепция: «Дымковская игрушка встречает вятский северный модерн»<br>Все токены и компоненты для разработки страниц проекта.</p>
+  </div>
+
+  <!-- Colors -->
+  <section class="ds-section">
+    <h2>Цвета</h2>
+    <div class="ds-grid-colors">
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#FDFBF7;border:1px solid #E8DFC8;"></div><div class="ds-swatch-label">--color-bg<br><code>#FDFBF7</code></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#3C7A8C;"></div><div class="ds-swatch-label">--color-teal<br><code>#3C7A8C</code></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#C27E3A;"></div><div class="ds-swatch-label">--color-ochre<br><code>#C27E3A</code></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#E8DFC8;"></div><div class="ds-swatch-label">--color-oak<br><code>#E8DFC8</code></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#2A2118;"></div><div class="ds-swatch-label" style="color:#FDFBF7;background:#2A2118;">--color-ink<br><code>#2A2118</code></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#F5F2EC;"></div><div class="ds-swatch-label">--color-birch<br><code>#F5F2EC</code></div></div>
+      <div class="ds-swatch"><div class="ds-swatch-color" style="background:#6B6964;"></div><div class="ds-swatch-label" style="color:#FDFBF7;background:#6B6964;">--color-muted<br><code>#6B6964</code></div></div>
+    </div>
+  </section>
+
+  <!-- Typography -->
+  <section class="ds-section">
+    <h2>Типографика</h2>
+    <div class="ds-grid">
+      <div class="ds-component">
+        <h3 style="font-weight:700;">Playfair Display</h3>
+        <p style="font-family:var(--font-display);font-size:clamp(32px,4vw,52px);font-weight:700;">H1 — Заголовок</p>
+        <p style="font-family:var(--font-display);font-size:clamp(26px,3vw,36px);">H2 — Подзаголовок</p>
+        <p style="font-family:var(--font-display);font-size:clamp(18px,1.8vw,22px);font-weight:400;">H3 — Третий уровень</p>
+        <div class="ds-code">--font-display: 'Playfair Display', Georgia, serif;</div>
+      </div>
+      <div class="ds-component">
+        <h3>Roboto Slab</h3>
+        <p style="font-family:var(--font-body);">Основной текст. Используется для параграфов, навигации, кнопок и подписей.</p>
+        <p style="font-family:var(--font-body);font-size:14px;">Мелкий текст: 14px — подписи, ссылки в карточках</p>
+        <p style="font-family:var(--font-body);font-size:13px;">Очень мелкий: 13px — мета-информация, теги</p>
+        <div class="ds-code">--font-body: 'Roboto Slab', Georgia, serif;</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Spacing -->
+  <section class="ds-section">
+    <h2>Отступы</h2>
+    <div class="ds-grid-spacing">
+      <div><div class="ds-space-block" style="width:8px;height:30px;"></div><div style="font-size:11px;color:var(--color-muted);margin-top:4px;">--space-1<br>8px</div></div>
+      <div><div class="ds-space-block" style="width:16px;height:30px;"></div><div style="font-size:11px;color:var(--color-muted);margin-top:4px;">--space-2<br>16px</div></div>
+      <div><div class="ds-space-block" style="width:24px;height:30px;"></div><div style="font-size:11px;color:var(--color-muted);margin-top:4px;">--space-3<br>24px</div></div>
+      <div><div class="ds-space-block" style="width:40px;height:30px;"></div><div style="font-size:11px;color:var(--color-muted);margin-top:4px;">--space-4<br>40px</div></div>
+      <div><div class="ds-space-block" style="width:64px;height:30px;"></div><div style="font-size:11px;color:var(--color-muted);margin-top:4px;">--space-5<br>64px</div></div>
+      <div><div class="ds-space-block" style="width:96px;height:30px;"></div><div style="font-size:11px;color:var(--color-muted);margin-top:4px;">--space-6<br>96px</div></div>
+    </div>
+  </section>
+
+  <!-- Buttons -->
+  <section class="ds-section">
+    <h2>Кнопки</h2>
+    <div class="ds-component">
+      <div class="ds-component-row">
+        <button class="btn">Обычная кнопка</button>
+        <button class="btn btn-sm">Маленькая кнопка</button>
+      </div>
+      <div class="ds-code">.btn { padding: 14px 32px; }<br>.btn-sm { padding: 10px 24px; font-size: 13px; }<br>clip-path: polygon(...)</div>
+    </div>
+  </section>
+
+  <!-- Card -->
+  <section class="ds-section">
+    <h2>Карточка</h2>
+    <div style="max-width:320px;">
+      <div class="card" style="padding:var(--space-3);">
+        <h3 style="font-weight:700;margin-bottom:4px;">Пример карточки</h3>
+        <p style="font-size:14px;color:var(--color-muted);">Универсальный компонент для каталогов, списков и контентных блоков.</p>
+      </div>
+    </div>
+    <div class="ds-code">.card { border: var(--border-width) dashed var(--color-border); }<br>.card:hover { transform: scale(1.02); box-shadow: ... }</div>
+  </section>
+
+  <!-- Filter Chip -->
+  <section class="ds-section">
+    <h2>Фильтр-чип</h2>
+    <div class="ds-component">
+      <div class="ds-component-row">
+        <span class="filter-chip active">Активный</span>
+        <span class="filter-chip">Обычный</span>
+        <span class="filter-chip">Ещё один</span>
+      </div>
+      <div class="ds-code">.filter-chip { border-radius: 999px; padding: 6px 16px; }<br>.filter-chip.active { background: var(--color-ochre); }</div>
+    </div>
+  </section>
+
+  <!-- Dymkovo Pattern -->
+  <section class="ds-section">
+    <h2>Дымковский паттерн</h2>
+    <div class="dymka-pattern" style="height:120px;border-radius:var(--radius);border:var(--border-width) dashed var(--color-border);"></div>
+    <div class="ds-code">.dymka-pattern { background-image: url(...); animation: dymkaDrift 60s linear infinite; }</div>
+  </section>
+
+  <!-- Animations -->
+  <section class="ds-section">
+    <h2>Анимации</h2>
+    <div class="ds-component">
+      <p><strong>.anim-fade-up</strong> — появление снизу (opacity + translateY). Подключается через IntersectionObserver.</p>
+      <p><strong>.anim-fade-up-delay-1</strong> ... <strong>delay-6</strong> — задержка 0.1–0.6 с для каскадных анимаций.</p>
+      <div class="ds-code">.anim-fade-up { opacity: 0; transform: translateY(30px); transition: 0.6s ease; }<br>.anim-fade-up.visible { opacity: 1; transform: translateY(0); }</div>
+    </div>
+  </section>
+
+  <!-- Section + Module Hero -->
+  <section class="ds-section">
+    <h2>Секции и Hero модулей</h2>
+    <div class="ds-grid">
+      <div class="ds-component">
+        <h3>section</h3>
+        <div class="ds-code">.section { padding: var(--space-5) var(--space-3); max-width: 1200px; margin: 0 auto; }<br>.section-full { padding: 0; max-width: 100%; }</div>
+      </div>
+      <div class="ds-component">
+        <h3>module-hero</h3>
+        <div class="ds-code">.module-hero { height: 50vh; min-height: 360px; }<br>.module-hero::before { background-image: ...; filter: sepia(50%) brightness(0.7); }</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catalog Grid -->
+  <section class="ds-section">
+    <h2>Каталог</h2>
+    <div class="ds-code">.catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-3); }</div>
+    <p style="color:var(--color-muted);font-size:14px;margin-top:var(--space-1);">Адаптивная сетка для карточек объектов, экспонатов, памятников.</p>
+  </section>
+
+  <!-- HTML helper: active page class -->
+  <section class="ds-section">
+    <h2>Навигация</h2>
+    <div class="ds-component">
+      <p>Текущий раздел помечается классом <strong>.active</strong> на ссылке в <code>.header-nav a</code>.</p>
+      <div class="ds-code">&lt;a href="victory-faces.html" class="active"&gt;Лица Победы&lt;/a&gt;</div>
+    </div>
+  </section>
+
+  <hr style="border:none;border-top:1px dashed var(--color-border);margin:var(--space-5) 0;">
+
+  <p style="text-align:center;color:var(--color-muted);font-size:13px;">Наследие Вятки · Дизайн-система · 2026</p>
+
+</div>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,342 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Киров (Вятка / Хлынов) — Исторические города — Наследие Вятки</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+.city-hero { position: relative; height: 60vh; min-height: 420px; overflow: hidden; display: flex; align-items: flex-start; justify-content: center; margin-top: calc(-1 * var(--header-height)); }
+.city-hero::before { content: ''; position: absolute; inset: 0; background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Kirov_Uspensky_Trifonov_Monastery.jpg/1280px-Kirov_Uspensky_Trifonov_Monastery.jpg'); background-size: cover; background-position: center; filter: sepia(50%) brightness(0.7); z-index: 0; }
+.city-hero .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(42,33,24,0.8) 0%, transparent 60%); z-index: 1; }
+.city-hero .content { position: relative; z-index: 2; text-align: center; padding: calc(var(--header-height) + var(--space-4)) var(--space-3) var(--space-4); width: 100%; }
+.city-hero .content h1 { color: var(--color-bg); margin-bottom: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.city-hero .content .city-label { font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-oak); margin-bottom: 8px; }
+.city-hero .content .city-meta { font-size: 14px; color: var(--color-oak); opacity: 0.9; }
+
+.city-info { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); align-items: start; }
+.city-info-text p { margin-bottom: 1em; }
+.city-info-stats { display: flex; flex-direction: column; gap: var(--space-2); }
+.stat-item { border-left: 3px solid var(--color-ochre); padding-left: var(--space-2); }
+.stat-item strong { display: block; font-size: 28px; font-family: var(--font-display); color: var(--color-teal); line-height: 1.2; }
+.stat-item span { font-size: 14px; color: var(--color-muted); }
+
+.timeline-full { position: relative; max-width: 800px; margin: 0 auto; }
+.timeline-full::before { content: ''; position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: var(--color-ochre); }
+.tl-item { position: relative; padding-left: 56px; margin-bottom: var(--space-4); opacity: 0; transform: translateX(-20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.tl-item.visible { opacity: 1; transform: translateX(0); }
+.tl-item::before { content: ''; position: absolute; left: 12px; top: 6px; width: 16px; height: 16px; background: var(--color-ochre); border-radius: 50%; border: 3px solid var(--color-bg); box-shadow: 0 0 0 2px var(--color-ochre); }
+.tl-item.tl-image::before { background: var(--color-teal); box-shadow: 0 0 0 2px var(--color-teal); }
+.tl-year { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--color-ochre); line-height: 1.2; }
+.tl-text { font-size: 15px; margin-top: 4px; }
+.tl-img { margin-top: 8px; border-radius: var(--radius); overflow: hidden; max-width: 400px; }
+.tl-img img { width: 100%; height: auto; filter: sepia(20%); }
+
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--space-2); }
+.gallery-item { border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); overflow: hidden; background: var(--color-surface); }
+.gallery-item img { width: 100%; aspect-ratio: 4/3; object-fit: cover; filter: sepia(30%); }
+.gallery-item .caption { padding: var(--space-1); font-size: 12px; color: var(--color-muted); text-align: center; }
+
+@media (max-width: 767px) {
+  .city-info { grid-template-columns: 1fr; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .city-hero { height: 50vh; min-height: 350px; margin-top: calc(-1 * var(--header-height-mobile)); }
+  .city-hero .content { padding-top: calc(var(--header-height-mobile) + var(--space-3)); }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content-target">Перейти к основному содержанию</a>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        <circle cx="20" cy="12" r="1.5" fill="var(--color-bg)"/>
+        <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+        <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+      </svg>
+      <span>Наследие Вятки</span>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Главная</a>
+      <a href="victory-faces.html">Лица Победы</a>
+      <a href="ethnography.html">Этнография</a>
+      <a href="historic-cities.html" class="active">Города</a>
+      <a href="nature.html">Природа</a>
+      <a href="archeology.html">Археология</a>
+      <a href="architecture.html">Архитектура</a>
+      <a href="about-page.html">О проекте</a>
+    </nav>
+  </div>
+</header>
+<main id="main-content-target">
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-sidebar" id="navSidebar">
+  <button class="close-btn" id="closeSidebar" aria-label="Закрыть">✕</button>
+  <a href="index.html">Главная</a>
+  <a href="victory-faces.html">Лица Победы</a>
+  <a href="ethnography.html">Этнографическое наследие</a>
+  <a href="historic-cities.html" class="active">Исторические города</a>
+  <a href="nature.html">Памятники природы</a>
+  <a href="archeology.html">Памятники археологии</a>
+  <a href="architecture.html">Архитектура Кирова</a>
+  <a href="about-page.html">О проекте</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-sidebar" id="navSidebar">
+  <button class="close-btn" id="closeSidebar" aria-label="Закрыть">✕</button>
+  <a href="index.html">Главная</a>
+  <a href="historic-cities.html">Исторические города</a>
+  <a href="ethnography.html">Этнографическое наследие</a>
+  <a href="nature.html">Памятники природы</a>
+  <a href="archeology.html">Памятники археологии</a>
+  <a href="architecture.html">Архитектура Кирова</a>
+  <a href="victory-faces.html">Лица Победы</a>
+</nav>
+
+<!-- CITY HERO -->
+<section class="city-hero" id="cityHero">
+  <div class="overlay"></div>
+  <div class="content">
+    <p class="city-label">Исторические города · Киров</p>
+    <h1>Киров (Вятка / Хлынов)</h1>
+    <p class="city-meta">Областной центр · Основан в 1374 году · Ранее: Хлынов (до 1780), Вятка (1780–1934)</p>
+  </div>
+</section>
+
+<!-- CITY INFO -->
+<section class="section">
+  <div class="city-info anim-fade-up">
+    <div class="city-info-text">
+      <h2>Общие сведения</h2>
+      <p>Киров — административный центр Кировской области, крупный промышленный, культурный и исторический центр Приволжского федерального округа. Расположен на реке Вятке, в 896 км к северо-востоку от Москвы.</p>
+      <p>Город ведёт свою историю с 1374 года, когда на высоком берегу реки Вятки новгородские переселенцы основали укреплённое поселение Хлынов. В 1780 году по указу Екатерины II городу было присвоено имя Вятка, а в 1934 году он был переименован в Киров в память о советском государственном деятеле Сергее Мироновиче Кирове, уроженце Уржума.</p>
+      <p>Сегодня Киров — это город с населением более 470 тысяч человек, важный транспортный узел и центр машиностроения, деревообработки и пищевой промышленности. Исторический центр сохраняет застройку XVIII–XIX веков: купеческие особняки, храмы, общественные здания.</p>
+      <div style="margin-top:var(--space-2); display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="#timeline" class="btn btn-sm">Лента времени</a>
+        <a href="map-page.html" class="btn btn-sm">На карте</a>
+      </div>
+    </div>
+    <div class="city-info-stats">
+      <div class="stat-item"><strong>1374</strong><span>Первое упоминание в летописях</span></div>
+      <div class="stat-item"><strong>ок. 476 тыс.</strong><span>Численность населения</span></div>
+      <div class="stat-item"><strong>~170 км²</strong><span>Площадь города</span></div>
+      <div class="stat-item"><strong>3 города-побратима</strong><span>Великий Устюг, Сыктывкар, Каунас</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FULL TIMELINE -->
+<section class="section dymka-pattern" style="background-color:var(--color-birch);" id="timeline">
+  <h2 class="section-title">Лента времени</h2>
+  <p class="section-subtitle">Ключевые события в истории города от первого упоминания до наших дней</p>
+
+  <div class="timeline-full">
+    <div class="tl-item" data-delay="0">
+      <div class="tl-year">1374</div>
+      <div class="tl-text">Первое упоминание города Хлынова в летописях. Новгородские ушкуйники основали укреплённое поселение на высоком берегу реки Вятки, на месте будущего кремля.</div>
+    </div>
+    <div class="tl-item tl-image" data-delay="100">
+      <div class="tl-year">1489</div>
+      <div class="tl-text">Вятская земля окончательно присоединена к Московскому княжеству Иваном III. Хлынов теряет независимость и становится обычным уездным городом.</div>
+    </div>
+    <div class="tl-item" data-delay="200">
+      <div class="tl-year">1580</div>
+      <div class="tl-text">Монах Трифон Вятский основывает Успенский монастырь — первую каменную обитель Вятской земли. Монастырь станет духовным центром края на века.</div>
+      <div class="tl-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Kirov_Uspensky_Trifonov_Monastery.jpg/800px-Kirov_Uspensky_Trifonov_Monastery.jpg" alt="Успенский Трифонов монастырь" loading="lazy">
+      </div>
+    </div>
+    <div class="tl-item" data-delay="300">
+      <div class="tl-year">1780</div>
+      <div class="tl-text">Высочайшим указом Екатерины II Хлынов переименован в Вятку. Город получает герб и регулярный план застройки. Начинается строительство каменных зданий в стиле провинциального классицизма.</div>
+    </div>
+    <div class="tl-item" data-delay="400">
+      <div class="tl-year">1796</div>
+      <div class="tl-text">Учреждение Вятской губернии. Вятка становится губернским центром с собственной администрацией, гимназией, театром и типографией.</div>
+    </div>
+    <div class="tl-item tl-image" data-delay="500">
+      <div class="tl-year">1858</div>
+      <div class="tl-text">Открытие первой публичной библиотеки в Вятке. Город становится культурным центром губернии, где работают краеведы, писатели и учёные.</div>
+      <div class="tl-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Kirov_city_view.jpg/800px-Kirov_city_view.jpg" alt="Вид города Вятки" loading="lazy">
+      </div>
+    </div>
+    <div class="tl-item" data-delay="600">
+      <div class="tl-year">1897</div>
+      <div class="tl-text">Население Вятки достигает 25 тысяч человек. Через город проходит железная дорога, связывающая Пермь и Котлас. Начинается промышленный рост.</div>
+    </div>
+    <div class="tl-item" data-delay="700">
+      <div class="tl-year">1918–1920</div>
+      <div class="tl-text">Гражданская война: Вятка несколько раз переходит из рук в руки. Установление советской власти сопровождается национализацией промышленности и культурными преобразованиями.</div>
+    </div>
+    <div class="tl-item" data-delay="800">
+      <div class="tl-year">1934</div>
+      <div class="tl-text">Город переименован в Киров в память об убитом партийном деятеле Сергее Мироновиче Кирове. Вятская губерния преобразована в Кировский край.</div>
+    </div>
+    <div class="tl-item" data-delay="900">
+      <div class="tl-year">1936</div>
+      <div class="tl-text">Образование Кировской области. Город становится областным центром с развивающейся промышленностью: машиностроение, химическая и деревообрабатывающая отрасли.</div>
+    </div>
+    <div class="tl-item tl-image" data-delay="1000">
+      <div class="tl-year">1941–1945</div>
+      <div class="tl-text">Великая Отечественная война: в Киров эвакуированы десятки заводов и учреждений. Город становится центром оборонной промышленности. На фронт уходят тысячи кировчан.</div>
+      <div class="tl-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Soviet_soldiers_in_WWII.jpg/800px-Soviet_soldiers_in_WWII.jpg" alt="Советские солдаты" loading="lazy">
+      </div>
+    </div>
+    <div class="tl-item" data-delay="1100">
+      <div class="tl-year">1970–1980</div>
+      <div class="tl-text">Активное жилищное строительство: возводятся новые микрорайоны, прокладываются трамвайные линии, открывается цирк и драматический театр.</div>
+    </div>
+    <div class="tl-item" data-delay="1200">
+      <div class="tl-year">2000 – н.в.</div>
+      <div class="tl-text">Киров развивается как культурный и туристический центр. Реставрируются исторические здания, благоустраивается набережная, восстанавливаются храмы. Город активно участвует в программе «Исторические поселения».</div>
+    </div>
+    <div class="tl-item" data-delay="1300">
+      <div class="tl-year">2026</div>
+      <div class="tl-text">Киров готовится к 90-летию Кировской области. В городе проводятся масштабные культурные мероприятия, открываются новые общественные пространства и музейные экспозиции.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHIVE GALLERY -->
+<section class="section">
+  <h2 class="section-title">Архивные фотографии</h2>
+  <p class="section-subtitle">Исторические снимки Кирова (Вятки) XIX–XX веков</p>
+  <div class="gallery-grid">
+    <div class="gallery-item anim-fade-up">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Kirov_Uspensky_Trifonov_Monastery.jpg/400px-Kirov_Uspensky_Trifonov_Monastery.jpg" alt="Успенский Трифонов монастырь" loading="lazy">
+      <div class="caption">Успенский Трифонов монастырь, основан в 1580 году</div>
+    </div>
+    <div class="gallery-item anim-fade-up anim-fade-up-delay-1">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Kirov_city_view.jpg/400px-Kirov_city_view.jpg" alt="Панорама города" loading="lazy">
+      <div class="caption">Панорама города, начало XX века</div>
+    </div>
+    <div class="gallery-item anim-fade-up anim-fade-up-delay-2">
+      <div style="background:var(--color-oak); aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; font-size:48px;">🕍</div>
+      <div class="caption">Свято-Серафимовский собор (утрачен в 1930-х)</div>
+    </div>
+    <div class="gallery-item anim-fade-up anim-fade-up-delay-3">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Vyatka_river_landscape.jpg/400px-Vyatka_river_landscape.jpg" alt="Река Вятка" loading="lazy">
+      <div class="caption">Река Вятка и городской пейзаж, 1920-е годы</div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:var(--space-3);">
+    <p style="color:var(--color-muted); font-size:14px;">* Часть фотографий — реконструкция или изображения похожих объектов. Полная коллекция будет пополняться из архивов.</p>
+  </div>
+</section>
+
+<!-- NAV TO OTHER CITIES -->
+<section class="section" style="padding-top:0;">
+  <div style="border-top:var(--border-width) dashed var(--color-border); padding-top:var(--space-4); display:flex; flex-wrap:wrap; justify-content:space-between; gap:var(--space-2);">
+    <a href="#" class="btn btn-sm" style="visibility:hidden;">← Предыдущий</a>
+    <a href="historic-cities.html" class="btn btn-sm">← К списку городов</a>
+    <a href="map-page.html" class="btn btn-sm">Карта →</a>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <svg class="footer-ornament" viewBox="0 0 1200 24" preserveAspectRatio="none">
+    <rect x="0" y="10" width="100%" height="2" fill="currentColor" opacity="0.3"/>
+    <circle cx="100" cy="12" r="4" fill="currentColor"/>
+    <circle cx="300" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="500" cy="12" r="5" fill="currentColor"/>
+    <circle cx="700" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="900" cy="12" r="4" fill="currentColor"/>
+    <circle cx="1100" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+  </svg>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>
+        <svg viewBox="0 0 40 40" width="24" height="24" fill="var(--color-ochre)">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        </svg>
+        Наследие Вятки
+      </h4>
+      <p>Просветительский проект к 90-летию Кировской области. 2026</p>
+    </div>
+    <div class="footer-col">
+      <strong style="font-size:14px;">Разделы</strong>
+      <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+        <a href="index.html">Главная</a>
+        <a href="victory-faces.html">Лица Победы</a>
+        <a href="ethnography.html">Этнографическое наследие</a>
+        <a href="historic-cities.html">Исторические города</a>
+        <a href="nature.html">Памятники природы</a>
+        <a href="archeology.html">Памятники археологии</a>
+        <a href="architecture.html">Архитектура Кирова</a>
+        <a href="about-page.html">О проекте</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <p>Проект реализован при поддержке Правительства Кировской области и Кировского областного краеведческого музея.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Историко-культурное наследие Кировской области. Все права защищены.
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var sidebar = document.getElementById('navSidebar');
+  var overlay = document.getElementById('navOverlay');
+  var closeBtn = document.getElementById('closeSidebar');
+  function openMenu(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+  if(burger) burger.addEventListener('click', openMenu);
+  if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+  if(overlay) overlay.addEventListener('click', closeMenu);
+
+  // --- Sticky header: transparent over hero, solid when scrolled ---
+  var header = document.getElementById('header');
+  function updateHeader() {
+    if (window.scrollY > 80) {
+      header.classList.add('scrolled');
+      header.classList.remove('transparent');
+    } else {
+      header.classList.remove('scrolled');
+      header.classList.add('transparent');
+    }
+  }
+  updateHeader(); // run on load
+  window.addEventListener('scroll', updateHeader, { passive: true });
+
+  var animate = document.querySelectorAll('.anim-fade-up, .tl-item');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var el = e.target;
+          var delay = el.getAttribute('data-delay');
+          if(delay) setTimeout(function(){ el.classList.add('visible'); }, parseInt(delay,10));
+          else el.classList.add('visible');
+          obs.unobserve(el);
+        }
+      });
+    },{threshold:0.15});
+    animate.forEach(function(el){ obs.observe(el); });
+  } else { animate.forEach(function(el){ el.classList.add('visible'); }); }
+})();
+</script>
+</body>
+</html>

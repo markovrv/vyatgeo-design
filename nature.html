@@ -1,0 +1,399 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Памятники природы Кировской области — Наследие Вятки</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+.module-hero::before {
+  background-image: url('https://gorodkirov.ru/media/django-summernote/2021-09-30/e03c7f30-f31c-42a7-b12d-a05d351340c8.jpg');
+  filter: sepia(50%) brightness(0.7);
+}
+
+.nature-card { background: var(--color-surface); border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.nature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(42,33,24,0.12); }
+.nature-card-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-birch); display: flex; align-items: center; justify-content: center; }
+.nature-card-img img { width: 100%; height: 100%; object-fit: cover; }
+.nature-card-img .icon { font-size: 40px; opacity: 0.4; }
+.nature-card-body { padding: var(--space-2); }
+.nature-card-body .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.tag { font-size: 11px; padding: 2px 10px; border-radius: 999px; line-height: 1.4; }
+.tag-type { background: var(--color-teal); color: var(--color-bg); }
+.tag-status { background: var(--color-ochre); color: var(--color-bg); }
+.nature-card-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+.nature-card-body .nature-meta { font-size: 12px; color: var(--color-muted); margin-bottom: 4px; }
+.nature-card-body p { font-size: 13px; color: var(--color-ink); line-height: 1.5; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content-target">Перейти к основному содержанию</a>
+
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        <circle cx="20" cy="12" r="1.5" fill="var(--color-bg)"/>
+        <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+        <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+      </svg>
+      <span>Наследие Вятки</span>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Главная</a>
+      <a href="victory-faces.html">Лица Победы</a>
+      <a href="ethnography.html">Этнография</a>
+      <a href="historic-cities.html">Города</a>
+      <a href="nature.html" class="active">Природа</a>
+      <a href="archeology.html">Археология</a>
+      <a href="architecture.html">Архитектура</a>
+      <a href="about-page.html">О проекте</a>
+    </nav>
+  </div>
+</header>
+<main id="main-content-target">
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-sidebar" id="navSidebar">
+  <button class="close-btn" id="closeSidebar" aria-label="Закрыть">✕</button>
+  <a href="index.html">Главная</a>
+  <a href="victory-faces.html">Лица Победы</a>
+  <a href="ethnography.html">Этнографическое наследие</a>
+  <a href="historic-cities.html">Исторические города</a>
+  <a href="nature.html" class="active">Памятники природы</a>
+  <a href="archeology.html">Памятники археологии</a>
+  <a href="architecture.html">Архитектура Кирова</a>
+  <a href="about-page.html">О проекте</a>
+</nav>
+
+<section class="module-hero">
+  <div class="overlay"></div>
+  <div class="content">
+    <p class="kicker">К 90-летию Кировской области · Уникальная природа Вятского края</p>
+    <h1>Памятники природы<br>Кировской области</h1>
+    <p>Более 100 уникальных природных объектов: живописные озёра, древние скальные обнажения, водопады, пещеры и ботанические редкости, взятые под охрану</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="anim-fade-up">
+    <h2 class="section-title">Природное наследие региона</h2>
+    <p class="section-subtitle">Охраняемые объекты — более 100 на карте области</p>
+    <p style="max-width:800px; margin:0 auto var(--space-3); text-align:center;">
+      Для каждого памятника указано точное географическое положение, размеры, происхождение и уникальные природные особенности. Представлены сведения об охраняемом статусе, режиме посещения и мерах по сохранению.
+    </p>
+  </div>
+
+  <div class="filter-bar anim-fade-up">
+    <button class="filter-chip active" data-filter="type" data-value="all">Все типы</button>
+    <button class="filter-chip" data-filter="type" data-value="lake">Озёра</button>
+    <button class="filter-chip" data-filter="type" data-value="rock">Скальные обнажения</button>
+    <button class="filter-chip" data-filter="type" data-value="geology">Геологические комплексы</button>
+    <button class="filter-chip" data-filter="type" data-value="waterfall">Водопады</button>
+    <button class="filter-chip" data-filter="type" data-value="cave">Пещеры</button>
+    <button class="filter-chip" data-filter="type" data-value="botany">Ботанические</button>
+  </div>
+  <div class="result-count" id="resultCount">Показано: 12 объектов</div>
+
+  <div class="catalog-grid" id="catalogGrid">
+
+    <div class="nature-card anim-fade-up" data-type="lake">
+      <div class="nature-card-img">
+        <span class="icon">🌊</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Озеро</span>
+        </div>
+        <h3>Озеро Чваниха</h3>
+        <div class="nature-meta">Зуевский район · Площадь 15 га</div>
+        <p>Самое глубокое озеро Кировской области (до 33 м). Карстовое происхождение, окружено сосновым бором. Вода отличается высокой прозрачностью и минерализацией. Популярное место отдыха.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-1" data-type="rock">
+      <div class="nature-card-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Vyatka_river_landscape.jpg/640px-Vyatka_river_landscape.jpg" alt="Скальные обнажения" loading="lazy">
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Скальное обнажение</span>
+        </div>
+        <h3>Шиханы у с. Бакули</h3>
+        <div class="nature-meta">Слободской район · Протяжённость 1,2 км</div>
+        <p>Обнажения пермских известняков на правом берегу реки Вятки. Высота до 35 м. В скалах прослеживаются окаменелости древних морских организмов пермского периода.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-2" data-type="geology">
+      <div class="nature-card-img">
+        <span class="icon">🗻</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Геологический комплекс</span>
+        </div>
+        <h3>Котельничское местонахождение парейазавров</h3>
+        <div class="nature-meta">Котельничский район · Площадь 1 200 га</div>
+        <p>Уникальное местонахождение скелетов парейазавров (Deltavjatia vjatkensis) пермского периода. Одно из крупнейших в мире. Раскопки ведутся с 1930-х годов. Найдены десятки полных скелетов.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-3" data-type="waterfall">
+      <div class="nature-card-img">
+        <span class="icon">💦</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Водопад</span>
+        </div>
+        <h3>Водопад у д. Береснята</h3>
+        <div class="nature-meta">Верхошижемский район · Высота 3,5 м</div>
+        <p>Один из немногих водопадов Кировской области. Расположен на реке Шижме. Каскадный, стекает по известняковым плитам. В летнее время — популярный объект туризма.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-4" data-type="cave">
+      <div class="nature-card-img">
+        <span class="icon">🕳️</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Пещера</span>
+        </div>
+        <h3>Пещера «Кировская»</h3>
+        <div class="nature-meta">Омутнинский район · Длина 58 м</div>
+        <p>Карстовая пещера в известняках. Состоит из нескольких гротов с натёчными образованиями. Температура внутри — около +5°C круглый год. Обитают колонии летучих мышей.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-5" data-type="botany">
+      <div class="nature-card-img">
+        <span class="icon">🌲</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Ботанический</span>
+        </div>
+        <h3>Бор Боровиковский</h3>
+        <div class="nature-meta">Мурашинский район · Площадь 230 га</div>
+        <p>Эталонный участок соснового бора-беломошника. Возраст сосен достигает 250 лет. В нижнем ярусе — лишайники и редкие виды растений. Имеет научное и водоохранное значение.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up" data-type="lake">
+      <div class="nature-card-img">
+        <span class="icon">🌊</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Озеро</span>
+        </div>
+        <h3>Озеро Лежнинское</h3>
+        <div class="nature-meta">Пижанский район · Площадь 12 га</div>
+        <p>Карстовое озеро правильной овальной формы. Глубина до 28 м. Имеет уникальный гидрологический режим: уровень воды колеблется на 1–2 м в зависимости от сезона. Богато рыбой.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-1" data-type="rock">
+      <div class="nature-card-img">
+        <span class="icon">🗿</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Скальное обнажение</span>
+        </div>
+        <h3>Утёс «Дом отдыха»</h3>
+        <div class="nature-meta">Советский район · Высота 40 м</div>
+        <p>Живописный скальный массив на правом берегу Вятки. В обрыве обнажаются известняки казанского яруса пермской системы. С вершины открывается панорама на долину реки и заливные луга.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-2" data-type="botany">
+      <div class="nature-card-img">
+        <span class="icon">🌿</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Ботанический</span>
+        </div>
+        <h3>Дендрологический парк</h3>
+        <div class="nature-meta">г. Киров · Площадь 21 га</div>
+        <p>Один из старейших дендропарков России (основан в 1912 году). Коллекция насчитывает более 400 таксонов деревьев и кустарников со всего мира. Уникальные экземпляры: пихта сибирская, лиственница даурская, дуб черешчатый.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-3" data-type="geology">
+      <div class="nature-card-img">
+        <span class="icon">🗻</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Геологический комплекс</span>
+        </div>
+        <h3>Сокольи горы</h3>
+        <div class="nature-meta">Котельничский район · Протяжённость 3 км</div>
+        <p>Живописный скальный массив на правом берегу Вятки. В обнажениях хорошо прослеживаются слои пермских и триасовых отложений. Место гнездования редких птиц.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-4" data-type="waterfall">
+      <div class="nature-card-img">
+        <span class="icon">💦</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Водопад</span>
+        </div>
+        <h3>Шумящий камень</h3>
+        <div class="nature-meta">Нагорский район · Высота 2,5 м</div>
+        <p>Порожистый участок реки Кобры с отвесным уступом из песчаника. В половодье образует мощный водопад. Название получил от характерного шума воды, слышимого за несколько сотен метров.</p>
+      </div>
+    </div>
+
+    <div class="nature-card anim-fade-up anim-fade-up-delay-5" data-type="cave">
+      <div class="nature-card-img">
+        <span class="icon">🕳️</span>
+      </div>
+      <div class="nature-card-body">
+        <div class="tag-row">
+          <span class="tag tag-type">Пещера</span>
+        </div>
+        <h3>Нечаевский провал</h3>
+        <div class="nature-meta">Верхнекамский район · Глубина 16 м</div>
+        <p>Карстовый провал диаметром 20 м, образовавшийся в результате обрушения кровли подземной полости. На дне — озеро с чистой водой. Стенки провала отвесные, поросшие папоротниками.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section dymka-pattern" style="background-color:var(--color-birch); text-align:center;">
+  <h2 class="section-title">Сохранение природного наследия</h2>
+  <p class="section-subtitle">Более 100 памятников природы находятся под охраной государства</p>
+  <p style="max-width:720px; margin:0 auto var(--space-3);">
+    Памятники природы Кировской области — это не только уникальные природные объекты, но и важная часть научного и туристического потенциала региона. Соблюдение режима посещения позволяет сохранить их для будущих поколений.
+  </p>
+  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <button class="btn">Карта маршрутов</button>
+  </div>
+</section></main>
+
+<footer class="footer">
+  <svg class="footer-ornament" viewBox="0 0 1200 24" preserveAspectRatio="none">
+    <rect x="0" y="10" width="100%" height="2" fill="currentColor" opacity="0.3"/>
+    <circle cx="100" cy="12" r="4" fill="currentColor"/>
+    <circle cx="300" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="500" cy="12" r="5" fill="currentColor"/>
+    <circle cx="700" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="900" cy="12" r="4" fill="currentColor"/>
+    <circle cx="1100" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+  </svg>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>
+        <svg viewBox="0 0 40 40" width="24" height="24" fill="var(--color-ochre)">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        </svg>
+        Наследие Вятки
+      </h4>
+      <p>Просветительский проект к 90-летию Кировской области. 2026</p>
+    </div>
+    <div class="footer-col">
+      <strong style="font-size:14px;">Разделы</strong>
+      <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+        <a href="index.html">Главная</a>
+        <a href="victory-faces.html">Лица Победы</a>
+        <a href="ethnography.html">Этнографическое наследие</a>
+        <a href="historic-cities.html">Исторические города</a>
+        <a href="nature.html">Памятники природы</a>
+        <a href="archeology.html">Памятники археологии</a>
+        <a href="architecture.html">Архитектура Кирова</a>
+        <a href="about-page.html">О проекте</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <p>Проект реализован при поддержке Правительства Кировской области и Кировского областного краеведческого музея.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Историко-культурное наследие Кировской области. Все права защищены.
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var sidebar = document.getElementById('navSidebar');
+  var overlay = document.getElementById('navOverlay');
+  var closeBtn = document.getElementById('closeSidebar');
+  function openMenu(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+  if(burger) burger.addEventListener('click', openMenu);
+  if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+  if(overlay) overlay.addEventListener('click', closeMenu);
+
+  // --- Sticky header: transparent over hero, solid when scrolled ---
+  var header = document.getElementById('header');
+  function updateHeader() {
+    if (window.scrollY > 80) {
+      header.classList.add('scrolled');
+      header.classList.remove('transparent');
+    } else {
+      header.classList.remove('scrolled');
+      header.classList.add('transparent');
+    }
+  }
+  updateHeader(); // run on load
+  window.addEventListener('scroll', updateHeader, { passive: true });
+
+  var chips = document.querySelectorAll('.filter-chip');
+  var cards = document.querySelectorAll('.nature-card');
+  var resultCount = document.getElementById('resultCount');
+  var filters = { type: 'all' };
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var filter = this.getAttribute('data-filter');
+      if(!filter) return;
+      var value = this.getAttribute('data-value');
+      var siblings = document.querySelectorAll('.filter-chip[data-filter="' + filter + '"]');
+      siblings.forEach(function(s){ s.classList.remove('active'); });
+      this.classList.add('active');
+      filters[filter] = value;
+      applyFilters();
+    });
+  });
+
+  function applyFilters(){
+    var visible = 0;
+    cards.forEach(function(card){
+      var t = card.getAttribute('data-type');
+      var show = (filters.type === 'all' || t === filters.type);
+      card.style.display = show ? '' : 'none';
+      if(show) visible++;
+    });
+    resultCount.textContent = 'Показано: ' + visible + ' объектов';
+  }
+
+  var animate = document.querySelectorAll('.anim-fade-up, .nature-card');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.15});
+    animate.forEach(function(el){ obs.observe(el); });
+  } else { animate.forEach(function(el){ el.classList.add('visible'); }); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Этнографическое наследие Кировской области — Наследие Вятки</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+.module-hero::before {
+  background-image: url('https://cdn.culture.ru/images/732dac77-159d-58f7-82ab-44c703fa5951');
+  filter: sepia(50%) brightness(0.7) contrast(0.9);
+}
+
+.filter-section { margin-bottom: var(--space-4); }
+.filter-group { display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap; margin-bottom: var(--space-2); }
+.filter-group-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted); width: 100%; text-align: center; margin-bottom: 4px; }
+
+.catalog-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); border-bottom: var(--border-width) dashed var(--color-border); padding-bottom: var(--space-2); }
+
+.exhibit-card { background: var(--color-surface); border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.exhibit-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(42,33,24,0.12); }
+.exhibit-card-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: flex; align-items: center; justify-content: center; background: var(--color-birch); }
+.exhibit-card-img img { width: 100%; height: 100%; object-fit: cover; }
+.exhibit-card-img .placeholder-icon { font-size: 40px; color: var(--color-muted); opacity: 0.4; }
+.exhibit-card-body { padding: var(--space-2); }
+.exhibit-card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.tag { font-size: 11px; padding: 2px 10px; border-radius: 999px; line-height: 1.4; }
+.tag-people { background: var(--color-teal); color: var(--color-bg); }
+.tag-type { background: var(--color-ochre); color: var(--color-bg); }
+.tag-era { background: var(--color-oak); color: var(--color-ink); }
+.exhibit-card-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.exhibit-card-body .exhibit-meta { font-size: 12px; color: var(--color-muted); margin-bottom: 6px; }
+.exhibit-card-body p { font-size: 13px; color: var(--color-ink); line-height: 1.5; }
+
+@media (max-width: 767px) {
+  .catalog-controls { flex-direction: column; align-items: stretch; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content-target">Перейти к основному содержанию</a>
+
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        <circle cx="20" cy="12" r="1.5" fill="var(--color-bg)"/>
+        <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+        <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+      </svg>
+      <span>Наследие Вятки</span>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Главная</a>
+      <a href="victory-faces.html">Лица Победы</a>
+      <a href="ethnography.html" class="active">Этнография</a>
+      <a href="historic-cities.html">Города</a>
+      <a href="nature.html">Природа</a>
+      <a href="archeology.html">Археология</a>
+      <a href="architecture.html">Архитектура</a>
+      <a href="about-page.html">О проекте</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<main id="main-content-target">
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-sidebar" id="navSidebar">
+  <button class="close-btn" id="closeSidebar" aria-label="Закрыть">✕</button>
+  <a href="index.html">Главная</a>
+  <a href="victory-faces.html">Лица Победы</a>
+  <a href="ethnography.html" class="active">Этнографическое наследие</a>
+  <a href="historic-cities.html">Исторические города</a>
+  <a href="nature.html">Памятники природы</a>
+  <a href="archeology.html">Памятники археологии</a>
+  <a href="architecture.html">Архитектура Кирова</a>
+  <a href="about-page.html">О проекте</a>
+</nav>
+
+<section class="module-hero">
+  <div class="overlay"></div>
+  <div class="content">
+    <p class="kicker">К 90-летию Кировской области · Народы Вятской земли</p>
+    <h1>Этнографическое наследие</h1>
+    <p>Уникальная коллекция предметов быта, костюмов, орудий труда и обрядов народов, веками населяющих Вятский край: русских, татар, удмуртов, марийцев и коми</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="anim-fade-up">
+    <h2 class="section-title">Цифровой архив народной культуры</h2>
+    <p class="section-subtitle">Коллекция собрана экспедициями КГПИ, ВятГГУ и ВятГУ с 1980-х по 2020-е годы</p>
+    <p style="max-width:800px; margin:0 auto var(--space-2); text-align:center;">
+      В основе материалов — многолетние полевые исследования. Каждый экспонат сопровождается подробным описанием, указанием места и времени бытования. Представлены полевые записи обрядов, песен, сказаний и народных промыслов.
+    </p>
+  </div>
+</section>
+
+<section class="section dymka-pattern" style="background-color:var(--color-birch);">
+  <div class="filter-section anim-fade-up">
+    <div class="filter-group">
+      <span class="filter-group-label">По народу</span>
+      <button class="filter-chip active" data-filter="people" data-value="all">Все</button>
+      <button class="filter-chip" data-filter="people" data-value="russian">Русские</button>
+      <button class="filter-chip" data-filter="people" data-value="tatar">Татары</button>
+      <button class="filter-chip" data-filter="people" data-value="udmurt">Удмурты</button>
+      <button class="filter-chip" data-filter="people" data-value="mari">Марийцы</button>
+      <button class="filter-chip" data-filter="people" data-value="komi">Коми</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-group-label">По типу</span>
+      <button class="filter-chip active" data-filter="type" data-value="all">Все</button>
+      <button class="filter-chip" data-filter="type" data-value="costume">Костюм</button>
+      <button class="filter-chip" data-filter="type" data-value="utensils">Утварь</button>
+      <button class="filter-chip" data-filter="type" data-value="tools">Орудия труда</button>
+      <button class="filter-chip" data-filter="type" data-value="ritual">Обряды</button>
+      <button class="filter-chip" data-filter="type" data-value="craft">Промыслы</button>
+    </div>
+  </div>
+
+  <div class="catalog-controls">
+    <span class="result-count" id="resultCount">Показано: 12 экспонатов</span>
+  </div>
+
+  <div class="catalog-grid" id="catalogGrid">
+    <div class="exhibit-card anim-fade-up" data-people="russian" data-type="costume">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">👗</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Русские</span>
+          <span class="tag tag-type">Костюм</span>
+          <span class="tag tag-era">XIX — нач. XX в.</span>
+        </div>
+        <h3>Женский праздничный костюм</h3>
+        <div class="exhibit-meta">с. Великорецкое, Юрьянский район</div>
+        <p>Сарафанный комплекс с душегреей и кокошником. Расшит золотными нитями и жемчугом. Характерен для северных районов Вятской губернии.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-1" data-people="tatar" data-type="costume">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">👒</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Татары</span>
+          <span class="tag tag-type">Костюм</span>
+          <span class="tag tag-era">XIX в.</span>
+        </div>
+        <h3>Казанский калфак и камзол</h3>
+        <div class="exhibit-meta">Малмыжский уезд</div>
+        <p>Бархатный калфак (головной убор) с золотым шитьём и парчовый камзол — характерные элементы татарского костюма Вятской губернии.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-2" data-people="udmurt" data-type="costume">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🧣</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Удмурты</span>
+          <span class="tag tag-type">Костюм</span>
+          <span class="tag tag-era">XIX — нач. XX в.</span>
+        </div>
+        <h3>Комплекс одежды удмуртов-южан</h3>
+        <div class="exhibit-meta">Унинский район</div>
+        <p>Белая холщовая рубаха-платье с вышивкой, монисто и налобная повязка. Традиционный костюм южных удмуртов отличается обилием вышивки и монет.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-3" data-people="mari" data-type="costume">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🎀</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Марийцы</span>
+          <span class="tag tag-type">Костюм</span>
+          <span class="tag tag-era">XIX — нач. XX в.</span>
+        </div>
+        <h3>Женский головной убор — шурка</h3>
+        <div class="exhibit-meta">Санчурский район</div>
+        <p>Высокий конусообразный головной убор замужних марийских женщин с нашивками бисера, монет и раковин. Один из самых узнаваемых элементов марийского костюма.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-4" data-people="russian" data-type="tools">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🪡</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Русские</span>
+          <span class="tag tag-type">Орудия труда</span>
+          <span class="tag tag-era">XIX в.</span>
+        </div>
+        <h3>Ткацкий станок — кросна</h3>
+        <div class="exhibit-meta">д. Бобино, Слободской район</div>
+        <p>Полный комплект горизонтального ткацкого стана с бердом, челноками и нитченками. Использовался для изготовления холстов и половиков в каждом крестьянском доме.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-5" data-people="komi" data-type="tools">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🪓</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Коми</span>
+          <span class="tag tag-type">Орудия труда</span>
+          <span class="tag tag-era">XIX — нач. XX в.</span>
+        </div>
+        <h3>Охотничий набор коми-зырян</h3>
+        <div class="exhibit-meta">Нагорский район</div>
+        <p>Ружьё-кремнёвка, пороховница из рога, нож в деревянных ножнах, лыжи-голицы и насторожка для ловушек. Охота была одним из основных промыслов коми населения.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up" data-people="russian" data-type="utensils">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🍯</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Русские</span>
+          <span class="tag tag-type">Утварь</span>
+          <span class="tag tag-era">XIX — нач. XX в.</span>
+        </div>
+        <h3>Деревянный туес</h3>
+        <div class="exhibit-meta">пгт Фалёнки</div>
+        <p>Цилиндрический сосуд из берёсты с деревянным дном. Использовался для хранения мёда, ягод, круп. Вятские туеса славились прочностью и долговечностью.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-1" data-people="tatar" data-type="utensils">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🫖</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Татары</span>
+          <span class="tag tag-type">Утварь</span>
+          <span class="tag tag-era">XIX в.</span>
+        </div>
+        <h3>Медный самовар и пиала</h3>
+        <div class="exhibit-meta">Малмыжский уезд</div>
+        <p>Традиционный татарский самовар с чайной пиалой. Чайная церемония у вятских татар сопровождалась подачей чак-чака, баурсака и варенья из ревеня.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-2" data-people="udmurt" data-type="utensils">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🥣</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Удмурты</span>
+          <span class="tag tag-type">Утварь</span>
+          <span class="tag tag-era">XIX — нач. XX в.</span>
+        </div>
+        <h3>Долблёные ковши и чаши</h3>
+        <div class="exhibit-meta">Глазовский уезд</div>
+        <p>Деревянные ковши в форме утицы для подачи пива и кваса. Удмуртские мастера славились искусством долбления из капа и берёзы.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-3" data-people="mari" data-type="ritual">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🙏</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Марийцы</span>
+          <span class="tag tag-type">Обряды</span>
+          <span class="tag tag-era">кон. XIX — нач. XX в.</span>
+        </div>
+        <h3>Календарный обряд Сӱрем</h3>
+        <div class="exhibit-meta">Санчурский район</div>
+        <p>Марийский языческий обряд изгнания злых духов и очищения села. Сопровождается жертвоприношением, хороводами и ритуальными кострами. Зафиксирован в записях экспедиций 1920-х годов.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-4" data-people="russian" data-type="ritual">
+      <div class="exhibit-card-img">
+        <span class="placeholder-icon">🎭</span>
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Русские</span>
+          <span class="tag tag-type">Обряды</span>
+          <span class="tag tag-era">XIX — сер. XX в.</span>
+        </div>
+        <h3>Святочные гуляния и ряженье</h3>
+        <div class="exhibit-meta">с. Великорецкое</div>
+        <p>Описание святочных обходов дворов с колядками, ряженьем в медведя, козу и коня. В Великорецком сохранилась уникальная традиция кулачных боев на Святки.</p>
+      </div>
+    </div>
+
+    <div class="exhibit-card anim-fade-up anim-fade-up-delay-5" data-people="russian" data-type="craft">
+      <div class="exhibit-card-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Dymkovo_toys.jpg/640px-Dymkovo_toys.jpg" alt="Дымковская игрушка" loading="lazy">
+      </div>
+      <div class="exhibit-card-body">
+        <div class="exhibit-card-tags">
+          <span class="tag tag-people">Русские</span>
+          <span class="tag tag-type">Промыслы</span>
+          <span class="tag tag-era">XVII–XX вв.</span>
+        </div>
+        <h3>Дымковская игрушка</h3>
+        <div class="exhibit-meta">слобода Дымково, г. Вятка</div>
+        <p>Глиняная расписная фигурка — один из старейших русских народных промыслов. Яркие геометрические узоры (круги, клетки, полоски) делают дымковскую игрушку символом Вятского края.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="text-align:center;">
+  <h2 class="section-title">Помогите сохранить этнографическое наследие</h2>
+  <p class="section-subtitle">Если у вас есть предметы народного быта, костюмы, фотографии или записи обрядов — свяжитесь с нами.</p>
+  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <button class="btn">Связаться с проектом</button>
+  </div>
+</section></main>
+
+<footer class="footer">
+  <svg class="footer-ornament" viewBox="0 0 1200 24" preserveAspectRatio="none">
+    <rect x="0" y="10" width="100%" height="2" fill="currentColor" opacity="0.3"/>
+    <circle cx="100" cy="12" r="4" fill="currentColor"/>
+    <circle cx="300" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="500" cy="12" r="5" fill="currentColor"/>
+    <circle cx="700" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="900" cy="12" r="4" fill="currentColor"/>
+    <circle cx="1100" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+  </svg>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>
+        <svg viewBox="0 0 40 40" width="24" height="24" fill="var(--color-ochre)">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        </svg>
+        Наследие Вятки
+      </h4>
+      <p>Просветительский проект к 90-летию Кировской области. 2026</p>
+    </div>
+    <div class="footer-col">
+      <strong style="font-size:14px;">Разделы</strong>
+      <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+        <a href="index.html">Главная</a>
+        <a href="victory-faces.html">Лица Победы</a>
+        <a href="ethnography.html">Этнографическое наследие</a>
+        <a href="historic-cities.html">Исторические города</a>
+        <a href="nature.html">Памятники природы</a>
+        <a href="archeology.html">Памятники археологии</a>
+        <a href="architecture.html">Архитектура Кирова</a>
+        <a href="about-page.html">О проекте</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <p>Проект реализован при поддержке Правительства Кировской области и Кировского областного краеведческого музея.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Историко-культурное наследие Кировской области. Все права защищены.
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var sidebar = document.getElementById('navSidebar');
+  var overlay = document.getElementById('navOverlay');
+  var closeBtn = document.getElementById('closeSidebar');
+  function openMenu(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+  if(burger) burger.addEventListener('click', openMenu);
+  if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+  if(overlay) overlay.addEventListener('click', closeMenu);
+
+  // --- Sticky header: transparent over hero, solid when scrolled ---
+  var header = document.getElementById('header');
+  function updateHeader() {
+    if (window.scrollY > 80) {
+      header.classList.add('scrolled');
+      header.classList.remove('transparent');
+    } else {
+      header.classList.remove('scrolled');
+      header.classList.add('transparent');
+    }
+  }
+  updateHeader(); // run on load
+  window.addEventListener('scroll', updateHeader, { passive: true });
+
+  // Filters
+  var chips = document.querySelectorAll('.filter-chip');
+  var cards = document.querySelectorAll('.exhibit-card');
+  var resultCount = document.getElementById('resultCount');
+  var filters = { people: 'all', type: 'all' };
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var filter = this.getAttribute('data-filter');
+      var value = this.getAttribute('data-value');
+      var siblings = document.querySelectorAll('.filter-chip[data-filter="' + filter + '"]');
+      siblings.forEach(function(s){ s.classList.remove('active'); });
+      this.classList.add('active');
+      filters[filter] = value;
+      applyFilters();
+    });
+  });
+
+  function applyFilters(){
+    var visible = 0;
+    cards.forEach(function(card){
+      var p = card.getAttribute('data-people');
+      var t = card.getAttribute('data-type');
+      var show = (filters.people === 'all' || p === filters.people) &&
+                 (filters.type === 'all' || t === filters.type);
+      if(show){ card.style.display = ''; visible++; }
+      else { card.style.display = 'none'; }
+    });
+    resultCount.textContent = 'Показано: ' + visible + ' экспонатов';
+  }
+
+  var animate = document.querySelectorAll('.anim-fade-up, .exhibit-card');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.15});
+    animate.forEach(function(el){ obs.observe(el); });
+  } else { animate.forEach(function(el){ el.classList.add('visible'); }); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,497 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Памятники археологии Кировской области — Наследие Вятки</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+.module-hero::before {
+  background-image: url('https://avatars.mds.yandex.net/i?id=6affb1fa3fbe2f2d05a001f7768556d1_l-5512741-images-thumbs&n=13');
+  filter: sepia(70%) brightness(0.65) contrast(1.1);
+}
+
+.intro-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); margin-bottom: var(--space-4); }
+.stat-card { text-align: center; padding: var(--space-2); border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); background: var(--color-surface); }
+.stat-card strong { display: block; font-family: var(--font-display); font-size: 32px; color: var(--color-teal); }
+.stat-card span { font-size: 13px; color: var(--color-muted); }
+
+.map-section { background: var(--color-birch); }
+.map-wrapper { max-width: 900px; margin: 0 auto; }
+.map-wrapper svg { width: 100%; height: auto; display: block; }
+.archeo-map .region { fill: var(--color-oak); stroke: var(--color-ochre); stroke-width: 1.5; stroke-dasharray: 6 3; }
+.archeo-map .river { fill: none; stroke: var(--color-teal); stroke-width: 3; opacity: 0.5; }
+.archeo-map .point { fill: var(--color-ochre); stroke: var(--color-bg); stroke-width: 2; cursor: pointer; transition: fill 0.3s; }
+.archeo-map .point:hover { fill: var(--color-teal); }
+.archeo-map .point-label { font-family: var(--font-body); font-size: 10px; fill: var(--color-ink); pointer-events: none; }
+.map-legend { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; margin-top: var(--space-2); font-size: 12px; color: var(--color-muted); }
+.legend-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--color-ochre); border: 2px solid var(--color-bg); box-shadow: 0 0 0 1px var(--color-ochre); vertical-align: middle; margin-right: 4px; }
+
+.site-card { background: var(--color-surface); border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.site-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(42,33,24,0.12); }
+.site-card-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-birch); display: flex; align-items: center; justify-content: center; }
+.site-card-img .icon { font-size: 36px; opacity: 0.4; }
+.site-card-body { padding: var(--space-2); }
+.site-card-body .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.site-card-body .tag { font-size: 11px; padding: 2px 10px; border-radius: 999px; line-height: 1.4; }
+.tag-era { background: var(--color-teal); color: var(--color-bg); }
+.tag-type { background: var(--color-ochre); color: var(--color-bg); }
+.site-card-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+.site-card-body .site-location { font-size: 12px; color: var(--color-teal); margin-bottom: 4px; }
+.site-card-body p { font-size: 13px; color: var(--color-ink); line-height: 1.5; }
+
+@media (max-width: 767px) {
+  .intro-stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content-target">Перейти к основному содержанию</a>
+
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        <circle cx="20" cy="12" r="1.5" fill="var(--color-bg)"/>
+        <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+        <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+      </svg>
+      <span>Наследие Вятки</span>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Главная</a>
+      <a href="victory-faces.html">Лица Победы</a>
+      <a href="ethnography.html">Этнография</a>
+      <a href="historic-cities.html">Города</a>
+      <a href="nature.html">Природа</a>
+      <a href="archeology.html" class="active">Археология</a>
+      <a href="architecture.html">Архитектура</a>
+      <a href="about-page.html">О проекте</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<main id="main-content-target">
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-sidebar" id="navSidebar">
+  <button class="close-btn" id="closeSidebar" aria-label="Закрыть">✕</button>
+  <a href="index.html">Главная</a>
+  <a href="victory-faces.html">Лица Победы</a>
+  <a href="ethnography.html">Этнографическое наследие</a>
+  <a href="historic-cities.html">Исторические города</a>
+  <a href="nature.html">Памятники природы</a>
+  <a href="archeology.html" class="active">Памятники археологии</a>
+  <a href="architecture.html">Архитектура Кирова</a>
+  <a href="about-page.html">О проекте</a>
+</nav>
+
+<section class="module-hero">
+  <div class="overlay"></div>
+  <div class="content">
+    <p class="kicker">К 90-летию Кировской области · От мезолита до Средневековья</p>
+    <h1>Памятники археологии<br>Кировской области</h1>
+    <p>Около 150 памятников от эпохи мезолита до позднего Средневековья: городища, селища, стоянки, могильники — свидетельства древней истории Вятской земли</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="anim-fade-up">
+    <h2 class="section-title">Археологическое наследие региона</h2>
+    <p class="section-subtitle">Хронологический охват — от эпохи мезолита до раннего Нового времени</p>
+  </div>
+  <div class="intro-stats anim-fade-up anim-fade-up-delay-1">
+    <div class="stat-card"><strong>~150</strong><span>памятников на карте</span></div>
+    <div class="stat-card"><strong>8 000+</strong><span>лет истории региона</span></div>
+    <div class="stat-card"><strong>5</strong><span>основных эпох</span></div>
+  </div>
+  <p style="max-width:800px; margin:0 auto var(--space-2); text-align:center;">
+    Для каждого памятника указано точное географическое положение, ландшафт и природное окружение: берега рек, склоны оврагов, возвышенности или пойменные террасы. Представлены сведения о внешнем виде объекта, истории археологических исследований и современном состоянии.
+  </p>
+</section>
+
+<!-- MAP -->
+<section class="section-full map-section section" style="max-width:100%; padding-bottom:0;">
+  <div class="anim-fade-up">
+    <h2 class="section-title">Карта археологических памятников</h2>
+    <p class="section-subtitle">Крупнейшие городища и стоянки на территории области</p>
+  </div>
+  <div class="map-wrapper anim-fade-up anim-fade-up-delay-1">
+    <svg class="archeo-map" viewBox="0 0 800 700" xmlns="http://www.w3.org/2000/svg">
+      <path class="region" d="M 120 80 L 680 60 L 760 200 L 720 380 L 680 500 L 580 620 L 400 660 L 220 640 L 100 500 L 60 320 L 80 160 Z" />
+      <path class="river" d="M 160 140 Q 240 180 300 240 Q 360 300 400 320 Q 480 380 520 400 Q 600 440 660 420" />
+      <path class="river" d="M 300 240 Q 320 300 280 380" />
+      <path class="river" d="M 520 400 Q 560 460 540 540" />
+      <!-- Мезолит -->
+      <circle class="point" cx="180" cy="200" r="5" />
+      <text class="point-label" x="185" y="195">Шиханы-1 (мезолит)</text>
+      <circle class="point" cx="320" cy="450" r="5" />
+      <text class="point-label" x="325" y="445">Белая Локша (неолит)</text>
+      <!-- Бронза -->
+      <circle class="point" cx="280" cy="280" r="5" />
+      <text class="point-label" x="285" y="275">Ананьинское городище</text>
+      <circle class="point" cx="500" cy="300" r="5" />
+      <text class="point-label" x="505" y="295">Буйское городище</text>
+      <circle class="point" cx="400" cy="500" r="5" />
+      <text class="point-label" x="405" y="495">Пижемское городище</text>
+      <!-- Раннее железо -->
+      <circle class="point" cx="200" cy="350" r="5" />
+      <text class="point-label" x="205" y="345">Шиховское городище</text>
+      <circle class="point" cx="440" cy="220" r="5" />
+      <text class="point-label" x="445" y="215">Кировское городище</text>
+      <!-- Средневековье -->
+      <circle class="point" cx="380" cy="250" r="5" />
+      <text class="point-label" x="385" y="245">Хлыновский кремль (XII–XV вв.)</text>
+      <circle class="point" cx="250" cy="180" r="5" />
+      <text class="point-label" x="255" y="175">Котельничское городище</text>
+      <circle class="point" cx="580" cy="400" r="5" />
+      <text class="point-label" x="585" y="395">Уржумское селище</text>
+    </svg>
+  </div>
+  <div class="map-legend anim-fade-up anim-fade-up-delay-2">
+    <span><span class="legend-dot"></span> Памятник археологии</span>
+    <span style="margin-left:var(--space-2); display:inline-flex; align-items:center; gap:6px;">
+      <span style="display:inline-block; width:20px; height:3px; background:var(--color-teal); opacity:0.6; border-radius:2px;"></span> Река Вятка
+    </span>
+    <span style="margin-left:var(--space-2);">Всего нанесено ~10 крупнейших памятников</span>
+  </div>
+</section>
+
+<!-- CATALOG -->
+<section class="section">
+  <h2 class="section-title">Каталог памятников</h2>
+  <p class="section-subtitle">Фильтрация по эпохе и типу памятника</p>
+
+  <div class="filter-bar anim-fade-up">
+    <button class="filter-chip active" data-filter="era" data-value="all">Все эпохи</button>
+    <button class="filter-chip" data-filter="era" data-value="mezolit">Мезолит (до 6 000 до н.э.)</button>
+    <button class="filter-chip" data-filter="era" data-value="neolit">Неолит (6 000–2 500 до н.э.)</button>
+    <button class="filter-chip" data-filter="era" data-value="bronze">Эпоха бронзы (2 500–700 до н.э.)</button>
+    <button class="filter-chip" data-filter="era" data-value="iron">Ранний железный век (VII в. до н.э. – V в. н.э.)</button>
+    <button class="filter-chip" data-filter="era" data-value="medieval">Средневековье (XI–XVII вв.)</button>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-chip active" data-filter="type" data-value="all">Все типы</button>
+    <button class="filter-chip" data-filter="type" data-value="gorodishche">Городище</button>
+    <button class="filter-chip" data-filter="type" data-value="selishche">Селище</button>
+    <button class="filter-chip" data-filter="type" data-value="stoyanka">Стоянка</button>
+    <button class="filter-chip" data-filter="type" data-value="mogilnik">Могильник</button>
+    <button class="filter-chip" data-filter="type" data-value="klad">Клад</button>
+  </div>
+  <div class="result-count" id="resultCount">Показано: 12 памятников</div>
+
+  <div class="catalog-grid" id="catalogGrid">
+
+    <div class="site-card anim-fade-up" data-era="mezolit" data-type="stoyanka">
+      <div class="site-card-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Vyatka_river_landscape.jpg/640px-Vyatka_river_landscape.jpg" alt="Река Вятка" loading="lazy">
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Мезолит</span>
+          <span class="tag tag-type">Стоянка</span>
+        </div>
+        <h3>Шиханы-1</h3>
+        <div class="site-location">Котельничский район, правый берег р. Вятки</div>
+        <p>Многослойная стоянка эпохи мезолита на высоком мысу коренного берега. Найдены кремнёвые орудия: скребки, резцы, ножи. Раскопки проводились в 1980-х годах под руководством Л.П. Гуссаковского.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-1" data-era="neolit" data-type="stoyanka">
+      <div class="site-card-img">
+        <span class="icon">🏺</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Неолит</span>
+          <span class="tag tag-type">Стоянка</span>
+        </div>
+        <h3>Белая Локша</h3>
+        <div class="site-location">Слободской район, озеро Белая Локша</div>
+        <p>Неолитическая стоянка на берегу озера. Характерна керамика с гребенчато-накольчатым орнаментом. Обнаружены остатки полуземлянок, орудия из камня и кости. Датируется V–III тыс. до н.э.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-2" data-era="bronze" data-type="gorodishche">
+      <div class="site-card-img">
+        <span class="icon">⚱️</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Эпоха бронзы</span>
+          <span class="tag tag-type">Городище</span>
+        </div>
+        <h3>Ананьинское городище</h3>
+        <div class="site-location">Малмыжский район, р. Вятка</div>
+        <p>Эталонный памятник ананьинской культуры эпохи поздней бронзы (IX–VII вв. до н.э.). Городище на мысу с сохранившимися валом и рвом. При раскопках найдены бронзовые кельты, наконечники копий, керамика.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-3" data-era="bronze" data-type="gorodishche">
+      <div class="site-card-img">
+        <span class="icon">⚱️</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Эпоха бронзы</span>
+          <span class="tag tag-type">Городище</span>
+        </div>
+        <h3>Буйское городище</h3>
+        <div class="site-location">Кирово-Чепецкий район, р. Чепца</div>
+        <p>Укреплённое поселение ананьинской культуры. Расположено на высоком мысу при впадении ручья в р. Чепцу. Мощный культурный слой до 1,5 м. Датирующий материал — бронзовые украшения и керамика.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-4" data-era="iron" data-type="gorodishche">
+      <div class="site-card-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Vyatka_river_landscape.jpg/640px-Vyatka_river_landscape.jpg" alt="Вятский пейзаж" loading="lazy">
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Ранний железный век</span>
+          <span class="tag tag-type">Городище</span>
+        </div>
+        <h3>Шиховское городище</h3>
+        <div class="site-location">Оричевский район, р. Вятка</div>
+        <p>Городище ананьинской культуры (V–III вв. до н.э.) на высоком мысу. Сохранились следы вала и рва. Раскопками вскрыты остатки наземных жилищ с очажными ямами. Найден обильный вещевой материал.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-5" data-era="iron" data-type="gorodishche">
+      <div class="site-card-img">
+        <span class="icon">🛡️</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Ранний железный век</span>
+          <span class="tag tag-type">Городище</span>
+        </div>
+        <h3>Пижемское городище</h3>
+        <div class="site-location">Советский район, р. Пижма</div>
+        <p>Укреплённое поселение ананьинской культуры. Расположено на останце коренного берега р. Пижмы. Площадка городища имеет размеры 80×40 м, с напольной стороны защищена валом.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up" data-era="medieval" data-type="gorodishche">
+      <div class="site-card-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Kirov_Uspensky_Trifonov_Monastery.jpg/640px-Kirov_Uspensky_Trifonov_Monastery.jpg" alt="Киров" loading="lazy">
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Средневековье</span>
+          <span class="tag tag-type">Городище</span>
+        </div>
+        <h3>Хлыновский кремль</h3>
+        <div class="site-location">г. Киров, исторический центр</div>
+        <p>Детинец средневекового Хлынова (XII–XV вв.) на высоком берегу Вятки. Площадка кремля окружена валом и рвом. Раскопки выявили остатки деревянных укреплений, частокола, мостовых. Найдены фрагменты керамики, наконечники стрел, бытовые предметы.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-1" data-era="medieval" data-type="gorodishche">
+      <div class="site-card-img">
+        <span class="icon">🏛️</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Средневековье</span>
+          <span class="tag tag-type">Городище</span>
+        </div>
+        <h3>Котельничское городище</h3>
+        <div class="site-location">г. Котельнич, центральная часть</div>
+        <p>Остатки средневекового города Котельнича, известного с XII в. Городище на мысу при впадении р. Моломы в Вятку. Сохранился земляной вал высотой до 4 м. При раскопках найдены предметы вооружения, украшения, монеты.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-2" data-era="medieval" data-type="mogilnik">
+      <div class="site-card-img">
+        <span class="icon">💀</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Средневековье</span>
+          <span class="tag tag-type">Могильник</span>
+        </div>
+        <h3>Вятский некрополь</h3>
+        <div class="site-location">г. Киров, район бывшего кремля</div>
+        <p>Средневековый некрополь Хлынова (XIV–XVII вв.). Вскрыто более 50 погребений с разнообразным инвентарём: нательные кресты, перстни, монеты. Даёт представление о материальной культуре средневековой Вятки.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-3" data-era="medieval" data-type="klad">
+      <div class="site-card-img">
+        <span class="icon">💰</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Средневековье</span>
+          <span class="tag tag-type">Клад</span>
+        </div>
+        <h3>Клад серебряных монет</h3>
+        <div class="site-location">Киров, ул. Московская</div>
+        <p>Клад из 136 серебряных монет XVI–XVII вв., обнаруженный при строительных работах в 1968 году. Монеты русской и западноевропейской чеканки — свидетельство активной торговли Вятки с соседними землями.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-4" data-era="bronze" data-type="mogilnik">
+      <div class="site-card-img">
+        <span class="icon">⚰️</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Эпоха бронзы</span>
+          <span class="tag tag-type">Могильник</span>
+        </div>
+        <h3>Могильник «Красный Яр»</h3>
+        <div class="site-location">Малмыжский район, р. Шабанка</div>
+        <p>Грунтовый могильник ананьинской культуры. Исследовано 15 погребений с керамикой, бронзовыми украшениями и орудиями труда. Погребальный обряд характеризуется трупоположением вытянуто на спине.</p>
+      </div>
+    </div>
+
+    <div class="site-card anim-fade-up anim-fade-up-delay-5" data-era="bronze" data-type="gorodishche">
+      <div class="site-card-img">
+        <span class="icon">⚱️</span>
+      </div>
+      <div class="site-card-body">
+        <div class="tag-row">
+          <span class="tag tag-era">Эпоха бронзы</span>
+          <span class="tag tag-type">Городище</span>
+        </div>
+        <h3>Чижевское городище</h3>
+        <div class="site-location">Юрьянский район, р. Великая</div>
+        <p>Укреплённое поселение на мысу. Обнаружены остатки металлургического производства: тигли, литейные формы, шлаки. Датируется VIII–V вв. до н.э. Городище является памятником ананьинской культуры.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section dymka-pattern" style="background-color:var(--color-birch); text-align:center;">
+  <h2 class="section-title">Археология Кирова — раскопки в историческом центре</h2>
+  <p class="section-subtitle">Следы средневековой Хлынова: керамика, монеты, укрепления детинца и предметы быта вятичей</p>
+  <p style="max-width:720px; margin:0 auto var(--space-3);">
+    Раскопки в историческом центре Кирова открывают слои XII–XVII веков. На месте разрушенных в советское время зданий археологи находят фрагменты деревянных мостовых, остатки усадеб, ремесленные мастерские. Каждый полевой сезон приносит новые находки, уточняющие историю древнего Хлынова.
+  </p>
+  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <button class="btn">Карта раскопок Кирова</button>
+  </div>
+</section></main>
+
+<footer class="footer">
+  <svg class="footer-ornament" viewBox="0 0 1200 24" preserveAspectRatio="none">
+    <rect x="0" y="10" width="100%" height="2" fill="currentColor" opacity="0.3"/>
+    <circle cx="100" cy="12" r="4" fill="currentColor"/>
+    <circle cx="300" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="500" cy="12" r="5" fill="currentColor"/>
+    <circle cx="700" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="900" cy="12" r="4" fill="currentColor"/>
+    <circle cx="1100" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+  </svg>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>
+        <svg viewBox="0 0 40 40" width="24" height="24" fill="var(--color-ochre)">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        </svg>
+        Наследие Вятки
+      </h4>
+      <p>Просветительский проект к 90-летию Кировской области. 2026</p>
+    </div>
+    <div class="footer-col">
+      <strong style="font-size:14px;">Разделы</strong>
+      <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+        <a href="index.html">Главная</a>
+        <a href="victory-faces.html">Лица Победы</a>
+        <a href="ethnography.html">Этнографическое наследие</a>
+        <a href="historic-cities.html">Исторические города</a>
+        <a href="nature.html">Памятники природы</a>
+        <a href="archeology.html">Памятники археологии</a>
+        <a href="architecture.html">Архитектура Кирова</a>
+        <a href="about-page.html">О проекте</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <p>Проект реализован при поддержке Правительства Кировской области и Кировского областного краеведческого музея.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Историко-культурное наследие Кировской области. Все права защищены.
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var sidebar = document.getElementById('navSidebar');
+  var overlay = document.getElementById('navOverlay');
+  var closeBtn = document.getElementById('closeSidebar');
+  function openMenu(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+  if(burger) burger.addEventListener('click', openMenu);
+  if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+  if(overlay) overlay.addEventListener('click', closeMenu);
+
+  // --- Sticky header: transparent over hero, solid when scrolled ---
+  var header = document.getElementById('header');
+  function updateHeader() {
+    if (window.scrollY > 80) {
+      header.classList.add('scrolled');
+      header.classList.remove('transparent');
+    } else {
+      header.classList.remove('scrolled');
+      header.classList.add('transparent');
+    }
+  }
+  updateHeader(); // run on load
+  window.addEventListener('scroll', updateHeader, { passive: true });
+
+  var chips = document.querySelectorAll('.filter-chip');
+  var cards = document.querySelectorAll('.site-card');
+  var resultCount = document.getElementById('resultCount');
+  var filters = { era: 'all', type: 'all' };
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var filter = this.getAttribute('data-filter');
+      if(!filter) return;
+      var value = this.getAttribute('data-value');
+      var siblings = document.querySelectorAll('.filter-chip[data-filter="' + filter + '"]');
+      siblings.forEach(function(s){ s.classList.remove('active'); });
+      this.classList.add('active');
+      filters[filter] = value;
+      applyFilters();
+    });
+  });
+
+  function applyFilters(){
+    var visible = 0;
+    cards.forEach(function(card){
+      var e = card.getAttribute('data-era');
+      var t = card.getAttribute('data-type');
+      var show = (filters.era === 'all' || e === filters.era) &&
+                 (filters.type === 'all' || t === filters.type);
+      card.style.display = show ? '' : 'none';
+      if(show) visible++;
+    });
+    resultCount.textContent = 'Показано: ' + visible + ' памятников';
+  }
+
+  var animate = document.querySelectorAll('.anim-fade-up, .site-card');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.15});
+    animate.forEach(function(el){ obs.observe(el); });
+  } else { animate.forEach(function(el){ el.classList.add('visible'); }); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Архитектура Кирова — Наследие Вятки</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+.module-hero::before {
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/%D0%94%D0%BE%D0%BC_%D0%92%D0%B8%D1%82%D0%B1%D0%B5%D1%80%D0%B3%D0%B0_%D0%B2_%D0%B3._%D0%9A%D0%B8%D1%80%D0%BE%D0%B2%D0%B5.jpg/960px-%D0%94%D0%BE%D0%BC_%D0%92%D0%B8%D1%82%D0%B1%D0%B5%D1%80%D0%B3%D0%B0_%D0%B2_%D0%B3._%D0%9A%D0%B8%D1%80%D0%BE%D0%B2%D0%B5.jpg');
+  filter: sepia(60%) brightness(0.65);
+}
+
+.build-card { background: var(--color-surface); border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.build-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(42,33,24,0.12); }
+.build-card-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-birch); display: flex; align-items: center; justify-content: center; }
+.build-card-img .icon { font-size: 36px; opacity: 0.4; }
+.build-card-body { padding: var(--space-2); }
+.build-card-body .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.tag { font-size: 11px; padding: 2px 10px; border-radius: 999px; line-height: 1.4; }
+.tag-style { background: var(--color-teal); color: var(--color-bg); }
+.tag-status { background: var(--color-ochre); color: var(--color-bg); }
+.tag-lost { background: var(--color-muted); color: var(--color-bg); }
+.build-card-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+.build-card-body .build-meta { font-size: 12px; color: var(--color-muted); margin-bottom: 4px; }
+.build-card-body p { font-size: 13px; color: var(--color-ink); line-height: 1.5; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content-target">Перейти к основному содержанию</a>
+
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        <circle cx="20" cy="12" r="1.5" fill="var(--color-bg)"/>
+        <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+        <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+      </svg>
+      <span>Наследие Вятки</span>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Главная</a>
+      <a href="victory-faces.html">Лица Победы</a>
+      <a href="ethnography.html">Этнография</a>
+      <a href="historic-cities.html">Города</a>
+      <a href="nature.html">Природа</a>
+      <a href="archeology.html">Археология</a>
+      <a href="architecture.html" class="active">Архитектура</a>
+      <a href="about-page.html">О проекте</a>
+    </nav>
+  </div>
+</header>
+<main id="main-content-target">
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-sidebar" id="navSidebar">
+  <button class="close-btn" id="closeSidebar" aria-label="Закрыть">✕</button>
+  <a href="index.html">Главная</a>
+  <a href="victory-faces.html">Лица Победы</a>
+  <a href="ethnography.html">Этнографическое наследие</a>
+  <a href="historic-cities.html">Исторические города</a>
+  <a href="nature.html">Памятники природы</a>
+  <a href="archeology.html">Памятники археологии</a>
+  <a href="architecture.html" class="active">Архитектура Кирова</a>
+  <a href="about-page.html">О проекте</a>
+</nav>
+
+<section class="module-hero">
+  <div class="overlay"></div>
+  <div class="content">
+    <p class="kicker">К 90-летию Кировской области · От деревянного Хлынова до каменной Вятки</p>
+    <h1>Архитектура Кирова</h1>
+    <p>Цифровой архив, посвящённый архитектурному облику областного центра — от первых построек до наших дней. Сохранившиеся и утраченные памятники зодчества и скульптуры</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="anim-fade-up">
+    <h2 class="section-title">Архитектурное наследие города</h2>
+    <p class="section-subtitle">Сохранившиеся памятники и утраченные храмы, соборы, гражданские здания и скульптуры</p>
+    <p style="max-width:800px; margin:0 auto var(--space-3); text-align:center;">
+      Архитектурный облик Кирова (Вятки) складывался веками: от деревянных укреплений Хлынова до каменных особняков в стиле провинциального классицизма, купеческих домов в стиле модерн и советского конструктивизма. Для каждого объекта указано историческое и современное местоположение, описан внешний вид и архитектурный стиль.
+    </p>
+  </div>
+
+  <div class="filter-bar anim-fade-up">
+    <button class="filter-chip active" data-filter="style" data-value="all">Все стили</button>
+    <button class="filter-chip" data-filter="style" data-value="classicism">Классицизм</button>
+    <button class="filter-chip" data-filter="style" data-value="modern">Модерн</button>
+    <button class="filter-chip" data-filter="style" data-value="constructivism">Конструктивизм</button>
+    <button class="filter-chip" data-filter="style" data-value="stalin">Сталинский ампир</button>
+    <button class="filter-chip" data-filter="style" data-value="eclectic">Эклектика</button>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-chip active" data-filter="status" data-value="all">Все</button>
+    <button class="filter-chip" data-filter="status" data-value="preserved">Сохранившиеся</button>
+    <button class="filter-chip" data-filter="status" data-value="lost">Утраченные</button>
+  </div>
+  <div class="result-count" id="resultCount">Показано: 12 объектов</div>
+
+  <div class="catalog-grid" id="catalogGrid">
+
+    <div class="build-card anim-fade-up" data-style="classicism" data-status="preserved">
+      <div class="build-card-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Kirov_Uspensky_Trifonov_Monastery.jpg/640px-Kirov_Uspensky_Trifonov_Monastery.jpg" alt="Успенский Трифонов монастырь" loading="lazy">
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Классицизм</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Успенский Трифонов монастырь</h3>
+        <div class="build-meta">1580 г. (основание) · ул. Горбачева, 1</div>
+        <p>Первая каменная обитель Вятки, основанная монахом Трифоном. Главный собор — Успенский — построен в стиле провинциального классицизма. Монастырский комплекс включает кельи, колокольню и хозяйственные постройки XVII–XIX вв.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-1" data-style="classicism" data-status="preserved">
+      <div class="build-card-img">
+        <span class="icon">🏛️</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Классицизм</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Здание бывшей городской думы</h3>
+        <div class="build-meta">нач. XIX в. · ул. Ленина, 82</div>
+        <p>Каменное двухэтажное здание с портиком и фронтоном. Типичный образец провинциального классицизма. В разное время здесь располагались городская дума, земская управа, библиотека. В настоящее время — административное здание.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-2" data-style="modern" data-status="preserved">
+      <div class="build-card-img">
+        <span class="icon">🏛️</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Модерн</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Дом купца Булычёва</h3>
+        <div class="build-meta">1910 г. · ул. Ленина, 72</div>
+        <p>Особняк в стиле модерн с элементами эклектики. Фасад украшен лепниной, масками и растительным орнаментом. Владелец — купец первой гильдии Яков Булычёв — был крупным лесопромышленником и меценатом.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-3" data-style="modern" data-status="preserved">
+      <div class="build-card-img">
+        <span class="icon">🏛️</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Модерн</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Доходный дом Прозорова</h3>
+        <div class="build-meta">1913 г. · ул. Московская, 37</div>
+        <p>Четырёхэтажный доходный дом с эркерами и балконами. Фасад решён в стиле северного модерна: облицовка керамической плиткой, витражи лестничных клеток, кованые решётки.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-4" data-style="classicism" data-status="lost">
+      <div class="build-card-img">
+        <span class="icon">💔</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Классицизм</span>
+          <span class="tag tag-lost">Утрачен</span>
+        </div>
+        <h3>Свято-Серафимовский собор</h3>
+        <div class="build-meta">1900–1904 гг. · Октябрьский проспект (утрачен в 1930-х)</div>
+        <p>Крупнейший храм Вятки, построенный в русско-византийском стиле. Вмещал до 5 000 человек. Разрушен в 1932 году. На его месте позже построен кинотеатр «Победа». Сохранились архивные фотографии и чертежи.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-5" data-style="constructivism" data-status="preserved">
+      <div class="build-card-img">
+        <span class="icon">🏗️</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Конструктивизм</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Дом-коммуна «Гостиница»</h3>
+        <div class="build-meta">1929 г. · ул. Дрелевского, 10</div>
+        <p>Один из первых в Вятке домов конструктивизма. Предназначался для коммунального проживания рабочих. Прямоугольный объём с ленточным остеклением и плоской крышей. Памятник раннесоветской архитектуры.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up" data-style="stalin" data-status="preserved">
+      <div class="build-card-img">
+        <span class="icon">🏛️</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Сталинский ампир</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Здание железнодорожного вокзала</h3>
+        <div class="build-meta">1952 г. · пл. Привокзальная, 1</div>
+        <p>Вокзал станции Киров — образец сталинского ампира. Симметричная композиция с портиком, колоннами и высоким шпилем со звездой. Внутренние интерьеры украшены лепниной и росписью.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-1" data-style="eclectic" data-status="preserved">
+      <div class="build-card-img">
+        <span class="icon">🏛️</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Эклектика</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Купеческий особняк Клабукова</h3>
+        <div class="build-meta">кон. XIX в. · ул. Спасская, 38</div>
+        <p>Двухэтажный каменный особняк с богатой лепниной. Сочетает элементы классицизма, барокко и неоренессанса. Владелец занимался торговлей лесом и зерном. Сейчас здание занимает музей.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-2" data-style="eclectic" data-status="preserved">
+      <div class="build-card-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Kirov_city_view.jpg/640px-Kirov_city_view.jpg" alt="Панорама города" loading="lazy">
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Эклектика</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Усадьба Зашихина</h3>
+        <div class="build-meta">1890 г. · ул. Воровского, 52</div>
+        <p>Особняк винного откупщика Зашихина с характерной для купеческих особняков Вятки эклектикой: классицистический портик соседствует с барочными наличниками и кованным козырьком.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-3" data-style="classicism" data-status="lost">
+      <div class="build-card-img">
+        <span class="icon">💔</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Классицизм</span>
+          <span class="tag tag-lost">Утрачен</span>
+        </div>
+        <h3>Спасский собор</h3>
+        <div class="build-meta">кон. XVII в. · ул. Спасская (утрачен в 1930-х)</div>
+        <p>Один из первых каменных храмов Вятки. Построен в стиле нарышкинского барокко. Имел высокую колокольню и богатый иконостас. Разрушен в 1937 году при строительстве Дома культуры.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-4" data-style="constructivism" data-status="preserved">
+      <div class="build-card-img">
+        <span class="icon">🏗️</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Конструктивизм</span>
+          <span class="tag tag-status">Сохранился</span>
+        </div>
+        <h3>Кировский цирк</h3>
+        <div class="build-meta">1933 г. · ул. К. Маркса, 18</div>
+        <p>Один из старейших цирков России. Здание решено в стиле конструктивизма: цилиндрический объём с ленточным остеклением и плоской кровлей. Реконструирован в 1960-х, но сохранил первоначальный облик.</p>
+      </div>
+    </div>
+
+    <div class="build-card anim-fade-up anim-fade-up-delay-5" data-style="modern" data-status="lost">
+      <div class="build-card-img">
+        <span class="icon">💔</span>
+      </div>
+      <div class="build-card-body">
+        <div class="tag-row">
+          <span class="tag tag-style">Модерн</span>
+          <span class="tag tag-lost">Утрачен</span>
+        </div>
+        <h3>Гостиный двор (Вятское подворье)</h3>
+        <div class="build-meta">кон. XIX в. · ул. Московская (утрачен в сер. XX в.)</div>
+        <p>Комплекс торговых рядов в стиле модерн с большими витринами и чугунными колоннами. Снесён в 1960-х при расширении Советской улицы. На его месте — сквер и жилые дома.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section dymka-pattern" style="background-color:var(--color-birch); text-align:center;">
+  <h2 class="section-title">Монументы и скульптуры</h2>
+  <p class="section-subtitle">Памятники и мемориалы, формирующие облик города</p>
+  <p style="max-width:720px; margin:0 auto var(--space-3);">
+    В Кирове установлены десятки памятников — от дореволюционных (памятник Александру III) до советских монументов и современных скульптур. Многие утраченные памятники известны по архивным фотографиям. Особое место занимает мемориал «Вечный огонь» на Набережной Грина.
+  </p>
+  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <button class="btn">Все памятники</button>
+  </div>
+</section></main>
+
+<footer class="footer">
+  <svg class="footer-ornament" viewBox="0 0 1200 24" preserveAspectRatio="none">
+    <rect x="0" y="10" width="100%" height="2" fill="currentColor" opacity="0.3"/>
+    <circle cx="100" cy="12" r="4" fill="currentColor"/>
+    <circle cx="300" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="500" cy="12" r="5" fill="currentColor"/>
+    <circle cx="700" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="900" cy="12" r="4" fill="currentColor"/>
+    <circle cx="1100" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+  </svg>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>
+        <svg viewBox="0 0 40 40" width="24" height="24" fill="var(--color-ochre)">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        </svg>
+        Наследие Вятки
+      </h4>
+      <p>Просветительский проект к 90-летию Кировской области. 2026</p>
+    </div>
+    <div class="footer-col">
+      <strong style="font-size:14px;">Разделы</strong>
+      <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+        <a href="index.html">Главная</a>
+        <a href="victory-faces.html">Лица Победы</a>
+        <a href="ethnography.html">Этнографическое наследие</a>
+        <a href="historic-cities.html">Исторические города</a>
+        <a href="nature.html">Памятники природы</a>
+        <a href="archeology.html">Памятники археологии</a>
+        <a href="architecture.html">Архитектура Кирова</a>
+        <a href="about-page.html">О проекте</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <p>Проект реализован при поддержке Правительства Кировской области и Кировского областного краеведческого музея.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Историко-культурное наследие Кировской области. Все права защищены.
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var sidebar = document.getElementById('navSidebar');
+  var overlay = document.getElementById('navOverlay');
+  var closeBtn = document.getElementById('closeSidebar');
+  function openMenu(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+  if(burger) burger.addEventListener('click', openMenu);
+  if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+  if(overlay) overlay.addEventListener('click', closeMenu);
+
+  // --- Sticky header: transparent over hero, solid when scrolled ---
+  var header = document.getElementById('header');
+  function updateHeader() {
+    if (window.scrollY > 80) {
+      header.classList.add('scrolled');
+      header.classList.remove('transparent');
+    } else {
+      header.classList.remove('scrolled');
+      header.classList.add('transparent');
+    }
+  }
+  updateHeader(); // run on load
+  window.addEventListener('scroll', updateHeader, { passive: true });
+
+  var chips = document.querySelectorAll('.filter-chip');
+  var cards = document.querySelectorAll('.build-card');
+  var resultCount = document.getElementById('resultCount');
+  var filters = { style: 'all', status: 'all' };
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var filter = this.getAttribute('data-filter');
+      if(!filter) return;
+      var value = this.getAttribute('data-value');
+      var siblings = document.querySelectorAll('.filter-chip[data-filter="' + filter + '"]');
+      siblings.forEach(function(s){ s.classList.remove('active'); });
+      this.classList.add('active');
+      filters[filter] = value;
+      applyFilters();
+    });
+  });
+
+  function applyFilters(){
+    var visible = 0;
+    cards.forEach(function(card){
+      var s = card.getAttribute('data-style');
+      var st = card.getAttribute('data-status');
+      var show = (filters.style === 'all' || s === filters.style) &&
+                 (filters.status === 'all' || st === filters.status);
+      card.style.display = show ? '' : 'none';
+      if(show) visible++;
+    });
+    resultCount.textContent = 'Показано: ' + visible + ' объектов';
+  }
+
+  var animate = document.querySelectorAll('.anim-fade-up, .build-card');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.15});
+    animate.forEach(function(el){ obs.observe(el); });
+  } else { animate.forEach(function(el){ el.classList.add('visible'); }); }
+})();
+</script>
+</body>
+</html>

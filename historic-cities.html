@@ -1,0 +1,265 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Исторические города Кировской области — Наследие Вятки</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+.module-hero::before {
+  background-image: url('https://img-fotki.yandex.ru/get/6801/212302481.152/0_1890b8_8a076bac_XXL.jpg');
+  filter: sepia(60%) brightness(0.7);
+}
+
+.cities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-3); }
+.city-card { background: var(--color-surface); border: var(--border-width) dashed var(--color-border); border-radius: var(--radius); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
+.city-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(42,33,24,0.12); }
+.city-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; filter: sepia(20%); }
+.city-card-body { padding: var(--space-2); }
+.city-card-body h3 { font-family: var(--font-display); font-weight: 700; font-size: 20px; margin-bottom: 4px; }
+.city-card-body .city-meta { font-size: 13px; color: var(--color-teal); letter-spacing: 0.04em; margin-bottom: 8px; }
+.city-card-body p { font-size: 14px; margin-bottom: var(--space-2); }
+.city-card-body .btn { font-size: 13px; padding: 10px 24px; }
+
+@media (max-width: 767px) {
+  .cities-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content-target">Перейти к основному содержанию</a>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        <circle cx="20" cy="12" r="1.5" fill="var(--color-bg)"/>
+        <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+        <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6"/>
+      </svg>
+      <span>Наследие Вятки</span>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Главная</a>
+      <a href="victory-faces.html">Лица Победы</a>
+      <a href="ethnography.html">Этнография</a>
+      <a href="historic-cities.html" class="active">Города</a>
+      <a href="nature.html">Природа</a>
+      <a href="archeology.html">Археология</a>
+      <a href="architecture.html">Архитектура</a>
+      <a href="about-page.html">О проекте</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<main id="main-content-target">
+
+<!-- Mobile nav -->
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-sidebar" id="navSidebar">
+  <button class="close-btn" id="closeSidebar" aria-label="Закрыть">✕</button>
+  <a href="index.html">Главная</a>
+  <a href="victory-faces.html">Лица Победы</a>
+  <a href="ethnography.html">Этнографическое наследие</a>
+  <a href="historic-cities.html" class="active">Исторические города</a>
+  <a href="nature.html">Памятники природы</a>
+  <a href="archeology.html">Памятники археологии</a>
+  <a href="architecture.html">Архитектура Кирова</a>
+  <a href="about-page.html">О проекте</a>
+</nav>
+
+<!-- HERO -->
+<section class="module-hero">
+  <div class="overlay"></div>
+  <div class="content">
+    <p class="kicker">К 90-летию Кировской области</p>
+    <h1>Исторические города<br>Вятской земли</h1>
+    <p>Семь городов, каждый из которых хранит свою уникальную историю — от крепостей и купеческих центров до современных городов</p>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="section anim-fade-up">
+  <h2 class="section-title">Семь городов — семь судеб</h2>
+  <p class="section-subtitle">Ленты времени охватывают период от первого упоминания до наших дней</p>
+  <p style="max-width:800px; margin:0 auto var(--space-4); text-align:center;">
+    На этой странице собраны семь исторических городов, каждый из которых сыграл важную роль в становлении региона: Киров (Вятка / Хлынов), Котельнич, Орлов, Слободской, Яранск, Малмыж и Уржум. Хронология событий дополнена архивными изображениями, картами и цитатами из исторических документов.
+  </p>
+  <div style="text-align:center; margin-top:var(--space-2);">
+      <a class="btn" href="map-page.html">Посмотреть на карте</a>
+  </div>
+</section>
+
+<!-- CITIES GRID -->
+<section class="section dymka-pattern" style="background-color:var(--color-birch);">
+  <div class="cities-grid" id="citiesGrid">
+    <div class="city-card anim-fade-up" data-city="kirov">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Kirov_Uspensky_Trifonov_Monastery.jpg/640px-Kirov_Uspensky_Trifonov_Monastery.jpg" alt="Киров" loading="lazy">
+      <div class="city-card-body">
+        <h3>Киров (Вятка / Хлынов)</h3>
+        <div class="city-meta">Основан: 1374 (первое упоминание) · Областной центр</div>
+        <p>Главный город области с богатейшей историей: от древнего поселения новгородцев до крупного промышленного и культурного центра. Здесь расположен Успенский Трифонов монастырь, набережная Грина, Александровский сад.</p>
+        <a href="city-page.html?city=kirov" class="btn">Лента времени →</a>
+      </div>
+    </div>
+    <div class="city-card anim-fade-up anim-fade-up-delay-1" data-city="kotelnich">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Kotelnich_city_view.jpg/640px-Kotelnich_city_view.jpg" alt="Котельнич" loading="lazy">
+      <div class="city-card-body">
+        <h3>Котельнич</h3>
+        <div class="city-meta">Первое упоминание: 1143 · Один из древнейших городов</div>
+        <p>Древний город на реке Вятке, известный с XII столетия. Котельнич славится уникальным Котельничским палеонтологическим местонахождением с останками парейазавров.</p>
+        <a href="city-page.html?city=kotelnich" class="btn">Лента времени →</a>
+      </div>
+    </div>
+    <div class="city-card anim-fade-up anim-fade-up-delay-2" data-city="orlov">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Orlov_Kirov_region.jpg/640px-Orlov_Kirov_region.jpg" alt="Орлов" loading="lazy">
+      <div class="city-card-body">
+        <h3>Орлов</h3>
+        <div class="city-meta">Основан: 1459 · Купеческий город</div>
+        <p>Небольшой уютный город на реке Вятке. В XIX веке был значимым купеческим центром. Сохранилась застройка провинциального классицизма, включая торговые ряды.</p>
+        <a href="city-page.html?city=orlov" class="btn">Лента времени →</a>
+      </div>
+    </div>
+    <div class="city-card anim-fade-up anim-fade-up-delay-3" data-city="slobodskoy">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Slobodskoy_Assumption_Church.jpg/640px-Slobodskoy_Assumption_Church.jpg" alt="Слободской" loading="lazy">
+      <div class="city-card-body">
+        <h3>Слободской</h3>
+        <div class="city-meta">Основан: 1505 · Второй по величине исторический город</div>
+        <p>Когда-то крупнейший торговый город Вятской земли. В Слободском сохранились выдающиеся памятники архитектуры: собор Иоанна Предтечи, Сретенская церковь, особняки купцов.</p>
+        <a href="city-page.html?city=slobodskoy" class="btn">Лента времени →</a>
+      </div>
+    </div>
+    <div class="city-card anim-fade-up anim-fade-up-delay-4" data-city="yaransk">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Yaransk_cathedral.jpg/640px-Yaransk_cathedral.jpg" alt="Яранск" loading="lazy">
+      <div class="city-card-body">
+        <h3>Яранск</h3>
+        <div class="city-meta">Первое упоминание: 1584 · Культурный центр юго-запада</div>
+        <p>Город с богатыми культурными традициями. Яранск известен как родина многих деятелей культуры и науки, а также своими архитектурными памятниками в стиле провинциального классицизма.</p>
+        <a href="city-page.html?city=yaransk" class="btn">Лента времени →</a>
+      </div>
+    </div>
+    <div class="city-card anim-fade-up anim-fade-up-delay-5" data-city="malmyzh">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Malmyzh_railway_station.jpg/640px-Malmyzh_railway_station.jpg" alt="Малмыж" loading="lazy">
+      <div class="city-card-body">
+        <h3>Малмыж</h3>
+        <div class="city-meta">Основан: XVI век · Купеческий и торговый город</div>
+        <p>Расположен на юго-востоке области. В прошлом значительный торговый центр, где пересекались пути из Вятки в Казань и Пермь. Сохранились старинные здания земской управы и собора.</p>
+        <a href="city-page.html?city=malmyzh" class="btn">Лента времени →</a>
+      </div>
+    </div>
+    <div class="city-card anim-fade-up anim-fade-up-delay-6" data-city="urzhum">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Urzhum_cathedral.jpg/640px-Urzhum_cathedral.jpg" alt="Уржум" loading="lazy">
+      <div class="city-card-body">
+        <h3>Уржум</h3>
+        <div class="city-meta">Основан: 1584 · Родина С.М. Кирова</div>
+        <p>Небольшой город, известный как место рождения советского государственного деятеля Сергея Мироновича Кирова. Сохранились купеческие дома, собор и земская больница XIX века.</p>
+        <a href="city-page.html?city=urzhum" class="btn">Лента времени →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="text-align:center;">
+  <h2 class="section-title">Путешествуйте по истории</h2>
+  <p class="section-subtitle">Каждый город — это отдельная повесть. Выберите свой маршрут.</p>
+  <a class="btn" href="map-page.html">Открыть карту городов</a>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <svg class="footer-ornament" viewBox="0 0 1200 24" preserveAspectRatio="none">
+    <rect x="0" y="10" width="100%" height="2" fill="currentColor" opacity="0.3"/>
+    <circle cx="100" cy="12" r="4" fill="currentColor"/>
+    <circle cx="300" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="500" cy="12" r="5" fill="currentColor"/>
+    <circle cx="700" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+    <circle cx="900" cy="12" r="4" fill="currentColor"/>
+    <circle cx="1100" cy="12" r="3" fill="currentColor" opacity="0.7"/>
+  </svg>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>
+        <svg viewBox="0 0 40 40" width="24" height="24" fill="var(--color-ochre)">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="20" cy="12" r="4" fill="currentColor"/>
+        </svg>
+        Наследие Вятки
+      </h4>
+      <p>Просветительский проект к 90-летию Кировской области. 2026</p>
+    </div>
+    <div class="footer-col">
+      <strong style="font-size:14px;">Разделы</strong>
+      <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+        <a href="index.html">Главная</a>
+        <a href="victory-faces.html">Лица Победы</a>
+        <a href="ethnography.html">Этнографическое наследие</a>
+        <a href="historic-cities.html">Исторические города</a>
+        <a href="nature.html">Памятники природы</a>
+        <a href="archeology.html">Памятники археологии</a>
+        <a href="architecture.html">Архитектура Кирова</a>
+        <a href="about-page.html">О проекте</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <p>Проект реализован при поддержке Правительства Кировской области и Кировского областного краеведческого музея.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Историко-культурное наследие Кировской области. Все права защищены.
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var sidebar = document.getElementById('navSidebar');
+  var overlay = document.getElementById('navOverlay');
+  var closeBtn = document.getElementById('closeSidebar');
+  function openMenu(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+  if(burger) burger.addEventListener('click', openMenu);
+  if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+  if(overlay) overlay.addEventListener('click', closeMenu);
+
+  // --- Sticky header: transparent over hero, solid when scrolled ---
+  var header = document.getElementById('header');
+  function updateHeader() {
+    if (window.scrollY > 80) {
+      header.classList.add('scrolled');
+      header.classList.remove('transparent');
+    } else {
+      header.classList.remove('scrolled');
+      header.classList.add('transparent');
+    }
+  }
+  updateHeader(); // run on load
+  window.addEventListener('scroll', updateHeader, { passive: true });
+
+  // IntersectionObserver for animations
+  var animate = document.querySelectorAll('.anim-fade-up');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.15});
+    animate.forEach(function(el){ obs.observe(el); });
+  } else {
+    animate.forEach(function(el){ el.classList.add('visible'); });
+  }
+})();
+</script>
+</body>
+</html>
