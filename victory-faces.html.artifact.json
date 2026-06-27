@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "victory-faces.html",
+  "entry": "victory-faces.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-27T12:18:23.803Z",
+  "updatedAt": "2026-06-27T12:18:23.803Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

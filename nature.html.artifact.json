@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "nature.html",
+  "entry": "nature.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-27T12:18:27.434Z",
+  "updatedAt": "2026-06-27T12:18:27.434Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

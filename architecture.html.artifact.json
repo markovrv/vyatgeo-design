@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "architecture.html",
+  "entry": "architecture.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-27T12:18:29.913Z",
+  "updatedAt": "2026-06-27T12:18:29.913Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

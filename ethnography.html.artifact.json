@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "ethnography.html",
+  "entry": "ethnography.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-27T12:18:25.002Z",
+  "updatedAt": "2026-06-27T12:18:25.002Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}
