@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>*,*::before,*::after{box-sizing:border-box}</style>
 </helmet>
 <header style="{{headerStyle}}">
   <div style="display:flex;align-items:center;justify-content:space-between;width:100%;max-width:1200px;margin:0 auto">
@@ -53,11 +54,11 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:80},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;home&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;victory&quot;,&quot;ethnography&quot;,&quot;cities&quot;,&quot;nature&quot;,&quot;archeology&quot;,&quot;architecture&quot;,&quot;about&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;solid&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
-  state = { scrolled: false, isMobile: (typeof window !== 'undefined' && window.innerWidth < 900), menuOpen: false };
+  state = { scrolled: false, isMobile: (typeof window !== 'undefined' && window.innerWidth < 1024), menuOpen: false };
 
   componentDidMount() {
     this.onScroll = () => this.setState({ scrolled: window.scrollY > 80 });
-    this.onResize = () => this.setState({ isMobile: window.innerWidth < 900 });
+    this.onResize = () => this.setState({ isMobile: window.innerWidth < 1024 });
     window.addEventListener('scroll', this.onScroll, { passive: true });
     window.addEventListener('resize', this.onResize);
     this.onScroll();
