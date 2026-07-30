@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<div style="margin-bottom:16px">
+  <sc-if value="{{label}}" hint-placeholder-val="{{false}}">
+    <span style="display:block;font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:#5C5954;text-align:center;margin-bottom:8px">{{label}}</span>
+  </sc-if>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+    <sc-for list="{{chips}}" as="chip" hint-placeholder-count="5">
+      <button onClick="{{chip.select}}" style="{{chip.style}}">{{chip.label}}</button>
+    </sc-for>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:700,&quot;height&quot;:60},&quot;label&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;options&quot;:{&quot;editor&quot;:null,&quot;default&quot;:[],&quot;tsType&quot;:&quot;{value:string,label:string}[]&quot;},&quot;active&quot;:{&quot;editor&quot;:null,&quot;default&quot;:&quot;all&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onSelect&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(value:string)=&gt;void&quot;},&quot;pill&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const options = this.props.options || [];
+    const active = this.props.active;
+    const onSelect = this.props.onSelect || (() => {});
+    const pill = !!this.props.pill;
+    const chips = options.map(opt => {
+      const isActive = opt.value === active;
+      return {
+        label: opt.label,
+        select: () => onSelect(opt.value),
+        style: `font-family:'Roboto Slab',Georgia,serif;font-size:13px;padding:8px ${pill ? 20 : 18}px;background:${isActive ? '#C27E3A' : '#FFFFFF'};border:1.5px dashed ${isActive ? '#C27E3A' : '#D4C9AA'};border-radius:${pill ? '999px' : '4px'};color:${isActive ? '#FAF9F4' : '#2A2118'};cursor:pointer;min-height:44px;transition:background 150ms,border-color 150ms`
+      };
+    });
+    return { chips, label: this.props.label || '' };
+  }
+}
+</script>
+</body>
+</html>

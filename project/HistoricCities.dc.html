@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>body { margin:0; background:#FAF9F4; }</style>
+</helmet>
+<div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
+<dc-import name="SiteHeader" active="cities" hint-size="100%,80px"></dc-import>
+
+<section style="position:relative;height:60vh;min-height:420px;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;margin-top:-80px;padding-top:80px">
+  <div style="position:absolute;inset:0;background-image:url('img/historic-cities.jpg');background-size:cover;background-position:center;filter:sepia(60%) brightness(0.7);z-index:0"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(60,122,140,0.3) 0%, rgba(42,33,24,0.65) 100%);z-index:1"></div>
+  <div style="position:relative;z-index:2;text-align:center;max-width:800px;padding:40px 24px">
+    <p style="font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#E8DFC8;margin-bottom:16px">К 90-летию Кировской области</p>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0 0 16px">Исторические города Вятской земли</h1>
+    <p style="font-size:clamp(15px,1.4vw,18px);color:#E8DFC8;max-width:600px;margin:0 auto">Семь городов, каждый из которых хранит свою уникальную историю — от крепостей и купеческих центров до современных городов</p>
+  </div>
+</section>
+
+<section style="padding:64px 24px 0;max-width:1200px;margin:0 auto;text-align:center">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);margin:0 0 16px">Города на карте и в каталоге</h2>
+  <p style="max-width:800px;margin:0 auto 24px;line-height:1.75">Семь исторических городов: Киров (Вятка / Хлынов), Котельнич, Орлов, Слободской, Яранск, Малмыж и Уржум. Нажмите на метку или карточку, чтобы открыть ленту времени города.</p>
+  <dc-import name="FilterBar" label="По веку основания" options="{{eraOptions}}" active="{{eraActive}}" on-select="{{setEra}}" hint-size="100%,80px"></dc-import>
+  <dc-import name="FilterBar" label="Режим отображения" options="{{viewOptions}}" active="{{view}}" on-select="{{setView}}" hint-size="100%,80px"></dc-import>
+</section>
+
+<section style="padding:0 24px 64px;max-width:1200px;margin:0 auto">
+  <sc-if value="{{isMap}}" hint-placeholder-val="{{true}}">
+    <div style="max-width:800px;margin:0 auto;background:#F5F2EC;border-radius:8px;padding:24px">
+      <svg viewBox="0 0 800 620" style="width:100%;height:auto;display:block">
+        <path d="M 100 70 L 660 60 L 740 190 L 700 360 L 640 490 L 540 570 L 360 590 L 180 560 L 90 430 L 60 260 L 70 140 Z" fill="#E8DFC8" stroke="#C27E3A" stroke-width="1.5" stroke-dasharray="6 3"></path>
+        <path d="M 140 130 Q 220 180 300 250 Q 380 320 440 360 Q 540 420 620 400" fill="none" stroke="#3C7A8C" stroke-width="3" opacity="0.5"></path>
+        <sc-for list="{{cities}}" as="c" hint-placeholder-count="0">
+          <a href="./CityTimeline.dc.html" aria-label="{{c.name}}" style="{{c.linkStyle}}">
+            <circle cx="{{c.x}}" cy="{{c.y}}" r="9" fill="#C27E3A" stroke="#FAF9F4" stroke-width="2" style-hover="fill:#3C7A8C" style="cursor:pointer;opacity:{{c.opacity}};transition:opacity 200ms"></circle>
+            <text x="{{c.tx}}" y="{{c.ty}}" style="font-family:'Roboto Slab',Georgia,serif;font-size:13px;fill:#2A2118;pointer-events:none;opacity:{{c.opacity}}">{{c.name}}</text>
+          </a>
+        </sc-for>
+      </svg>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isCatalog}}" hint-placeholder-val="{{false}}">
+    <div style="text-align:center;font-size:13px;color:#5C5954;margin-bottom:24px">Показано: {{visibleCount}} городов</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px">
+      <sc-for list="{{cities}}" as="c" hint-placeholder-count="0">
+        <sc-if value="{{c.matches}}" hint-placeholder-val="{{false}}">
+        <a href="./CityTimeline.dc.html" style="{{cardStyle}}" style-hover="{{cardHoverStyle}}">
+          <div style="width:100%;aspect-ratio:16/9;background-color:#F5F2EC;background-image:url({{c.img}});background-size:cover;background-position:center;filter:sepia(20%)" role="img" aria-label="{{c.name}}"></div>
+          <div style="padding:16px">
+            <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:20px;margin:0 0 4px;color:#2A2118">{{c.name}}</h3>
+            <div style="font-size:13px;color:#3C7A8C;letter-spacing:0.04em;margin-bottom:8px">{{c.meta}}</div>
+            <p style="font-size:14px;margin-bottom:16px;line-height:1.6">{{c.desc}}</p>
+            <span style="{{btnSmStyle}}">Лента времени →</span>
+          </div>
+        </a>
+        </sc-if>
+      </sc-for>
+    </div>
+  </sc-if>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { era: 'all', view: 'map' };
+
+  renderVals() {
+    const cityDefs = [
+      { name: 'Киров', x: 380, y: 300, era: 'early', meta: 'Основан: 1374 · Областной центр', desc: 'Главный город области: от древнего поселения новгородцев до крупного промышленного и культурного центра.', img: 'img/kremlin.jpeg' },
+      { name: 'Котельнич', x: 240, y: 200, era: 'early', meta: 'Первое упоминание: 1143', desc: 'Древний город на реке Вятке, известный уникальным палеонтологическим местонахождением.', img: 'img/historic-cities.jpg' },
+      { name: 'Орлов', x: 300, y: 260, era: 'mid', meta: 'Основан: 1459', desc: 'Небольшой купеческий город с застройкой провинциального классицизма.', img: 'img/historic-cities.jpg' },
+      { name: 'Слободской', x: 430, y: 220, era: 'mid', meta: 'Основан: 1505', desc: 'Крупнейший торговый город Вятской земли с выдающимися памятниками архитектуры.', img: 'img/historic-cities.jpg' },
+      { name: 'Яранск', x: 220, y: 400, era: 'late', meta: 'Первое упоминание: 1584', desc: 'Культурный центр юго-запада области с архитектурными памятниками классицизма.', img: 'img/historic-cities.jpg' },
+      { name: 'Малмыж', x: 500, y: 460, era: 'mid', meta: 'Основан: XVI век', desc: 'Торговый центр на пути из Вятки в Казань и Пермь.', img: 'img/historic-cities.jpg' },
+      { name: 'Уржум', x: 400, y: 500, era: 'late', meta: 'Основан: 1584 · Родина С.М. Кирова', desc: 'Город, известный как место рождения советского государственного деятеля.', img: 'img/historic-cities.jpg' },
+    ];
+    const eraDefs = [['all', 'Все века'], ['early', 'До XV века'], ['mid', 'XV–XVI века'], ['late', 'Конец XVI века']];
+    const eraOptions = eraDefs.map(([value, label]) => ({ value, label }));
+    const cities = cityDefs.map(c => {
+      const matches = this.state.era === 'all' || this.state.era === c.era;
+      return { ...c, tx: c.x + 15, ty: c.y - 4, matches, opacity: matches ? 1 : 0.2, linkStyle: matches ? '' : 'pointer-events:none' };
+    });
+    const visibleCount = cities.filter(c => c.matches).length;
+    return {
+      cities, eraOptions, eraActive: this.state.era, setEra: (v) => this.setState({ era: v }), visibleCount,
+      viewOptions: [{ value: 'map', label: 'Карта' }, { value: 'catalog', label: 'Каталог' }],
+      view: this.state.view, isMap: this.state.view === 'map', isCatalog: this.state.view === 'catalog',
+      setView: (v) => this.setState({ view: v }),
+      cardStyle: 'display:block;background:#FFFFFF;border:1.5px dashed #D4C9AA;border-radius:4px;overflow:hidden;text-decoration:none;color:inherit;transition:transform 300ms ease, box-shadow 300ms ease',
+      cardHoverStyle: 'transform:translateY(-4px);box-shadow:0 12px 32px rgba(42,33,24,0.12)',
+      btnSmStyle: "display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:13px;font-weight:500;padding:10px 24px;background:#C27E3A;color:#FAF9F4;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);min-height:44px",
+    };
+  }
+}
+</script>
+</body>
+</html>

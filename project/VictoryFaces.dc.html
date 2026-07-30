@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>body { margin:0; background:#FAF9F4; }</style>
+</helmet>
+<div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
+<dc-import name="SiteHeader" active="victory" hint-size="100%,80px"></dc-import>
+
+<section style="position:relative;height:60vh;min-height:420px;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;margin-top:-80px;padding-top:80px">
+  <div style="position:absolute;inset:0;background-image:url('img/victory-faces.jpg');background-size:cover;background-position:center;filter:sepia(70%) brightness(0.6) contrast(1.1);z-index:0"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(60,122,140,0.35) 0%, rgba(42,33,24,0.75) 100%);z-index:1"></div>
+  <div style="position:relative;z-index:2;text-align:center;max-width:800px;padding:40px 24px">
+    <p style="font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#E8DFC8;margin-bottom:16px">К 90-летию Кировской области · Живая летопись ратной славы</p>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0 0 16px">Лица Победы</h1>
+    <p style="font-size:clamp(15px,1.4vw,18px);color:#E8DFC8;max-width:600px;margin:0 auto">Воинские подвиги уроженцев Вятской земли с XIV века до наших дней — от похода на Золотую Орду до современных защитников Отечества</p>
+  </div>
+</section>
+
+<section style="padding:64px 24px;max-width:1200px;margin:0 auto">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);text-align:center;margin:0 0 16px">Живая летопись ратной славы</h2>
+  <p style="text-align:center;font-size:16px;color:#3C7A8C;margin-bottom:40px">Проект будет постоянно пополняться новыми именами и материалами из архивов</p>
+  <p style="max-width:800px;margin:0 auto 40px;text-align:center;line-height:1.75">На странице учтены ратные подвиги вятчан в войнах XVIII и XIX столетий, включая Северную войну, Отечественную войну 1812 года и русско-турецкие кампании. Значительный пласт посвящен участникам Первой мировой войны. Широко представлены герои Великой Отечественной войны — от рядовых бойцов до прославленных полководцев. Отдельный раздел — участники локальных конфликтов и войн новейшего времени.</p>
+
+  <div style="margin-bottom:40px">
+    <dc-import name="FilterBar" options="{{eraOptions}}" active="{{eraActive}}" on-select="{{setEra}}" hint-size="100%,60px"></dc-import>
+  </div>
+
+  <div style="position:relative;max-width:900px;margin:0 auto">
+    <div style="position:absolute;left:24px;top:0;bottom:0;width:2px;background:#C27E3A"></div>
+    <sc-for list="{{eraBlocks}}" as="block" hint-placeholder-count="0">
+      <sc-if value="{{block.visible}}" hint-placeholder-val="{{false}}">
+        <div style="margin-bottom:64px">
+          <div style="position:relative;padding-left:56px;margin-bottom:24px">
+            <div style="position:absolute;left:16px;top:8px;width:18px;height:18px;background:#C27E3A;border-radius:50%;border:3px solid #FAF9F4;box-shadow:0 0 0 2px #C27E3A"></div>
+            <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#3C7A8C">{{block.period}}</div>
+            <div style="font-size:15px;color:#5C5954">{{block.title}}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding-left:56px">
+            <sc-for list="{{block.heroes}}" as="hero" hint-placeholder-count="0">
+              <a href="./VictoryPerson.dc.html" style="{{cardLinkStyle}}" style-hover="{{cardHoverStyle}}">
+                <div style="width:100%;aspect-ratio:1/1;background-color:#F5F2EC;background-image:url({{hero.img}});background-size:cover;background-position:center" role="img" aria-label="{{hero.title}}"></div>
+                <div style="padding:16px">
+                  <h4 style="font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:700;margin:0 0 4px;color:#2A2118">{{hero.title}}</h4>
+                  <div style="font-size:12px;color:#3C7A8C;letter-spacing:0.04em;margin-bottom:6px">{{hero.years}}</div>
+                  <p style="font-size:13px;color:#5C5954;line-height:1.5;margin-bottom:8px">{{hero.desc}}</p>
+                  <span style="font-size:13px;color:#C27E3A;text-decoration:underline;text-underline-offset:2px">Подробнее →</span>
+                </div>
+              </a>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </sc-for>
+  </div>
+</section>
+
+<section style="background:#F5F2EC;padding:64px 24px;text-align:center">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);margin:0 0 16px">Помогите сохранить память</h2>
+  <p style="font-size:16px;color:#3C7A8C;margin-bottom:24px">Если у вас есть фотографии, письма или документы ваших родных — участников войн, пришлите их нам для оцифровки и публикации.</p>
+  <button style="{{btnStyle}}" style-hover="{{btnHoverStyle}}">Связаться с проектом</button>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { era: 'all' };
+
+  renderVals() {
+    const eraList = [
+      ['all', 'Все периоды'],
+      ['medieval', 'XIV–XVII вв.'],
+      ['empire', 'XVIII–XIX вв.'],
+      ['wwi', 'Первая мировая'],
+      ['wwii', 'Великая Отечественная'],
+      ['modern', 'Новейшее время'],
+    ];
+    const eraOptions = eraList.map(([value, label]) => ({ value, label }));
+
+    const blockData = [
+      { key: 'medieval', period: 'XIV–XVII века', title: 'От похода на Золотую Орду до Смутного времени', heroes: [
+        { title: 'Вятская дружина', years: 'XV век · поход на Золотую Орду', desc: 'Победный поход вятской дружины на столицу Золотой Орды, заложивший основу воинской традиции края.', img: 'img/kremlin.jpeg' },
+        { title: 'Защитники Хлынова', years: 'XVI в. · оборона Вятской земли', desc: 'Вятские ратники, оборонявшие Хлынов от набегов казанских татар и участвовавшие в походах Ивана Грозного.', img: 'img/kremlin.jpeg' },
+      ]},
+      { key: 'empire', period: 'XVIII–XIX века', title: 'Имперские войны: от Северной до русско-турецких', heroes: [
+        { title: 'Вятчане в Северной войне', years: '1700–1721 · Северная война', desc: 'Участие вятских полков в Полтавской битве и других сражениях Северной войны под командованием Петра I.', img: 'img/architecture-kirov.jpg' },
+        { title: 'Герои 1812 года', years: '1812–1814 · Отечественная война', desc: 'Уроженцы Вятской губернии, сражавшиеся в Бородинском сражении и заграничных походах русской армии.', img: 'img/architecture-kirov.jpg' },
+        { title: 'Русско-турецкие кампании', years: '1828–1878 · Русско-турецкие войны', desc: 'Вятчане — участники осады Варны, обороны Севастополя, боёв на Шипке и под Плевной.', img: 'img/architecture-kirov.jpg' },
+      ]},
+      { key: 'wwi', period: 'Первая мировая война', title: '1914–1918 · Забытые герои', heroes: [
+        { title: 'Вятские полки', years: '1914–1917 · Первая мировая', desc: 'Солдаты и офицеры из Вятской губернии, участвовавшие в Брусиловском прорыве и оборонительных сражениях.', img: 'img/victory-hero.jpg' },
+        { title: 'Георгиевские кавалеры', years: '1914–1918 · Первая мировая', desc: 'Уроженцы Вятки, награждённые Георгиевским крестом и Георгиевским оружием за храбрость.', img: 'img/victory-hero.jpg' },
+      ]},
+      { key: 'wwii', period: 'Великая Отечественная война', title: '1941–1945 · От рядовых до полководцев', heroes: [
+        { title: 'Бойцы 311-й стрелковой', years: '1941–1945 · 311-я стрелковая дивизия', desc: 'Сформированная в Кирове 311-я стрелковая дивизия прошла боевой путь от Ленинграда до Восточной Пруссии.', img: 'img/victory-hero.jpg' },
+        { title: 'Герои Советского Союза', years: '1941–1945 · Высшая награда', desc: 'Более 200 уроженцев Кировской области удостоены звания Героя Советского Союза за подвиги на фронтах.', img: 'img/victory-hero.jpg' },
+      ]},
+      { key: 'modern', period: 'Новейшее время', title: 'Локальные конфликты и защита рубежей', heroes: [
+        { title: 'Воины-интернационалисты', years: '1979–1989 · Афганистан', desc: 'Уроженцы Кировской области, выполнявшие интернациональный долг в Демократической Республике Афганистан.', img: 'img/victory-hero.jpg' },
+        { title: 'Защитники Отечества', years: '1990–2020-е · Постсоветский период', desc: 'Военнослужащие из Кировской области, участвовавшие в контртеррористических операциях и миротворческих миссиях.', img: 'img/victory-hero.jpg' },
+      ]},
+    ];
+    const eraBlocks = blockData.map(b => ({ ...b, visible: this.state.era === 'all' || this.state.era === b.key }));
+
+    return {
+      eraOptions, eraActive: this.state.era, setEra: (v) => this.setState({ era: v }), eraBlocks,
+      cardLinkStyle: 'display:block;background:#FFFFFF;border:1.5px dashed #D4C9AA;border-radius:4px;overflow:hidden;text-decoration:none;color:inherit;transition:transform 300ms ease, box-shadow 300ms ease',
+      cardHoverStyle: 'transform:translateY(-4px);box-shadow:0 8px 24px rgba(42,33,24,0.12)',
+      btnStyle: "display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:14px;font-weight:500;padding:14px 32px;border:none;cursor:pointer;background:#C27E3A;color:#FAF9F4;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);min-height:44px",
+      btnHoverStyle: 'background:#3C7A8C',
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>body { margin:0; background:#FAF9F4; }</style>
+</helmet>
+<div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
+<dc-import name="SiteHeader" active="nature" solid="true" hint-size="100%,80px"></dc-import>
+
+<div style="height:80px"></div>
+<div style="max-width:1000px;margin:0 auto;padding:16px 24px 0">
+  <nav style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:#5C5954">
+    <a href="./Index.dc.html" style="color:#C27E3A;text-decoration:none">Главная</a><span>/</span>
+    <a href="./Nature.dc.html" style="color:#C27E3A;text-decoration:none">Памятники природы</a><span>/</span>
+    <span style="color:#2A2118">Котельничское местонахождение парейазавров</span>
+  </nav>
+</div>
+
+<section style="max-width:1000px;margin:0 auto;padding:24px 24px 0">
+  <div style="border-radius:4px;overflow:hidden;background:#F5F2EC;border:1.5px dashed #D4C9AA;height:280px;display:flex;align-items:center;justify-content:center;margin-bottom:24px">
+    <span style="font-size:64px;opacity:0.4">🗻</span>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+    <span style="font-size:11px;padding:2px 12px;border-radius:999px;background:#3C7A8C;color:#FAF9F4">Геологический комплекс</span>
+  </div>
+  <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(28px,3.5vw,42px);margin:0 0 8px">Котельничское местонахождение парейазавров</h1>
+  <p style="font-size:14px;color:#3C7A8C;margin-bottom:24px">Котельничский район, правый берег р. Вятки · Площадь 1 200 га</p>
+</section>
+
+<section style="max-width:1000px;margin:0 auto;padding:0 24px 48px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:22px;margin:0 0 12px">Происхождение</h2>
+  <p style="line-height:1.75;margin-bottom:1em">Местонахождение приурочено к обнажениям пермских отложений на правом берегу реки Вятки. Около 260 миллионов лет назад здесь находилась прибрежная равнина, где обитали парейазавры — крупные растительноядные пресмыкающиеся пермского периода.</p>
+  <p style="line-height:1.75">Ежегодные весенние паводки и оползневые процессы постоянно обнажают в береговом обрыве новые кости и целые скелеты, что делает это место одним из самых продуктивных палеонтологических объектов в мире.</p>
+
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:22px;margin:32px 0 12px">Режим посещения и охрана</h2>
+  <p style="line-height:1.75;margin-bottom:1em">Территория имеет статус памятника природы регионального значения. Самостоятельные раскопки запрещены — сбор палеонтологического материала ведут только специалисты Вятского палеонтологического музея. Посетители могут ознакомиться с местонахождением в рамках экскурсий.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px">
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:22px;color:#3C7A8C">1 200 га</strong><span style="font-size:13px;color:#5C5954">площадь</span></div>
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:22px;color:#3C7A8C">с 1930-х</strong><span style="font-size:13px;color:#5C5954">ведутся раскопки</span></div>
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:22px;color:#3C7A8C">региональный</strong><span style="font-size:13px;color:#5C5954">статус охраны</span></div>
+  </div>
+
+  <div style="border-top:1.5px dashed #D4C9AA;padding-top:32px;margin-top:48px">
+    <a href="./Nature.dc.html" style="display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:13px;font-weight:500;padding:10px 24px;background:#C27E3A;color:#FAF9F4;text-decoration:none;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);min-height:44px">← К каталогу памятников природы</a>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
+</div>
+
+</x-dc>
+</body>
+</html>

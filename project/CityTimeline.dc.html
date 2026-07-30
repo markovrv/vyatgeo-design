@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>body { margin:0; background:#FAF9F4; }</style>
+</helmet>
+<div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
+<dc-import name="SiteHeader" active="cities" hint-size="100%,80px"></dc-import>
+
+<section style="position:relative;height:60vh;min-height:420px;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;margin-top:-80px">
+  <div style="position:absolute;inset:0;background-image:url('img/kremlin.jpeg');background-size:cover;background-position:center;filter:sepia(50%) brightness(0.7);z-index:0"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(42,33,24,0.8) 0%, transparent 60%);z-index:1"></div>
+  <div style="position:relative;z-index:2;text-align:center;padding:120px 24px 40px;width:100%">
+    <p style="font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:#E8DFC8;margin-bottom:8px">Исторические города · Киров</p>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0 0 8px;text-shadow:0 2px 8px rgba(0,0,0,0.3)">Киров (Вятка / Хлынов)</h1>
+    <p style="font-size:14px;color:#E8DFC8;opacity:0.9">Областной центр · Основан в 1374 году · Ранее: Хлынов (до 1780), Вятка (1780–1934)</p>
+  </div>
+</section>
+
+<div style="max-width:1000px;margin:0 auto;padding:16px 24px 0">
+  <nav style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:#5C5954">
+    <a href="./Index.dc.html" style="color:#C27E3A;text-decoration:none">Главная</a><span>/</span>
+    <a href="./HistoricCities.dc.html" style="color:#C27E3A;text-decoration:none">Исторические города</a><span>/</span>
+    <span style="color:#2A2118">Киров</span>
+  </nav>
+</div>
+
+<section style="padding:48px 24px;max-width:1200px;margin:0 auto">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start">
+    <div>
+      <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,28px);margin:0 0 16px">Общие сведения</h2>
+      <p style="margin-bottom:1em;line-height:1.8">Киров — административный центр Кировской области, крупный промышленный, культурный и исторический центр Приволжского федерального округа. Расположен на реке Вятке, в 896 км к северо-востоку от Москвы.</p>
+      <p style="margin-bottom:1em;line-height:1.8">Город ведёт свою историю с 1374 года, когда на высоком берегу реки Вятки новгородские переселенцы основали укреплённое поселение Хлынов. В 1780 году по указу Екатерины II городу было присвоено имя Вятка, а в 1934 году он был переименован в Киров.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+        <a href="#timeline" style="{{btnSmStyle}}">Лента времени</a>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+        <div style="border-left:3px solid #C27E3A;padding-left:16px">
+          <strong style="display:block;font-size:28px;font-family:'Playfair Display',Georgia,serif;color:#3C7A8C;line-height:1.2">{{s.n}}</strong>
+          <span style="font-size:14px;color:#5C5954">{{s.label}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="timeline" style="background:#F5F2EC;padding:64px 24px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);text-align:center;margin:0 0 16px">Лента времени</h2>
+  <p style="text-align:center;font-size:16px;color:#3C7A8C;margin-bottom:40px">Ключевые события в истории города от первого упоминания до наших дней</p>
+  <div style="position:relative;max-width:800px;margin:0 auto">
+    <div style="position:absolute;left:19px;top:0;bottom:0;width:2px;background:#C27E3A"></div>
+    <sc-for list="{{timeline}}" as="t" hint-placeholder-count="0">
+      <div style="position:relative;padding-left:56px;margin-bottom:32px">
+        <div style="position:absolute;left:12px;top:6px;width:16px;height:16px;background:{{t.color}};border-radius:50%;border:3px solid #F5F2EC;box-shadow:0 0 0 2px {{t.color}}"></div>
+        <div style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:22px;color:#C27E3A">{{t.year}}</div>
+        <div style="font-size:15px;margin-top:4px;line-height:1.6">{{t.text}}</div>
+        <div style="margin-top:8px;border-radius:4px;overflow:hidden;max-width:400px;border:1.5px dashed #D4C9AA">
+          <div style="width:100%;aspect-ratio:16/9;background-color:#F5F2EC;background-image:url({{t.img}});background-size:cover;background-position:center;filter:sepia(20%)" role="img" aria-label="{{t.caption}}"></div>
+          <div style="padding:6px 10px;font-size:12px;color:#5C5954;text-align:center;background:#FFFFFF">{{t.caption}}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="padding:24px;max-width:1200px;margin:0 auto">
+  <div style="border-top:1.5px dashed #D4C9AA;padding-top:32px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px">
+    <a href="./HistoricCities.dc.html" style="{{btnSmStyle}}" style-hover="{{btnSmHoverStyle}}">← К списку городов</a>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      stats: [
+        { n: '1374', label: 'Первое упоминание в летописях' },
+        { n: 'ок. 476 тыс.', label: 'Численность населения' },
+        { n: '~170 км²', label: 'Площадь города' },
+        { n: '3 города-побратима', label: 'Великий Устюг, Сыктывкар, Каунас' },
+      ],
+      timeline: [
+        { year: '1374', text: 'Первое упоминание города Хлынова в летописях. Новгородские ушкуйники основали укреплённое поселение на высоком берегу реки Вятки.', color: '#C27E3A', img: 'img/kremlin.jpeg', caption: 'Хлыновский кремль на высоком берегу Вятки' },
+        { year: '1489', text: 'Вятская земля окончательно присоединена к Московскому княжеству Иваном III.', color: '#C27E3A', img: 'img/historic-cities.jpg', caption: 'Присоединение Вятской земли к Москве' },
+        { year: '1580', text: 'Монах Трифон Вятский основывает Успенский монастырь — первую каменную обитель Вятской земли.', color: '#3C7A8C', img: 'img/kremlin.jpeg', caption: 'Успенский Трифонов монастырь' },
+        { year: '1780', text: 'Хлынов переименован в Вятку указом Екатерины II. Город получает герб и регулярный план застройки.', color: '#C27E3A', img: 'img/architecture-kirov.jpg', caption: 'Каменная застройка эпохи классицизма' },
+        { year: '1796', text: 'Учреждение Вятской губернии. Вятка становится губернским центром.', color: '#C27E3A', img: 'img/architecture-kirov.jpg', caption: 'Губернский центр Вятка' },
+        { year: '1858', text: 'Открытие первой публичной библиотеки в Вятке. Город становится культурным центром губернии.', color: '#3C7A8C', img: 'img/historic-cities.jpg', caption: 'Вид города Вятки' },
+        { year: '1934', text: 'Город переименован в Киров в память о С.М. Кирове.', color: '#C27E3A', img: 'img/architecture-kirov.jpg', caption: 'Город Киров, 1930-е' },
+        { year: '1936', text: 'Образование Кировской области. Город становится областным центром.', color: '#C27E3A', img: 'img/historic-cities.jpg', caption: 'Образование Кировской области' },
+        { year: '1941–1945', text: 'В Киров эвакуированы десятки заводов. Город становится центром оборонной промышленности.', color: '#3C7A8C', img: 'img/victory-hero.jpg', caption: 'Эвакуированные заводы и фронтовики-кировчане' },
+        { year: '2026', text: 'Киров готовится к 90-летию Кировской области.', color: '#C27E3A', img: 'img/kremlin.jpeg', caption: 'Киров к 90-летию области' },
+      ],
+      btnSmStyle: "display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:13px;font-weight:500;padding:10px 24px;background:#C27E3A;color:#FAF9F4;text-decoration:none;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);min-height:44px",
+      btnSmHoverStyle: 'background:#3C7A8C',
+    };
+  }
+}
+</script>
+</body>
+</html>

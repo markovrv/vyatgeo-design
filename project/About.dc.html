@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>body { margin:0; background:#FAF9F4; }</style>
+</helmet>
+<div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
+<dc-import name="SiteHeader" active="about" hint-size="100%,80px"></dc-import>
+
+<section style="position:relative;height:40vh;min-height:300px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-top:-80px;padding-top:80px">
+  <div style="position:absolute;inset:0;background-image:url('img/kremlin.jpeg');background-size:cover;background-position:center;filter:sepia(60%) brightness(0.7);z-index:0"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(60,122,140,0.3) 0%, rgba(42,33,24,0.65) 100%);z-index:1"></div>
+  <div style="position:relative;z-index:2;text-align:center;max-width:700px;padding:24px">
+    <p style="font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#E8DFC8;margin-bottom:16px">К 90-летию Кировской области · 1936–2026</p>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0">О проекте</h1>
+  </div>
+</section>
+
+<section style="max-width:1000px;margin:0 auto;padding:64px 24px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);text-align:center;margin:0 0 24px">Историко-культурное наследие<br></br>Вятского края</h2>
+  <p style="font-size:16px;line-height:1.8;margin-bottom:1.2em"><strong>«Наследие Вятки»</strong> — просветительский проект, приуроченный к 90-летию образования Кировской области (5 декабря 1936 — 5 декабря 2026). Его цель — собрать, сохранить и сделать доступными для широкой аудитории уникальные материалы по истории, культуре и природе Вятской земли.</p>
+  <p style="font-size:16px;line-height:1.8;margin-bottom:1.2em">Вятский край — один из самобытнейших регионов России, где на протяжении столетий переплетались культурные традиции русских, татар, удмуртов, марийцев и коми. Здесь формировался уникальный архитектурный облик городов, возникли прославленные народные промыслы — дымковская игрушка, вятское кружево, изделия из капокорня.</p>
+  <p style="font-size:16px;line-height:1.8">Проект объединяет семь тематических модулей, каждый из которых посвящён одному из аспектов наследия региона: от средневековой археологии до современной архитектуры, от воинской славы до этнографического многообразия.</p>
+</section>
+
+<section style="background:#F5F2EC;padding:64px 24px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);text-align:center;margin:0 0 32px;max-width:1000px;margin-left:auto;margin-right:auto">Проект в цифрах</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1000px;margin:0 auto 16px">
+    <sc-for list="{{stats1}}" as="s" hint-placeholder-count="3">
+      <div style="text-align:center;padding:24px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:36px;color:#3C7A8C">{{s.n}}</strong><span style="font-size:14px;color:#5C5954">{{s.label}}</span></div>
+    </sc-for>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1000px;margin:0 auto">
+    <sc-for list="{{stats2}}" as="s" hint-placeholder-count="3">
+      <div style="text-align:center;padding:24px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:36px;color:#3C7A8C">{{s.n}}</strong><span style="font-size:14px;color:#5C5954">{{s.label}}</span></div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="max-width:1000px;margin:0 auto;padding:64px 24px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,30px);margin:0 0 24px">Модули проекта</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+    <sc-for list="{{modules}}" as="m" hint-placeholder-count="7">
+      <a href="{{m.href}}" style="display:block;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF;text-decoration:none;color:inherit">
+        <h3 style="font-size:17px;font-weight:700;margin:0 0 4px;color:#2A2118;font-family:'Playfair Display',Georgia,serif">{{m.title}}</h3>
+        <p style="font-size:13px;color:#5C5954;line-height:1.5">{{m.desc}}</p>
+      </a>
+    </sc-for>
+  </div>
+</section>
+
+<section style="max-width:1000px;margin:0 auto;padding:0 24px 64px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,30px);margin:0 0 16px">Научная основа</h2>
+  <p style="line-height:1.8;margin-bottom:1em">Материалы проекта базируются на многолетних исследованиях:</p>
+  <ul style="margin-left:24px;margin-bottom:1em;line-height:1.8">
+    <li>Археологические экспедиции Кировского государственного педагогического института им. В.И. Ленина</li>
+    <li>Этнографические экспедиции Вятского государственного гуманитарного университета</li>
+    <li>Раскопки Кировского областного краеведческого музея</li>
+    <li>Работы архитекторов и краеведов Кировской организации Союза архитекторов России</li>
+    <li>Исследования природных заказников и памятников природы регионального значения</li>
+  </ul>
+
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,30px);margin:32px 0 16px">Партнёры и поддержка</h2>
+  <p style="line-height:1.8;margin-bottom:1em">Проект реализован при поддержке:</p>
+  <ul style="margin-left:24px;margin-bottom:1em;line-height:1.8">
+    <li>Правительства Кировской области</li>
+    <li>Кировского областного краеведческого музея</li>
+    <li>Вятского государственного университета</li>
+    <li>Кировской организации Союза архитекторов России</li>
+  </ul>
+
+  <h3 style="margin-top:24px;margin-bottom:8px">Как помочь проекту</h3>
+  <p style="line-height:1.8">Если у вас есть фотографии, документы, письма или предметы быта, связанные с историей Вятского края, — пришлите их нам для оцифровки и публикации.</p>
+</section>
+
+<section style="background:#F5F2EC;padding:64px 24px;text-align:center">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);margin:0 0 16px">Сохраним наследие вместе</h2>
+  <p style="font-size:16px;color:#3C7A8C;margin-bottom:16px">Проект «Наследие Вятки» — это живой архив, который будет пополняться новыми материалами</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;align-items:center">
+    <a href="mailto:info@vyatka-heritage.ru" style="display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:14px;font-weight:500;padding:14px 32px;background:#C27E3A;color:#FAF9F4;text-decoration:none;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);min-height:44px">Написать нам</a>
+    <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 0;color:#5C5954">info@vyatka-heritage.ru</span>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      stats1: [
+        { n: '7', label: 'тематических модулей' },
+        { n: '10+', label: 'страниц контента' },
+        { n: 'более 70', label: 'описанных объектов' },
+      ],
+      stats2: [
+        { n: '~150', label: 'памятников археологии' },
+        { n: 'более 100', label: 'памятников природы' },
+        { n: '5', label: 'народов региона' },
+      ],
+      modules: [
+        { title: 'Лица Победы', href: './VictoryFaces.dc.html', desc: 'Живая летопись ратной славы Вятской земли с XIV века до наших дней.' },
+        { title: 'Исторические города', href: './HistoricCities.dc.html', desc: 'Ленты времени семи городов: Кирова, Котельнича, Орлова, Слободского, Яранска, Малмыжа и Уржума.' },
+        { title: 'Памятники археологии', href: './Archeology.dc.html', desc: 'Около 150 памятников от эпохи мезолита до позднего Средневековья.' },
+        { title: 'Этнографическое наследие', href: './Ethnography.dc.html', desc: 'Коллекция предметов быта, костюмов и обрядов народов Вятского края.' },
+        { title: 'Архитектура Кирова', href: './Architecture.dc.html', desc: 'Цифровой архив зданий и памятников областного центра.' },
+        { title: 'Памятники природы', href: './Nature.dc.html', desc: 'Более 100 уникальных природных объектов региона.' },
+        { title: 'Археология Кирова', href: './Archeology.dc.html', desc: 'Раскопки в историческом центре Кирова, открывающие следы средневекового Хлынова.' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

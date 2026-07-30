@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>body { margin:0; background:#FAF9F4; }</style>
+</helmet>
+<div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
+<dc-import name="SiteHeader" active="archeology" hint-size="100%,80px"></dc-import>
+
+<section style="position:relative;height:60vh;min-height:420px;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;margin-top:-80px;padding-top:80px">
+  <div style="position:absolute;inset:0;background-image:url('img/archeology.jpg');background-size:cover;background-position:center;filter:sepia(70%) brightness(0.65) contrast(1.1);z-index:0"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(60,122,140,0.35) 0%, rgba(42,33,24,0.75) 100%);z-index:1"></div>
+  <div style="position:relative;z-index:2;text-align:center;max-width:800px;padding:40px 24px">
+    <p style="font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#E8DFC8;margin-bottom:16px">К 90-летию Кировской области · От мезолита до Средневековья</p>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0 0 16px">Памятники археологии Кировской области</h1>
+    <p style="font-size:clamp(15px,1.4vw,18px);color:#E8DFC8;max-width:600px;margin:0 auto">Около 150 памятников от эпохи мезолита до позднего Средневековья: городища, селища, стоянки, могильники</p>
+  </div>
+</section>
+
+<section style="padding:64px 24px 0;max-width:1200px;margin:0 auto">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px">
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:32px;color:#3C7A8C">~150</strong><span style="font-size:13px;color:#5C5954">памятников на карте</span></div>
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:32px;color:#3C7A8C">8 000+</strong><span style="font-size:13px;color:#5C5954">лет истории региона</span></div>
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:32px;color:#3C7A8C">5</strong><span style="font-size:13px;color:#5C5954">основных эпох</span></div>
+  </div>
+</section>
+
+<section style="padding:0 24px 64px;max-width:1200px;margin:0 auto">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);text-align:center;margin:0 0 16px">Памятники на карте и в каталоге</h2>
+  <p style="text-align:center;font-size:16px;color:#3C7A8C;margin-bottom:24px">Фильтрация по эпохе и типу памятника — доступна в обоих режимах просмотра</p>
+
+  <dc-import name="FilterBar" label="По эпохе" options="{{eraOptions}}" active="{{eraActive}}" on-select="{{setEra}}" hint-size="100%,80px"></dc-import>
+  <dc-import name="FilterBar" label="По типу" options="{{typeOptions}}" active="{{typeActive}}" on-select="{{setType}}" hint-size="100%,80px"></dc-import>
+  <dc-import name="FilterBar" label="Режим отображения" options="{{viewOptions}}" active="{{view}}" on-select="{{setView}}" hint-size="100%,80px"></dc-import>
+
+  <sc-if value="{{isMap}}" hint-placeholder-val="{{true}}">
+    <div style="background:#F5F2EC;border-radius:8px;padding:24px;max-width:900px;margin:0 auto">
+      <svg viewBox="0 0 800 700" style="width:100%;height:auto;display:block">
+        <path d="M 120 80 L 680 60 L 760 200 L 720 380 L 680 500 L 580 620 L 400 660 L 220 640 L 100 500 L 60 320 L 80 160 Z" fill="#E8DFC8" stroke="#C27E3A" stroke-width="1.5" stroke-dasharray="6 3"></path>
+        <path d="M 160 140 Q 240 180 300 240 Q 360 300 400 320 Q 480 380 520 400 Q 600 440 660 420" fill="none" stroke="#3C7A8C" stroke-width="3" opacity="0.5"></path>
+        <sc-for list="{{points}}" as="pt" hint-placeholder-count="0">
+          <a href="./ArcheologySite.dc.html" aria-label="{{pt.name}}" style="{{pt.linkStyle}}">
+            <circle cx="{{pt.x}}" cy="{{pt.y}}" r="5" fill="{{pt.fill}}" stroke="#FAF9F4" stroke-width="2" style-hover="fill:#3C7A8C" style="cursor:pointer;opacity:{{pt.opacity}};transition:opacity 200ms"></circle>
+            <text x="{{pt.tx}}" y="{{pt.ty}}" style="font-family:'Roboto Slab',Georgia,serif;font-size:10px;fill:#2A2118;pointer-events:none;opacity:{{pt.opacity}}">{{pt.name}}</text>
+          </a>
+        </sc-for>
+      </svg>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:16px;font-size:12px;color:#5C5954">
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#C27E3A;border:2px solid #FAF9F4;box-shadow:0 0 0 1px #C27E3A;vertical-align:middle;margin-right:4px"></span>Памятник археологии</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="display:inline-block;width:20px;height:3px;background:#3C7A8C;opacity:0.6;border-radius:2px"></span>Река Вятка</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isCatalog}}" hint-placeholder-val="{{false}}">
+    <div style="text-align:center;font-size:13px;color:#5C5954;margin-bottom:24px">Показано: {{visibleCount}} памятников</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px">
+      <sc-for list="{{sites}}" as="s" hint-placeholder-count="0">
+        <sc-if value="{{s.visible}}" hint-placeholder-val="{{false}}">
+          <a href="./ArcheologySite.dc.html" style="{{cardStyle}}" style-hover="{{cardHoverStyle}}">
+            <div style="width:100%;aspect-ratio:16/9;background-color:#F5F2EC;background-image:url({{s.img}});background-size:cover;background-position:center" role="img" aria-label="{{s.name}}"></div>
+            <div style="padding:16px">
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+                <span style="font-size:11px;padding:2px 10px;border-radius:999px;background:#3C7A8C;color:#FAF9F4">{{s.eraLabel}}</span>
+                <span style="font-size:11px;padding:2px 10px;border-radius:999px;background:#C27E3A;color:#FAF9F4">{{s.typeLabel}}</span>
+              </div>
+              <h3 style="font-size:18px;font-weight:700;margin:0 0 2px;color:#2A2118">{{s.name}}</h3>
+              <div style="font-size:12px;color:#3C7A8C;margin-bottom:4px">{{s.location}}</div>
+              <p style="font-size:13px;color:#2A2118;line-height:1.5">{{s.desc}}</p>
+            </div>
+          </a>
+        </sc-if>
+      </sc-for>
+    </div>
+  </sc-if>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { era: 'all', type: 'all', view: 'map' };
+
+  renderVals() {
+    const pointDefs = [
+      { name: 'Шиханы-1', x: 180, y: 200, era: 'mezolit', type: 'stoyanka' },
+      { name: 'Белая Локша', x: 320, y: 450, era: 'neolit', type: 'stoyanka' },
+      { name: 'Ананьинское городище', x: 280, y: 280, era: 'bronze', type: 'gorodishche' },
+      { name: 'Буйское городище', x: 500, y: 300, era: 'bronze', type: 'gorodishche' },
+      { name: 'Пижемское городище', x: 400, y: 500, era: 'iron', type: 'gorodishche' },
+      { name: 'Шиховское городище', x: 200, y: 350, era: 'iron', type: 'gorodishche' },
+      { name: 'Кировское городище', x: 440, y: 220, era: 'iron', type: 'gorodishche' },
+      { name: 'Хлыновский кремль', x: 380, y: 250, era: 'medieval', type: 'gorodishche' },
+      { name: 'Котельничское городище', x: 250, y: 180, era: 'medieval', type: 'gorodishche' },
+      { name: 'Уржумское селище', x: 580, y: 400, era: 'medieval', type: 'selishche' },
+    ];
+    const points = pointDefs.map(p => {
+      const visible = (this.state.era === 'all' || this.state.era === p.era) && (this.state.type === 'all' || this.state.type === p.type);
+      return { ...p, tx: p.x + 5, ty: p.y - 5, fill: '#C27E3A', opacity: visible ? 1 : 0.2, linkStyle: visible ? '' : 'pointer-events:none' };
+    });
+
+    const eraDefs = [['all', 'Все эпохи'], ['mezolit', 'Мезолит'], ['neolit', 'Неолит'], ['bronze', 'Эпоха бронзы'], ['iron', 'Ранний железный век'], ['medieval', 'Средневековье']];
+    const typeDefs = [['all', 'Все типы'], ['gorodishche', 'Городище'], ['selishche', 'Селище'], ['stoyanka', 'Стоянка'], ['mogilnik', 'Могильник'], ['klad', 'Клад']];
+    const eraOptions = eraDefs.map(([value, label]) => ({ value, label }));
+    const typeOptions = typeDefs.map(([value, label]) => ({ value, label }));
+    const eraLabels = Object.fromEntries(eraDefs);
+    const typeLabels = Object.fromEntries(typeDefs);
+
+    const siteData = [
+      { era: 'mezolit', type: 'stoyanka', name: 'Шиханы-1', location: 'Котельничский район, правый берег р. Вятки', desc: 'Многослойная стоянка эпохи мезолита. Найдены кремнёвые орудия: скребки, резцы, ножи.', img: 'img/nature.jpg' },
+      { era: 'neolit', type: 'stoyanka', name: 'Белая Локша', location: 'Слободской район, озеро Белая Локша', desc: 'Неолитическая стоянка на берегу озера. Характерна керамика с гребенчато-накольчатым орнаментом.', img: 'img/archeology.jpg' },
+      { era: 'bronze', type: 'gorodishche', name: 'Ананьинское городище', location: 'Малмыжский район, р. Вятка', desc: 'Эталонный памятник ананьинской культуры. Найдены бронзовые кельты, наконечники копий, керамика.', img: 'img/archeology.jpg' },
+      { era: 'bronze', type: 'gorodishche', name: 'Буйское городище', location: 'Кирово-Чепецкий район, р. Чепца', desc: 'Укреплённое поселение ананьинской культуры на высоком мысу.', img: 'img/archeology.jpg' },
+      { era: 'iron', type: 'gorodishche', name: 'Шиховское городище', location: 'Оричевский район, р. Вятка', desc: 'Городище ананьинской культуры на высоком мысу с остатками вала и рва.', img: 'img/nature.jpg' },
+      { era: 'iron', type: 'gorodishche', name: 'Пижемское городище', location: 'Советский район, р. Пижма', desc: 'Укреплённое поселение ананьинской культуры на останце коренного берега.', img: 'img/archeology.jpg' },
+      { era: 'medieval', type: 'gorodishche', name: 'Хлыновский кремль', location: 'г. Киров, исторический центр', desc: 'Детинец средневекового Хлынова (XII–XV вв.) с остатками деревянных укреплений.', img: 'img/kremlin.jpeg' },
+      { era: 'medieval', type: 'gorodishche', name: 'Котельничское городище', location: 'г. Котельнич, центральная часть', desc: 'Остатки средневекового города, известного с XII в., с земляным валом до 4 м.', img: 'img/kremlin.jpeg' },
+      { era: 'medieval', type: 'mogilnik', name: 'Вятский некрополь', location: 'г. Киров, район бывшего кремля', desc: 'Средневековый некрополь Хлынова с более чем 50 погребениями.', img: 'img/archeology.jpg' },
+      { era: 'medieval', type: 'klad', name: 'Клад серебряных монет', location: 'Киров, ул. Московская', desc: 'Клад из 136 серебряных монет XVI–XVII вв., обнаруженный в 1968 году.', img: 'img/archeology.jpg' },
+    ];
+    const sites = siteData.map(s => ({
+      ...s, eraLabel: eraLabels[s.era], typeLabel: typeLabels[s.type],
+      visible: (this.state.era === 'all' || this.state.era === s.era) && (this.state.type === 'all' || this.state.type === s.type)
+    }));
+    const visibleCount = sites.filter(s => s.visible).length;
+
+    return {
+      points, eraOptions, typeOptions, eraActive: this.state.era, typeActive: this.state.type,
+      setEra: (v) => this.setState({ era: v }), setType: (v) => this.setState({ type: v }),
+      viewOptions: [{ value: 'map', label: 'Карта' }, { value: 'catalog', label: 'Каталог' }],
+      view: this.state.view, isMap: this.state.view === 'map', isCatalog: this.state.view === 'catalog',
+      setView: (v) => this.setState({ view: v }),
+      sites, visibleCount,
+      cardStyle: 'display:block;background:#FFFFFF;border:1.5px dashed #D4C9AA;border-radius:4px;overflow:hidden;text-decoration:none;color:inherit;transition:transform 300ms ease, box-shadow 300ms ease',
+      cardHoverStyle: 'transform:translateY(-4px);box-shadow:0 8px 24px rgba(42,33,24,0.12)',
+    };
+  }
+}
+</script>
+</body>
+</html>

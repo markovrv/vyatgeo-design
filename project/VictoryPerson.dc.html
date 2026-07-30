@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>body { margin:0; background:#FAF9F4; }</style>
+</helmet>
+<div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
+<dc-import name="SiteHeader" active="victory" solid="true" hint-size="100%,80px"></dc-import>
+
+<div style="height:80px"></div>
+<div style="max-width:1000px;margin:0 auto;padding:16px 24px 0">
+  <nav style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:#5C5954">
+    <a href="./Index.dc.html" style="color:#C27E3A;text-decoration:none">Главная</a><span>/</span>
+    <a href="./VictoryFaces.dc.html" style="color:#C27E3A;text-decoration:none">Лица Победы</a><span>/</span>
+    <span style="color:#2A2118">311-я стрелковая дивизия</span>
+  </nav>
+</div>
+
+<section style="max-width:1000px;margin:0 auto;padding:24px 24px 0">
+  <div style="display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start">
+    <div style="border:1.5px dashed #D4C9AA;border-radius:4px;overflow:hidden;background:#FFFFFF">
+      <img src="img/victory-hero.jpg" alt="Бойцы 311-й стрелковой дивизии" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block"></img>
+    </div>
+    <div>
+      <p style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#3C7A8C;margin-bottom:8px">Великая Отечественная война · 1941–1945</p>
+      <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(28px,3.5vw,42px);margin:0 0 16px">311-я стрелковая дивизия</h1>
+      <p style="font-size:16px;line-height:1.75;margin-bottom:16px">Сформированная в июле 1941 года в Кирове по мобилизационному плану, дивизия объединила уроженцев Кировской области — рабочих, колхозников, студентов вятских вузов. Прошла боевой путь от обороны Ленинграда до штурма Кёнигсберга в Восточной Пруссии.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <span style="font-size:11px;padding:4px 12px;border-radius:999px;background:#3C7A8C;color:#FAF9F4">Стрелковая дивизия</span>
+        <span style="font-size:11px;padding:4px 12px;border-radius:999px;background:#C27E3A;color:#FAF9F4">Сформирована в Кирове</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:1000px;margin:0 auto;padding:48px 24px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,28px);margin:0 0 16px">Биография формирования</h2>
+  <p style="line-height:1.8;margin-bottom:1em">Дивизия была сформирована в первые недели войны на территории Кировской области. В её ряды вошли около 11 тысяч человек — призывники Кирова, Слободского, Котельнича и окружающих районов. Значительную часть личного состава составляли выпускники вятских педагогических и индустриальных техникумов.</p>
+  <p style="line-height:1.8;margin-bottom:1em">После краткой подготовки в учебных лагерях под Кировом дивизия была направлена на Северо-Западный фронт, где приняла первый бой в августе 1941 года на подступах к Новгороду.</p>
+
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,28px);margin:32px 0 16px">Боевой путь</h2>
+  <div style="position:relative;padding-left:24px;border-left:2px solid #C27E3A">
+    <sc-for list="{{path}}" as="p" hint-placeholder-count="5">
+      <div style="margin-bottom:20px;position:relative">
+        <div style="position:absolute;left:-30px;top:4px;width:12px;height:12px;background:#C27E3A;border-radius:50%;border:2px solid #FAF9F4"></div>
+        <strong style="font-family:'Playfair Display',Georgia,serif;color:#3C7A8C">{{p.date}}</strong>
+        <p style="margin-top:4px;line-height:1.6">{{p.text}}</p>
+      </div>
+    </sc-for>
+  </div>
+
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,28px);margin:32px 0 16px">Наградные листы</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">
+    <sc-for list="{{awards}}" as="a" hint-placeholder-count="3">
+      <div style="border:1.5px dashed #D4C9AA;border-radius:4px;padding:16px;background:#FFFFFF">
+        <div style="font-size:24px;margin-bottom:8px">{{a.icon}}</div>
+        <h4 style="font-size:15px;font-weight:700;margin:0 0 4px">{{a.title}}</h4>
+        <p style="font-size:13px;color:#5C5954;line-height:1.5">{{a.desc}}</p>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="border-top:1.5px dashed #D4C9AA;padding-top:32px;margin-top:48px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px">
+    <a href="./VictoryFaces.dc.html" style="{{btnStyle}}" style-hover="{{btnHoverStyle}}">← К списку Лиц Победы</a>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      path: [
+        { date: 'Июль 1941', text: 'Формирование дивизии в Кирове по мобилизационному плану Кировской области.' },
+        { date: 'Август 1941', text: 'Первые бои на Северо-Западном фронте под Новгородом.' },
+        { date: '1941–1943', text: 'Оборонительные бои на Волховском фронте, участие в прорыве блокады Ленинграда.' },
+        { date: '1944', text: 'Наступательные операции в Прибалтике, освобождение Псковской области.' },
+        { date: '1945', text: 'Штурм Кёнигсберга в составе 3-го Белорусского фронта. Завершение боевого пути в Восточной Пруссии.' },
+      ],
+      awards: [
+        { icon: '🎖️', title: 'Орден Красного Знамени', desc: 'Дивизия удостоена ордена за прорыв блокады Ленинграда в 1943 году.' },
+        { icon: '⭐', title: 'Звание Героя Советского Союза', desc: '7 бойцов дивизии удостоены высшей награды за подвиги на фронте.' },
+        { icon: '🏅', title: 'Медаль «За оборону Ленинграда»', desc: 'Награждены все военнослужащие, участвовавшие в обороне города.' },
+      ],
+      btnStyle: "display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:13px;font-weight:500;padding:10px 24px;border:none;cursor:pointer;background:#C27E3A;color:#FAF9F4;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);text-decoration:none;min-height:44px",
+      btnHoverStyle: 'background:#3C7A8C',
+    };
+  }
+}
+</script>
+</body>
+</html>

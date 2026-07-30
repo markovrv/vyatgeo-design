@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+</helmet>
+<header style="{{headerStyle}}">
+  <div style="display:flex;align-items:center;justify-content:space-between;width:100%;max-width:1200px;margin:0 auto">
+    <a href="{{homeHref}}" style="display:flex;align-items:center;gap:12px;text-decoration:none">
+      <svg viewBox="0 0 40 40" width="40" height="40" fill="none" style="{{logoIconStyle}}">
+        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"></circle>
+        <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none"></path>
+        <circle cx="20" cy="12" r="4" fill="currentColor"></circle>
+        <circle cx="20" cy="12" r="1.5" fill="{{bgColor}}"></circle>
+        <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6"></circle>
+        <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6"></circle>
+      </svg>
+      <span style="{{logoTextStyle}}">Наследие Вятки</span>
+    </a>
+    <sc-if value="{{!isMobile}}" hint-placeholder-val="{{true}}">
+      <nav style="display:flex;gap:24px">
+        <sc-for list="{{navItems}}" as="item" hint-placeholder-count="8">
+          <a href="{{item.href}}" style="{{item.style}}">{{item.label}}</a>
+        </sc-for>
+      </nav>
+    </sc-if>
+    <sc-if value="{{isMobile}}" hint-placeholder-val="{{false}}">
+      <button aria-label="Открыть меню" onClick="{{openMenu}}" style="{{burgerStyle}}">
+        <span style="{{burgerLineStyle}}"></span>
+        <span style="{{burgerLineStyle}}"></span>
+        <span style="{{burgerLineStyle}}"></span>
+      </button>
+    </sc-if>
+  </div>
+</header>
+<div style="{{overlayStyle}}" onClick="{{closeMenu}}"></div>
+<nav style="{{sidebarStyle}}">
+  <button aria-label="Закрыть" onClick="{{closeMenu}}" style="align-self:flex-end;background:transparent;border:none;font-size:24px;color:#C27E3A;cursor:pointer;padding:8px 12px;min-width:44px;min-height:44px">✕</button>
+  <sc-for list="{{navItems}}" as="item" hint-placeholder-count="8">
+    <a href="{{item.href}}" onClick="{{closeMenu}}" style="{{item.mobileStyle}}">{{item.label}}</a>
+  </sc-for>
+</nav>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:80},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;home&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;victory&quot;,&quot;ethnography&quot;,&quot;cities&quot;,&quot;nature&quot;,&quot;archeology&quot;,&quot;architecture&quot;,&quot;about&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;solid&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { scrolled: false, isMobile: (typeof window !== 'undefined' && window.innerWidth < 900), menuOpen: false };
+
+  componentDidMount() {
+    this.onScroll = () => this.setState({ scrolled: window.scrollY > 80 });
+    this.onResize = () => this.setState({ isMobile: window.innerWidth < 900 });
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onResize);
+    this.onScroll();
+    this.onResize();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onResize);
+  }
+
+  renderVals() {
+    const ink = '#2A2118', bg = '#FAF9F4', oak = '#E8DFC8', ochre = '#C27E3A';
+    const scrolled = this.props.solid || this.state.scrolled;
+    const active = this.props.active || 'home';
+
+    const headerStyle = [
+      'position:fixed', 'top:0', 'left:0', 'width:100%', 'z-index:1000', 'height:80px',
+      'display:flex', 'align-items:center', 'padding:0 24px',
+      'transition:background 300ms ease, border-color 300ms ease, box-shadow 300ms ease',
+      scrolled ? `background:${bg}` : 'background:rgba(42,33,24,0.28)',
+      scrolled ? `border-bottom:1px solid ${ochre}` : 'border-bottom:1px solid transparent',
+      scrolled ? 'box-shadow:0 2px 20px rgba(42,33,24,0.15)' : (this.props.noBackdrop ? '' : 'backdrop-filter:blur(8px)')
+    ].filter(Boolean).join(';');
+
+    const textColor = scrolled ? ink : oak;
+
+    const navList = [
+      ['home', 'Главная', './Index.dc.html'],
+      ['victory', 'Лица Победы', './VictoryFaces.dc.html'],
+      ['ethnography', 'Этнография', './Ethnography.dc.html'],
+      ['cities', 'Города', './HistoricCities.dc.html'],
+      ['nature', 'Природа', './Nature.dc.html'],
+      ['archeology', 'Археология', './Archeology.dc.html'],
+      ['architecture', 'Архитектура', './Architecture.dc.html'],
+      ['about', 'О проекте', './About.dc.html'],
+    ];
+
+    const navItems = navList.map(([key, label, href]) => {
+      const isActive = key === active;
+      return {
+        href, label,
+        style: `font-family:'Roboto Slab',Georgia,serif;font-size:14px;color:${isActive ? ochre : textColor};padding-bottom:4px;border-bottom:2px solid ${isActive ? ochre : 'transparent'};text-decoration:none;white-space:nowrap`,
+        mobileStyle: `font-family:'Roboto Slab',Georgia,serif;font-size:16px;color:${isActive ? ochre : ink};padding:8px 0;border-bottom:1px solid ${oak};text-decoration:none;display:block`
+      };
+    });
+
+    return {
+      headerStyle,
+      homeHref: './Index.dc.html',
+      logoIconStyle: `width:40px;height:40px;fill:${ochre};color:${ochre}`,
+      bgColor: bg,
+      logoTextStyle: `font-family:'Playfair Display',Georgia,serif;font-size:20px;color:${textColor}`,
+      navItems,
+      isMobile: this.state.isMobile,
+      burgerStyle: 'display:flex;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:transparent;border:none;cursor:pointer;padding:4px',
+      burgerLineStyle: `display:block;width:100%;height:2px;background:${ochre};border-radius:2px`,
+      openMenu: () => this.setState({ menuOpen: true }),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      overlayStyle: `position:fixed;inset:0;background:rgba(42,33,24,0.4);z-index:1999;opacity:${this.state.menuOpen ? 1 : 0};visibility:${this.state.menuOpen ? 'visible' : 'hidden'};transition:opacity 300ms ease, visibility 300ms ease`,
+      sidebarStyle: `position:fixed;top:0;right:0;width:min(280px,80vw);height:100vh;background:${bg};z-index:2000;transform:translateX(${this.state.menuOpen ? '0' : '100%'});transition:transform 300ms cubic-bezier(0.16,1,0.3,1);padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:-4px 0 20px rgba(42,33,24,0.1);overflow-y:auto`,
+    };
+  }
+}
+</script>
+</body>
+</html>
