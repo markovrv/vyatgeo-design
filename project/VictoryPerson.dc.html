@@ -11,8 +11,8 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
-<style>body { margin:0; background:#FAF9F4; }</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>:focus-visible{outline:2px solid #3C7A8C;outline-offset:2px}body{margin:0;background:#FAF9F4}</style>
 </helmet>
 <div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
 <dc-import name="SiteHeader" active="victory" solid="true" hint-size="100%,80px"></dc-import>
@@ -29,15 +29,15 @@
 <section style="max-width:1000px;margin:0 auto;padding:24px 24px 0">
   <div style="display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start">
     <div style="border:1.5px dashed #D4C9AA;border-radius:4px;overflow:hidden;background:#FFFFFF">
-      <img src="img/victory-hero.jpg" alt="Бойцы 311-й стрелковой дивизии" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block"></img>
+      <img src="img/victory-hero.jpg" alt="Бойцы 311-й стрелковой дивизии" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:sepia(20%)"></img>
     </div>
     <div>
       <p style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#3C7A8C;margin-bottom:8px">Великая Отечественная война · 1941–1945</p>
       <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(28px,3.5vw,42px);margin:0 0 16px">311-я стрелковая дивизия</h1>
       <p style="font-size:16px;line-height:1.75;margin-bottom:16px">Сформированная в июле 1941 года в Кирове по мобилизационному плану, дивизия объединила уроженцев Кировской области — рабочих, колхозников, студентов вятских вузов. Прошла боевой путь от обороны Ленинграда до штурма Кёнигсберга в Восточной Пруссии.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <span style="font-size:11px;padding:4px 12px;border-radius:999px;background:#3C7A8C;color:#FAF9F4">Стрелковая дивизия</span>
-        <span style="font-size:11px;padding:4px 12px;border-radius:999px;background:#C27E3A;color:#FAF9F4">Сформирована в Кирове</span>
+        <span style="font-size:11px;padding:2px 10px;border-radius:999px;background:#3C7A8C;color:#FAF9F4">Стрелковая дивизия</span>
+        <span style="font-size:11px;padding:2px 10px;border-radius:999px;background:#C27E3A;color:#FAF9F4">Сформирована в Кирове</span>
       </div>
     </div>
   </div>
@@ -52,7 +52,7 @@
   <div style="position:relative;padding-left:24px;border-left:2px solid #C27E3A">
     <sc-for list="{{path}}" as="p" hint-placeholder-count="5">
       <div style="margin-bottom:20px;position:relative">
-        <div style="position:absolute;left:-30px;top:4px;width:12px;height:12px;background:#C27E3A;border-radius:50%;border:2px solid #FAF9F4"></div>
+        <div style="position:absolute;left:-30px;top:4px;width:16px;height:16px;background:#C27E3A;border-radius:50%;border:3px solid #FAF9F4;box-shadow:0 0 0 2px #C27E3A"></div>
         <strong style="font-family:'Playfair Display',Georgia,serif;color:#3C7A8C">{{p.date}}</strong>
         <p style="margin-top:4px;line-height:1.6">{{p.text}}</p>
       </div>

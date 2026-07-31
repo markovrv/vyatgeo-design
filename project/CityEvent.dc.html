@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&amp;family=Roboto+Slab:wght@400;500;700&amp;display=swap" rel="stylesheet"></link>
+<style>:focus-visible{outline:2px solid #3C7A8C;outline-offset:2px}body{margin:0;background:#FAF9F4}
+@media (max-width:767px){.ctln{flex-direction:column;align-items:flex-start;gap:24px}.ctln-line{display:none}.ctln-dot{width:24px;height:24px;position:relative;top:auto;transform:none;flex-shrink:0}.ctln-item{display:flex;gap:16px;align-items:flex-start}.ctln-year{position:relative;top:auto;left:auto;transform:none;white-space:normal}}</style>
+</helmet>
+<div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
+<dc-import name="SiteHeader" active="cities" solid="true" hint-size="100%,80px"></dc-import>
+
+<div style="height:80px"></div>
+<div style="max-width:1000px;margin:0 auto;padding:16px 24px 0">
+  <nav style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:#5C5954">
+    <a href="./Index.dc.html" style="color:#C27E3A;text-decoration:none">Все разделы</a><span>/</span>
+    <a href="./HistoricCities.dc.html" style="color:#C27E3A;text-decoration:none">Исторические города</a><span>/</span>
+    <a href="./CityTimeline.dc.html" style="color:#C27E3A;text-decoration:none">Киров</a><span>/</span>
+    <span style="color:#2A2118">{{evt.year}} г.</span>
+  </nav>
+</div>
+
+<section style="max-width:1000px;margin:0 auto;padding:24px 24px 0">
+  <div style="border-radius:4px;overflow:hidden;border:1.5px dashed #D4C9AA;margin-bottom:24px">
+    <div style="width:100%;aspect-ratio:4/3;background-color:#F5F2EC;background-image:url({{evt.img}});background-size:cover;background-position:center;filter:sepia(20%)" role="img" aria-label="{{evt.caption}}"></div>
+  </div>
+  <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(28px,3.5vw,42px);margin:0 0 4px">Событие {{evt.year}} года</h1>
+  <p style="font-size:14px;color:#3C7A8C;margin-bottom:24px">{{evt.caption}}</p>
+</section>
+
+<section style="max-width:1000px;margin:0 auto;padding:0 24px 48px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:22px;margin:0 0 12px">Исторический контекст</h2>
+  <div style="line-height:1.75;margin-bottom:1em">
+    <p>{{evt.fullText}}</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px">
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:24px;color:#3C7A8C">{{evt.year}}</strong><span style="font-size:13px;color:#5C5954">год события</span></div>
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:24px;color:#3C7A8C">{{evt.era}}</strong><span style="font-size:13px;color:#5C5954">эпоха</span></div>
+    <div style="text-align:center;padding:16px;border:1.5px dashed #D4C9AA;border-radius:4px;background:#FFFFFF"><strong style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:24px;color:#3C7A8C">{{evt.location}}</strong><span style="font-size:13px;color:#5C5954">место</span></div>
+  </div>
+</section>
+
+<section style="padding:24px;max-width:1000px;margin:0 auto">
+  <div style="border-top:1.5px dashed #D4C9AA;padding-top:32px">
+    <a href="./CityTimeline.dc.html" style="display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:13px;font-weight:700;padding:10px 24px;background:#C27E3A;color:#FFFFFF;text-decoration:none;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);min-height:44px;transition:background 300ms,transform 150ms;letter-spacing:0.03em" onMouseOver="this.style.background='#3C7A8C';this.style.transform='translateY(-1px)'" onMouseOut="this.style.background='#C27E3A';this.style.transform='translateY(0)'">← К ленте времени Кирова</a>
+  </div>
+</section>
+
+<section style="background:#F5F2EC;padding:48px 24px 64px">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,28px);text-align:center;margin:0 0 8px">События в истории Кирова</h2>
+  <p style="text-align:center;font-size:14px;color:#5C5954;margin-bottom:40px">Навигация по ленте времени — выберите событие</p>
+  <div style="max-width:600px;margin:0 auto">
+    <div class="ctln" style="position:relative;display:flex;justify-content:space-between;padding:48px 0 0">
+      <div class="ctln-line" style="position:absolute;left:0;right:0;top:48px;height:2px;background:#C27E3A"></div>
+      <sc-for list="{{nearby}}" as="n" hint-placeholder-count="5">
+        <a href="./CityEvent.dc.html" class="ctln-item" style="position:relative;display:flex;flex-direction:column;align-items:center;flex:1;text-align:center;text-decoration:none">
+          <div class="ctln-dot" style="position:absolute;top:0;transform:translateY(-50%);width:{{n.dotSize}};height:{{n.dotSize}};background:{{n.dotBg}};border-radius:50%;border:{{n.dotBorder}};box-shadow:{{n.dotShadow}};touch-action:manipulation;flex-shrink:0;transition:transform 200ms" onmouseover="this.style.transform='translateY(-50%) scale(1.25)'" onmouseout="this.style.transform='translateY(-50%) scale(1)'"></div>
+          <span class="ctln-year" style="position:absolute;top:-32px;left:50%;transform:translateX(-50%);font-family:'Playfair Display',Georgia,serif;font-weight:{{n.yrWeight}};font-size:{{n.yrSize}};color:{{n.yrColor}};white-space:nowrap">{{n.year}}</span>
+          <span style="font-size:12px;color:{{n.labelColor}};max-width:80px;line-height:1.3;margin-top:20px">{{n.label}}</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:center;gap:16px;margin-top:40px">
+    <a href="./CityEvent.dc.html" style="display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:13px;font-weight:700;padding:10px 24px;background:#C27E3A;color:#FFFFFF;text-decoration:none;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);min-height:44px;transition:background 300ms,transform 150ms;letter-spacing:0.03em" onMouseOver="this.style.background='#3C7A8C';this.style.transform='translateY(-1px)'" onMouseOut="this.style.background='#C27E3A';this.style.transform='translateY(0)'">← Ранее</a>
+    <a href="./CityEvent.dc.html" style="display:inline-flex;align-items:center;justify-content:center;font-family:'Roboto Slab',Georgia,serif;font-size:13px;font-weight:700;padding:10px 24px;background:#C27E3A;color:#FFFFFF;text-decoration:none;clip-path:polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);min-height:44px;transition:background 300ms,transform 150ms;letter-spacing:0.03em" onMouseOver="this.style.background='#3C7A8C';this.style.transform='translateY(-1px)'" onMouseOut="this.style.background='#C27E3A';this.style.transform='translateY(0)'">Позднее →</a>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      nearby: [
+        { year: '1489', label: 'Присоединение к Москве', dotBg: '#C27E3A', dotSize: '16px', dotBorder: '3px solid #F5F2EC', dotShadow: '0 0 0 2px #C27E3A', yrWeight: '700', yrSize: '20px', yrColor: '#C27E3A', labelColor: '#5C5954' },
+        { year: '1580', label: 'Трифонов монастырь', dotBg: '#C27E3A', dotSize: '18px', dotBorder: '3px solid #F5F2EC', dotShadow: '0 0 0 2px #C27E3A', yrWeight: '700', yrSize: '22px', yrColor: '#C27E3A', labelColor: '#C27E3A' },
+        { year: '1780', label: 'Переименован в Вятку', dotBg: '#C27E3A', dotSize: '16px', dotBorder: '3px solid #F5F2EC', dotShadow: '0 0 0 2px #C27E3A', yrWeight: '700', yrSize: '20px', yrColor: '#C27E3A', labelColor: '#5C5954' },
+        { year: '1796', label: 'Вятская губерния', dotBg: '#C27E3A', dotSize: '16px', dotBorder: '3px solid #F5F2EC', dotShadow: '0 0 0 2px #C27E3A', yrWeight: '700', yrSize: '20px', yrColor: '#C27E3A', labelColor: '#5C5954' },
+        { year: '1858', label: 'Публичная библиотека', dotBg: '#3C7A8C', dotSize: '16px', dotBorder: '3px solid #F5F2EC', dotShadow: '0 0 0 2px #3C7A8C', yrWeight: '700', yrSize: '20px', yrColor: '#3C7A8C', labelColor: '#5C5954' },
+      ],
+      evt: {
+        year: '1580',
+        img: 'img/kremlin.jpeg',
+        caption: 'Монах Трифон Вятский основывает Успенский монастырь',
+        fullText: 'В 1580 году преподобный Трифон Вятский основал на берегу реки Вятки мужской Успенский монастырь — первую каменную обитель Вятской земли. Монастырь быстро стал духовным и культурным центром всего края, вокруг него формировалась городская застройка Хлынова. Трифон лично руководил строительством первого каменного Успенского собора, заложив традицию каменного зодчества на Вятке. Монастырь пережил Смутное время, пожары и перестройки, но сохранил своё значение до наших дней как главный архитектурный ансамбль города.',
+        era: 'Средневековье',
+        location: 'г. Киров, ул. Горбачева, 4',
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

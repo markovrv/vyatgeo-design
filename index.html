@@ -4,84 +4,14 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Наследие Вятки — Историко-культурное наследие Кировской области</title>
+<meta http-equiv="refresh" content="0; url=project/Index.dc.html" />
 <style>
-  *, *::before, *::after { box-sizing: border-box; }
-  body { margin: 0; background: #2A2118; }
-  #app-frame {
-    width: 100%; height: 100vh; border: none; display: block;
-    background: #FAF9F4;
-  }
+  body { margin: 0; background: #2A2118; display: flex; align-items: center; justify-content: center; height: 100vh; color: #E8DFC8; font-family: 'Roboto Slab', Georgia, serif; font-size: 14px; }
+  a { color: #C27E3A; }
 </style>
 </head>
 <body>
-
-<iframe id="app-frame" src="project/Index.dc.html" title="Наследие Вятки"></iframe>
-
-<script>
-(function () {
-  'use strict';
-
-  var iframe = document.getElementById('app-frame');
-  var basePath = 'project/';
-
-  // Хеш-роутинг: #VictoryFaces → project/VictoryFaces.dc.html
-  function hashToPath(hash) {
-    if (!hash || hash === '#/' || hash === '#Index') return 'Index.dc.html';
-    return hash.replace('#', '') + '.dc.html';
-  }
-
-  function pathToHash(path) {
-    var name = path.replace(/\.dc\.html$/, '').replace(/^project\//, '');
-    return '#' + name;
-  }
-
-  // При загрузке — читаем хеш
-  var initialHash = window.location.hash;
-  if (initialHash && initialHash !== '#') {
-    var page = hashToPath(initialHash);
-    iframe.src = basePath + page;
-  }
-
-  // Отслеживаем навигацию внутри iframe
-  var lastHash = '';
-  function syncHash() {
-    try {
-      var frameLoc = iframe.contentWindow.location;
-      var framePath = frameLoc.pathname;
-      // путь может быть /project/Index.dc.html или /Index.dc.html
-      var newHash = pathToHash(framePath);
-      if (newHash !== lastHash) {
-        lastHash = newHash;
-        // Обновляем хеш родительского окна без перезагрузки
-        if (window.location.hash !== newHash) {
-          history.replaceState(null, '', newHash);
-        }
-      }
-    } catch (e) {
-      // cross-origin — игнорируем
-    }
-  }
-
-  iframe.addEventListener('load', function () {
-    syncHash();
-    // Добавляем периодическую проверку (для навигации внутри iframe)
-    setTimeout(syncHash, 200);
-    setTimeout(syncHash, 600);
-    setTimeout(syncHash, 1200);
-  });
-
-  // Слушаем изменения хеша извне (стрелки браузера)
-  window.addEventListener('hashchange', function () {
-    var hash = window.location.hash;
-    var page = hashToPath(hash);
-    var target = basePath + page;
-    if (iframe.src !== target && !iframe.src.endsWith(page)) {
-      iframe.src = target;
-    }
-  });
-
-})();
-</script>
-
+  <p>Перенаправление на <a href="project/Index.dc.html">главную страницу проекта</a>…</p>
+  <script>location.href = 'project/Index.dc.html';</script>
 </body>
 </html>

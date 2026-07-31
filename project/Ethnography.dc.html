@@ -11,19 +11,19 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
-<style>body { margin:0; background:#FAF9F4; }</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
+<style>:focus-visible{outline:2px solid #3C7A8C;outline-offset:2px}body{margin:0;background:#FAF9F4}</style>
 </helmet>
 <div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
 <dc-import name="SiteHeader" active="ethnography" hint-size="100%,80px"></dc-import>
 
 <section style="position:relative;height:60vh;min-height:560px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-top:-80px;padding-top:80px">
-  <div style="position:absolute;inset:0;background-image:url('img/ethnography.jpg');background-size:cover;background-position:center;filter:sepia(50%) brightness(0.7) contrast(0.9);z-index:0"></div>
-  <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(60,122,140,0.35) 0%, rgba(42,33,24,0.75) 100%);z-index:1"></div>
+  <div style="position:absolute;inset:0;background-image:url('img/ethnography.jpg');background-size:cover;background-position:center;filter:sepia(50%) brightness(0.8);z-index:0"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(60,122,140,0.35) 0%, rgba(42,33,24,0.25) 100%);z-index:1"></div>
   <div style="position:relative;z-index:2;text-align:center;max-width:800px;padding:40px 24px">
-    <p style="font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#E8DFC8;margin-bottom:16px">К 90-летию Кировской области · Народы Вятской земли</p>
-    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0 0 16px">Этнографическое наследие</h1>
-    <p style="font-size:clamp(15px,1.4vw,18px);color:#E8DFC8;max-width:600px;margin:0 auto">Уникальная коллекция предметов быта, костюмов, орудий труда и обрядов народов, веками населяющих Вятский край: русских, татар, удмуртов, марийцев и коми</p>
+    <p style="font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#E8DFC8;margin-bottom:16px;text-shadow:0 2px 8px rgba(0,0,0,0.6)">К 90-летию Кировской области · Народы Вятской земли</p>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0 0 16px;text-shadow:0 2px 12px rgba(0,0,0,0.45)">Этнографическое наследие</h1>
+    <p style="font-size:clamp(15px,1.4vw,18px);color:#E8DFC8;max-width:600px;margin:0 auto;text-shadow:0 2px 10px rgba(0,0,0,0.5)">Уникальная коллекция предметов быта, костюмов, орудий труда и обрядов народов, веками населяющих Вятский край: русских, татар, удмуртов, марийцев и коми</p>
   </div>
 </section>
 
@@ -44,7 +44,7 @@
         <a href="./EthnographyItem.dc.html" style="{{cardStyle}}" style-hover="{{cardHoverStyle}}">
           <div style="width:100%;aspect-ratio:4/3;background-color:#F5F2EC;background-image:url({{it.img}});background-size:cover;background-position:center" role="img" aria-label="{{it.name}}">
           </div>
-          <div style="padding:16px">
+          <div style="padding:24px">
             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
               <span style="font-size:11px;padding:2px 10px;border-radius:999px;background:#3C7A8C;color:#FAF9F4">{{it.peopleLabel}}</span>
               <span style="font-size:11px;padding:2px 10px;border-radius:999px;background:#C27E3A;color:#FAF9F4">{{it.typeLabel}}</span>
