@@ -17,7 +17,28 @@
 @keyframes gentlePulse { 0%,100% { transform:translateX(-50%) translateY(0); } 50% { transform:translateX(-50%) translateY(6px); } }
 :focus-visible { outline:2px solid #3C7A8C; outline-offset:2px; }
 body { margin:0; background:#FAF9F4; }
-@media (max-width:767px) { .tl { flex-direction:column; align-items:flex-start; gap:24px; } .tl-line { display:none; } .tl-dot { width:24px; height:24px; position:relative; top:auto; transform:none; flex-shrink:0; } .tl-item { display:flex; gap:16px; align-items:flex-start; } .tl-year { position:relative; top:auto; left:auto; transform:none; white-space:normal; } .tl-text { margin-top:0; } }
+.craft-card { display:flex; gap:40px; align-items:center; background:#FFFFFF; border:1.5px dashed #D4C9AA; border-radius:4px; overflow:hidden; }
+.craft-card-img { width:45%; flex-shrink:0; aspect-ratio:4/3; background-color:#F5F2EC; background-size:cover; background-position:center; filter:sepia(20%); }
+.craft-card-body { padding:24px 24px 24px 0; flex:1; }
+@media (max-width:499px) {
+  .craft-card { flex-direction:column; gap:0; }
+  .craft-card-img { width:100%; aspect-ratio:16/9; }
+  .craft-card-body { padding:24px; text-align:center; }
+}
+.tl { position:relative; display:flex; justify-content:space-between; padding:64px 0 0; margin-top:24px; }
+.tl-line { position:absolute; left:0; right:0; top:64px; height:2px; background:#C27E3A; }
+.tl-item { position:relative; display:flex; flex-direction:column; align-items:center; flex:1; text-align:center; }
+.tl-dot { position:absolute; top:0; transform:translateY(-50%); width:16px; height:16px; background:#C27E3A; border-radius:50%; border:3px solid #F5F2EC; box-shadow:0 0 0 2px #C27E3A; touch-action:manipulation; }
+.tl-year { position:absolute; top:-40px; left:50%; transform:translateX(-50%); font-family:'Playfair Display',Georgia,serif; font-weight:700; font-size:20px; color:#8B5E2B; white-space:nowrap; }
+.tl-text { font-size:13px; color:#5C5954; max-width:120px; line-height:1.4; margin-top:24px; }
+@media (max-width:769px) {
+  .tl { flex-direction:column; align-items:center; gap:32px; padding:32px 0 0; }
+  .tl-line { left:50%; right:auto; top:16px; bottom:24px; width:2px; height:auto; }
+  .tl-item { flex-direction:row; align-items:center; width:100%; max-width:480px; text-align:left; flex:auto; }
+  .tl-dot { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:12px; height:12px; }
+  .tl-year { position:relative; top:auto; left:auto; transform:none; width:50%; text-align:right; padding-right:28px; white-space:normal; font-size:18px; }
+  .tl-text { margin-top:0; max-width:none; width:50%; padding-left:28px; }
+}
 </style>
 </helmet>
 <div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
@@ -71,16 +92,16 @@ body { margin:0; background:#FAF9F4; }
     <p style="margin-bottom:1em;line-height:1.75">В 1780 году Екатерина II учредила Вятское наместничество, а город получил регулярный план и каменную застройку в стиле провинциального классицизма. Купеческие особняки, приходские церкви, земские здания — всё это формировало неповторимый облик губернского города.</p>
     <p style="margin-bottom:1em;line-height:1.75">5 декабря 1936 года была образована Кировская область. В 2026 году мы отмечаем 90-летие региона — повод вспомнить и сохранить всё, чем богата вятская земля.</p>
   </div>
-  <div class="tl" style="position:relative;display:flex;justify-content:space-between;padding:64px 0 0;margin-top:24px">
-    <div class="tl-line" style="position:absolute;left:0;right:0;top:64px;height:2px;background:#C27E3A"></div>
-    <sc-for list="{{timelineItems}}" as="t" hint-placeholder-count="5">
-      <div class="tl-item" style="position:relative;display:flex;flex-direction:column;align-items:center;flex:1;text-align:center">
-        <div class="tl-dot" style="position:absolute;top:0;transform:translateY(-50%);width:16px;height:16px;background:#C27E3A;border-radius:50%;border:3px solid #F5F2EC;box-shadow:0 0 0 2px #C27E3A;touch-action:manipulation"></div>
-        <span class="tl-year" style="position:absolute;top:-40px;left:50%;transform:translateX(-50%);font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:20px;color:#8B5E2B;white-space:nowrap">{{t.year}}</span>
-        <span class="tl-text" style="font-size:13px;color:#5C5954;max-width:120px;line-height:1.4;margin-top:24px">{{t.text}}</span>
-      </div>
-    </sc-for>
-  </div>
+   <div class="tl">
+     <div class="tl-line"></div>
+     <sc-for list="{{timelineItems}}" as="t" hint-placeholder-count="5">
+       <div class="tl-item">
+         <div class="tl-dot"></div>
+         <span class="tl-year">{{t.year}}</span>
+         <span class="tl-text">{{t.text}}</span>
+       </div>
+     </sc-for>
+   </div>
 </section>
 
 <section style="{{fadeStyle(3)}};background:#FAF9F4;padding:96px 24px;position:relative">
@@ -91,9 +112,9 @@ body { margin:0; background:#FAF9F4; }
   <div style="position:relative;max-width:1200px;margin:0 auto">
     <sc-for list="{{crafts}}" as="craft" hint-placeholder-count="3">
       <sc-if value="{{craft.active}}" hint-placeholder-val="{{false}}">
-        <div style="display:flex;gap:40px;align-items:center;background:#FFFFFF;border:1.5px dashed #D4C9AA;border-radius:4px;overflow:hidden">
-          <div style="width:45%;flex-shrink:0;aspect-ratio:4/3;background-color:#F5F2EC;background-image:url({{craft.img}});background-size:cover;background-position:center;filter:sepia(20%)" role="img" aria-label="{{craft.title}}"></div>
-          <div style="padding:24px 24px 24px 0;flex:1">
+        <div class="craft-card">
+          <div class="craft-card-img" style="background-image:url({{craft.img}})" role="img" aria-label="{{craft.title}}"></div>
+          <div class="craft-card-body">
             <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(20px,2vw,26px);margin:0 0 16px">{{craft.title}}</h3>
             <p style="font-size:14px;color:#5C5954;line-height:1.7;margin-bottom:16px">{{craft.desc}}</p>
             <a href="./Ethnography.dc.html" style="font-size:13px;color:#8B5E2B;text-decoration:underline;text-underline-offset:3px">Подробнее →</a>
@@ -207,5 +228,8 @@ class Component extends DCLogic {
   }
 }
 </script>
+<!-- impeccable-live-start -->
+<script src="http://localhost:8400/live.js?token=d1a7590f-db78-400a-a876-5c4207eed0c0"></script>
+<!-- impeccable-live-end -->
 </body>
 </html>

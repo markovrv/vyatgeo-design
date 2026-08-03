@@ -8,6 +8,15 @@
 <body>
 <x-dc>
 
+<helmet>
+<style>
+.footer-grid { grid-template-columns: repeat(3, 1fr); }
+@media (max-width:449px) {
+  .footer-grid { grid-template-columns:1fr; row-gap:32px; }
+  .footer-grid > div:not(:first-child) { border-top:1px solid rgba(232,223,200,0.2); padding-top:24px; }
+}
+</style>
+</helmet>
 <footer style="background:#2A2118;border-top:2px solid #C27E3A;color:#E8DFC8;position:relative">
   <svg viewBox="0 0 1200 24" preserveAspectRatio="none" style="display:block;width:100%;height:24px;fill:#C27E3A">
     <rect x="0" y="10" width="100%" height="2" fill="currentColor" opacity="0.3"></rect>
@@ -18,7 +27,7 @@
     <circle cx="900" cy="12" r="4" fill="currentColor"></circle>
     <circle cx="1100" cy="12" r="3" fill="currentColor" opacity="0.7"></circle>
   </svg>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:40px;padding:40px 24px 24px;max-width:1200px;margin:0 auto">
+  <div class="footer-grid" style="display:grid;gap:40px;padding:40px 24px 24px;max-width:1200px;margin:0 auto">
     <div>
       <h4 style="font-family:'Playfair Display',Georgia,serif;font-size:20px;color:#FAF9F4;margin-bottom:16px;display:flex;align-items:center;gap:8px">
         <svg viewBox="0 0 40 40" width="24" height="24" fill="#C27E3A">
@@ -54,5 +63,8 @@
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:320}}"></script>
+<!-- impeccable-live-start -->
+<script src="http://localhost:8400/live.js?token=d1a7590f-db78-400a-a876-5c4207eed0c0"></script>
+<!-- impeccable-live-end -->
 </body>
 </html>
