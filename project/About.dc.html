@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"></link>
-<style>:focus-visible{outline:2px solid #3C7A8C;outline-offset:2px}body{margin:0;background:#FAF9F4}.hero-panel{background:rgba(42,33,24,0.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:8px}</style>
+<style>:focus-visible{outline:2px solid #3C7A8C;outline-offset:2px}body{margin:0;background:#FAF9F4}.hero-panel{background:rgba(42,33,24,0.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:8px;margin-top:32px}</style>
 </helmet>
 <div style="font-family:'Roboto Slab',Georgia,serif;color:#2A2118;background:#FAF9F4">
 <dc-import name="SiteHeader" active="about" hint-size="100%,80px"></dc-import>
@@ -21,8 +21,8 @@
   <div style="position:absolute;inset:0;background-image:url('img/kremlin.jpeg');background-size:cover;background-position:center;filter:sepia(50%) brightness(0.8);z-index:0"></div>
   <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(60,122,140,0.35) 0%, rgba(42,33,24,0.25) 100%);z-index:1"></div>
   <div class="hero-panel" style="position:relative;z-index:2;text-align:center;max-width:700px;padding:20px 28px">
-    <p style="font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#E8DFC8;margin-bottom:16px;text-shadow:0 2px 8px rgba(0,0,0,0.6)">К 90-летию Кировской области · 1936–2026</p>
-    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0;text-shadow:0 2px 12px rgba(0,0,0,0.45)">О проекте</h1>
+    <p style="font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#E8DFC8;margin-bottom:16px;text-shadow:0 2px 8px rgba(42,33,24,0.6)">К 90-летию Кировской области · 1936–2026</p>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(32px,4vw,52px);color:#FAF9F4;margin:0;text-shadow:0 2px 12px rgba(42,33,24,0.45)">О проекте</h1>
   </div>
 </section>
 
@@ -30,7 +30,7 @@
   <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);text-align:center;margin:0 0 24px">Историко-культурное наследие<br></br>Вятского края</h2>
   <p style="font-size:16px;line-height:1.8;margin-bottom:1.2em"><strong>«Наследие Вятки»</strong> — просветительский проект, приуроченный к 90-летию образования Кировской области (5 декабря 1936 — 5 декабря 2026). Его цель — собрать, сохранить и сделать доступными для широкой аудитории уникальные материалы по истории, культуре и природе Вятской земли.</p>
   <p style="font-size:16px;line-height:1.8;margin-bottom:1.2em">Вятский край — один из самобытнейших регионов России, где на протяжении столетий переплетались культурные традиции русских, татар, удмуртов, марийцев и коми. Здесь формировался уникальный архитектурный облик городов, возникли прославленные народные промыслы — дымковская игрушка, вятское кружево, изделия из капокорня.</p>
-  <p style="font-size:16px;line-height:1.8">Проект объединяет семь тематических модулей, каждый из которых посвящён одному из аспектов наследия региона: от средневековой археологии до современной архитектуры, от воинской славы до этнографического многообразия.</p>
+  <p style="font-size:16px;line-height:1.8">Проект объединяет шесть тематических модулей, каждый из которых посвящён одному из аспектов наследия региона: от средневековой археологии до современной архитектуры, от воинской славы до этнографического многообразия.</p>
 </section>
 
 <section style="background:#F5F2EC;padding:64px 24px">
@@ -101,7 +101,7 @@ class Component extends DCLogic {
   renderVals() {
     return {
       stats1: [
-        { n: '7', label: 'тематических модулей' },
+        { n: '6', label: 'тематических модулей' },
         { n: '10+', label: 'страниц контента' },
         { n: 'более 70', label: 'описанных объектов' },
       ],

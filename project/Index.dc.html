@@ -48,9 +48,9 @@ body { margin:0; background:#FAF9F4; }
   <div style="position:absolute;inset:-10%;background-image:url('img/hero-trifonov.jpg');background-size:cover;background-position:center;filter:sepia(15%) brightness(0.9);z-index:0;transform:{{heroParallax}};will-change:transform"></div>
 <div style="position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom, rgba(60,122,140,0.35) 0%, rgba(42,33,24,0.25) 100%)"></div>
   <div style="{{fadeStyle(0)}};position:relative;z-index:2;text-align:center;max-width:800px;padding:24px">
-    <p style="font-size:15px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#E8DFC8;margin-bottom:18px;text-shadow:0 2px 8px rgba(0,0,0,0.6)">К 90-ЛЕТИЮ КИРОВСКОЙ ОБЛАСТИ · 1936–2026</p>
-    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(38px,5vw,64px);line-height:1.1;color:#FAF9F4;margin:0 0 16px;text-shadow:0 2px 12px rgba(0,0,0,0.45)">Историко-культурное наследие Вятского края</h1>
-    <p style="font-size:clamp(17px,1.8vw,22px);color:#E8DFC8;max-width:640px;margin:0 auto 24px;text-shadow:0 2px 10px rgba(0,0,0,0.5)">Семь веков истории, народных промыслов и архитектуры — живая память земли вятской</p>
+    <p style="font-size:15px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#E8DFC8;margin-bottom:18px;text-shadow:0 2px 8px rgba(42,33,24,0.6)">К 90-ЛЕТИЮ КИРОВСКОЙ ОБЛАСТИ · 1936–2026</p>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(38px,5vw,64px);line-height:1.1;color:#FAF9F4;margin:0 0 16px;text-shadow:0 2px 12px rgba(42,33,24,0.45)">Историко-культурное наследие Вятского края</h1>
+    <p style="font-size:clamp(17px,1.8vw,22px);color:#E8DFC8;max-width:640px;margin:0 auto 24px;text-shadow:0 2px 10px rgba(42,33,24,0.5)">Семь веков истории, народных промыслов и архитектуры — живая память земли вятской</p>
     <a href="#modules" style="{{btnStyle}}" style-hover="{{btnHoverStyle}}">Исследовать наследие</a>
   </div>
     <div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:2;animation:gentlePulse 2s infinite">
@@ -64,34 +64,53 @@ body { margin:0; background:#FAF9F4; }
 <style>
 #modules .mod-card > .mod-grad { background: linear-gradient(to top, rgba(42,33,24,0.85) 0%, rgba(42,33,24,0.5) 55%, rgba(60,122,140,0.15) 100%); }
 #modules .mod-card:hover > .mod-grad { background: linear-gradient(to top, rgba(42,33,24,0.95) 0%, rgba(42,33,24,0.6) 55%, rgba(60,122,140,0.2) 100%); }
-#modules .mod-card:hover h3 { text-shadow: 0 2px 10px rgba(0,0,0,0.75); }
-#modules .mod-card:hover p { text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
+#modules .mod-card:hover h3 { text-shadow: 0 2px 10px rgba(42,33,24,0.75); }
+#modules .mod-card:hover p { text-shadow: 0 1px 6px rgba(42,33,24,0.7); }
 </style>
 <section id="modules" style="{{fadeStyle(1)}};background:#FAF9F4;padding:96px 24px;max-width:1200px;margin:0 auto">
   <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);text-align:center;margin:0 0 16px">Разделы проекта</h2>
-  <p style="text-align:center;font-size:16px;color:#3C7A8C;margin-bottom:40px">Шесть путей к наследию Вятского края</p>
+  <p style="text-align:center;font-size:16px;color:#3C7A8C;max-width:750px;margin:0 auto 40px">«Наследие Вятки» — цифровой архив, объединяющий в одном месте шесть направлений наследия Кировской области: воинскую славу, археологию, этнографию, исторические города, архитектуру Кирова и памятники природы. Мы собираем, сохраняем и делаем доступными уникальные материалы о крае — от древних городищ до купеческих особняков — в единой визуальной подаче, рождённой на стыке дымковской игрушки и вятского северного модерна.</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px">
     <sc-for list="{{modules}}" as="m" hint-placeholder-count="6">
       <a href="{{m.href}}" class="mod-card" style="{{m.cardStyle}}" style-hover="{{m.cardHoverStyle}}">
         <div style="position:absolute;inset:0;background-image:url({{m.img}});background-size:cover;background-position:center" role="img" aria-label="{{m.title}}"></div>
         <div class="mod-grad" style="position:absolute;inset:0"></div>
         <div style="position:absolute;bottom:0;padding:24px;color:#FAF9F4;width:100%">
-          <h3 style="color:#FAF9F4;margin:0 0 4px;font-size:20px;font-family:'Playfair Display',Georgia,serif;text-shadow:0 2px 8px rgba(0,0,0,0.6)">{{m.title}}</h3>
-          <p style="font-size:13px;line-height:1.5;margin-bottom:8px;opacity:0.85;text-shadow:0 1px 5px rgba(0,0,0,0.55)">{{m.desc}}</p>
+          <h3 style="color:#FAF9F4;margin:0 0 4px;font-size:20px;font-family:'Playfair Display',Georgia,serif;text-shadow:0 2px 8px rgba(42,33,24,0.6)">{{m.title}}</h3>
+          <p style="font-size:13px;line-height:1.5;margin-bottom:8px;opacity:0.85;text-shadow:0 1px 5px rgba(42,33,24,0.55)">{{m.desc}}</p>
         </div>
       </a>
     </sc-for>
   </div>
 </section>
 
-<section style="{{fadeStyle(2)}};padding:96px 24px;max-width:1200px;margin:0 auto;background:#F5F2EC;position:relative;overflow:hidden">
-  <div style="position:absolute;right:0;top:0;bottom:0;width:360px;background-image:url('img/kremlin.jpeg');background-size:contain;background-repeat:no-repeat;background-position:right center;border-radius:4px;opacity:0.12;pointer-events:none"></div>
-  <div style="max-width:800px;position:relative">
-    <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);margin:0 0 16px">Вятский край: семь веков истории</h2>
-    <p style="margin-bottom:1em;line-height:1.75">Вятская земля впервые упоминается в летописях XII века. Основанная новгородскими переселенцами, Вятка стала самобытным краем на стыке севернорусской, финно-угорской и пермской культур. Здесь в 1580 году монах Трифон заложил Успенский монастырь — первую каменную обитель Вятки, ставшую духовным центром края на века.</p>
-    <p style="margin-bottom:1em;line-height:1.75">В 1780 году Екатерина II учредила Вятское наместничество, а город получил регулярный план и каменную застройку в стиле провинциального классицизма. Купеческие особняки, приходские церкви, земские здания — всё это формировало неповторимый облик губернского города.</p>
-    <p style="margin-bottom:1em;line-height:1.75">5 декабря 1936 года была образована Кировская область. В 2026 году мы отмечаем 90-летие региона — повод вспомнить и сохранить всё, чем богата вятская земля.</p>
+<section style="{{fadeStyle(2)}};padding:96px 24px;max-width:1200px;margin:0 auto;background:#F5F2EC">
+  <div class="history-grid-2col" style="display:grid;grid-template-columns:2fr 1fr;gap:40px;align-items:center;margin-bottom:48px">
+    <div style="text-align:center">
+      <p style="color:#8B5E2B;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px">История Вятского края</p>
+      <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(26px,3vw,36px);margin:0 0 16px">Вятский край: семь веков истории</h2>
+      <p style="margin-bottom:1em;line-height:1.75">Вятская земля впервые упоминается в летописях XII века. Основанная новгородскими переселенцами, Вятка стала самобытным краем на стыке севернорусской, финно-угорской и пермской культур. Здесь в 1580 году монах Трифон заложил Успенский монастырь — первую каменную обитель Вятки, ставшую духовным центром края на века.</p>
+      <p style="margin-bottom:1em;line-height:1.75">В 1780 году Екатерина II учредила Вятское наместничество, а город получил регулярный план и каменную застройку в стиле провинциального классицизма. Купеческие особняки, приходские церкви, земские здания — всё это формировало неповторимый облик губернского города.</p>
+      <p style="margin-bottom:1.5em;line-height:1.75">5 декабря 1936 года была образована Кировская область. В 2026 году мы отмечаем 90-летие региона — повод вспомнить и сохранить всё, чем богата вятская земля.</p>
+      <a href="./HistoricCities.dc.html" style="{{btnStyle}}" style-hover="{{btnHoverStyle}}">Исторические города</a>
+    </div>
+    <div style="position:relative;aspect-ratio:2/3;overflow:hidden;border-radius:4px;border:1.5px dashed #D4C9AA;filter:sepia(20%)">
+      <video id="kremlinVideo" src="img/kremlin.mp4" muted="true" playsinline="true" loop="true" style="width:100%;height:100%;object-fit:cover;display:block" aria-label="Трифонов монастырь — вид на Кремль"></video>
+      <button id="kremlinSoundBtn" type="button" aria-label="Включить звук" title="Включить звук" style="position:absolute;right:12px;bottom:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(42,33,24,0.55);border:1px solid rgba(232,223,200,0.5);border-radius:50%;cursor:pointer;backdrop-filter:blur(2px);transition:background 150ms,transform 150ms">
+        <svg id="kremlinSoundIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#E8DFC8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="#E8DFC8" stroke="none"></polygon>
+          <line x1="16" y1="8" x2="22" y2="16"></line>
+          <line x1="22" y1="8" x2="16" y2="16"></line>
+        </svg>
+      </button>
+    </div>
   </div>
+  <style>
+  @media (max-width:767px) {
+    .history-grid-2col { grid-template-columns:1fr !important; gap:24px !important; }
+  }
+  #kremlinSoundBtn:hover, #kremlinSoundBtn:focus-visible { background:rgba(42,33,24,0.8); transform:scale(1.08); }
+  </style>
    <div class="tl">
      <div class="tl-line"></div>
      <sc-for list="{{timelineItems}}" as="t" hint-placeholder-count="5">
@@ -124,11 +143,11 @@ body { margin:0; background:#FAF9F4; }
     </sc-for>
   </div>
   <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:24px">
-    <button aria-label="Предыдущий" onClick="{{prevCraft}}" style="background:transparent;border:1px solid #D4C9AA;color:#C27E3A;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px">‹</button>
+    <button aria-label="Предыдущий" onClick="{{prevCraft}}" style="background:transparent;border:1px solid #D4C9AA;color:#8B5E2B;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px">‹</button>
     <sc-for list="{{crafts}}" as="craft" hint-placeholder-count="3">
       <button aria-label="{{craft.title}}" onClick="{{craft.goTo}}" style="{{craft.dotStyle}}"></button>
     </sc-for>
-    <button aria-label="Следующий" onClick="{{nextCraft}}" style="background:transparent;border:1px solid #D4C9AA;color:#C27E3A;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px">›</button>
+    <button aria-label="Следующий" onClick="{{nextCraft}}" style="background:transparent;border:1px solid #D4C9AA;color:#8B5E2B;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px">›</button>
   </div>
 </section>
 
@@ -136,7 +155,7 @@ body { margin:0; background:#FAF9F4; }
   <div style="position:relative;height:70vh;min-height:500px;overflow:hidden;display:flex;align-items:center;justify-content:center;border-radius:4px;max-width:1200px;margin:0 auto" id="archParallaxBlock">
     <div style="position:absolute;inset:-10%;background-image:url('img/architecture-dom-vitberga.jpg');background-size:cover;background-position:center 40%;filter:brightness(0.8) saturate(0.9);z-index:0;transform:{{archParallax}};will-change:transform"></div>
     <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(42,33,24,0.35), rgba(60,122,140,0.25));z-index:1"></div>
-    <div style="position:relative;z-index:2;text-align:center;max-width:640px;padding:40px;background:rgba(253,251,247,0.85);backdrop-filter:blur(8px);border-radius:4px;border:1px solid rgba(194,126,58,0.15)">
+    <div style="position:relative;z-index:2;text-align:center;max-width:640px;padding:40px;background:rgba(253,251,247,0.85);backdrop-filter:blur(8px);border-radius:4px;border:1.5px dashed #D4C9AA">
       <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(22px,2.5vw,30px);margin:0 0 16px">Архитектура Вятки: от монастырских стен до купеческих палат</h2>
       <p style="color:#5C5954;font-size:15px;margin-bottom:24px;line-height:1.6">Кремлёвский холм над рекой Вяткой, белые стены Трифонова монастыря, нарядные особняки купцов Булычёва и Прозорова — архитектурный облик Кирова хранит слои истории от XVII по XX век.</p>
       <a href="./Architecture.dc.html" style="{{btnStyle}}" style-hover="{{btnHoverStyle}}">Архитектура Кирова</a>
@@ -146,9 +165,9 @@ body { margin:0; background:#FAF9F4; }
 
 <section style="{{fadeStyle(5)}};background:#F5F2EC;padding:96px 24px;text-align:center">
   <blockquote style="font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(18px,1.8vw,22px);color:#2A2118;max-width:720px;margin:0 auto;line-height:1.6">
-    <span style="font-size:1.5em;color:#C27E3A;opacity:0.4;margin-right:4px">“</span>Вятка — страна своеобразная. Есть в ней что-то нетронутое, лесное, медленное и в то же время крепкое. Здесь чтут старину не из привычки, а из любви к ней.
+    <span style="font-size:1.5em;color:#C27E3A;opacity:0.4;margin-right:4px">&#8220;</span>Вятка — страна своеобразная. Есть в ней что-то нетронутое, лесное, медленное и в то же время крепкое. Здесь чтут старину не из привычки, а из любви к ней.
   </blockquote>
-  <cite style="display:block;font-style:normal;font-size:13px;color:#5C5954;margin-top:16px">из записок вятского краеведа, XIX век</cite>
+  <cite style="display:block;font-style:normal;font-size:13px;color:#5C5954;margin-top:16px">Александр Андреевич Спицын (1858–1931), русский археолог, историк и краевед Вятской губернии</cite>
 </section>
 
 <dc-import name="SiteFooter" hint-size="100%,320px"></dc-import>
@@ -173,6 +192,7 @@ class Component extends DCLogic {
     };
     window.addEventListener('scroll', this.onScroll, { passive: true });
     this.onScroll();
+
   }
   componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); }
 
@@ -194,7 +214,7 @@ class Component extends DCLogic {
     }));
 
     const moduleData = [
-      { title: 'Лица Победы', href: './VictoryFaces.dc.html', img: 'img/victory-faces.jpg', desc: 'Портреты и судьбы жителей Кировской области — участников Великой Отечественной войны.' },
+      { title: 'Лица Победы', href: './VictoryFaces.dc.html', img: 'img/victory-faces.jpg', desc: 'Портреты и судьбы жителей Кировской области — участников Великой Отечественной войны.', recommended: true },
       { title: 'Этнографическое наследие', href: './Ethnography.dc.html', img: 'img/ethnography.jpg', desc: 'Дымковская игрушка, капокорень, кружевоплетение — живые традиции Вятского края.' },
       { title: 'Исторические города', href: './HistoricCities.dc.html', img: 'img/historic-cities.jpg', desc: 'Киров, Котельнич, Слободской, Яранск — купеческая застройка и старинные соборы.' },
       { title: 'Памятники природы', href: './Nature.dc.html', img: 'img/nature.jpg', desc: 'Река Вятка, карстовые провалы, вековые боры — природное наследие региона.' },
@@ -203,8 +223,8 @@ class Component extends DCLogic {
     ];
     const modules = moduleData.map(m => ({
       ...m,
-      cardStyle: 'position:relative;min-height:280px;overflow:hidden;display:block;text-decoration:none;border:2px solid transparent;border-radius:4px;transition:transform 300ms cubic-bezier(0.16,1,0.3,1), border-color 300ms, box-shadow 300ms',
-      cardHoverStyle: 'transform:translateY(-4px);border-color:#C27E3A;box-shadow:0 8px 24px rgba(42,33,24,0.12)'
+      cardStyle: m.recommended ? 'position:relative;min-height:280px;overflow:hidden;display:block;text-decoration:none;border:2px solid transparent;border-radius:4px;transition:transform 300ms cubic-bezier(0.16,1,0.3,1), border-color 300ms, box-shadow 300ms;box-shadow:0 4px 16px rgba(42,33,24,0.15)' : 'position:relative;min-height:280px;overflow:hidden;display:block;text-decoration:none;border:2px solid transparent;border-radius:4px;transition:transform 300ms cubic-bezier(0.16,1,0.3,1), border-color 300ms, box-shadow 300ms',
+      cardHoverStyle: m.recommended ? 'transform:translateY(-6px);box-shadow:0 12px 32px rgba(42,33,24,0.18)' : 'transform:translateY(-4px);box-shadow:0 8px 24px rgba(42,33,24,0.12)'
     }));
 
     return {
@@ -221,12 +241,58 @@ class Component extends DCLogic {
         { year: '2026', text: '90-летний юбилей региона' },
       ],
       crafts,
-      prevCraft: () => this.setState(s => ({ craftIndex: (s.craftIndex + 2) % 3 })),
-      nextCraft: () => this.setState(s => ({ craftIndex: (s.craftIndex + 1) % 3 })),
+      prevCraft: () => this.setState(s => ({ craftIndex: (s.craftIndex + craftData.length - 1) % craftData.length })),
+      nextCraft: () => this.setState(s => ({ craftIndex: (s.craftIndex + 1) % craftData.length })),
       modules,
     };
   }
 }
+</script>
+<script>
+(function() {
+  var attempts = 0;
+  var interval = setInterval(function() {
+    var video = document.getElementById('kremlinVideo');
+    attempts++;
+    if (video) {
+      clearInterval(interval);
+      video.muted = true;
+      video.playsInline = true;
+      video.playbackRate = 0.5;
+      video.addEventListener('timeupdate', function() {
+        if (video.currentTime >= 8) video.currentTime = 0;
+      });
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            video.play().catch(function() {});
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.3 });
+      observer.observe(video);
+
+      var soundBtn = document.getElementById('kremlinSoundBtn');
+      var soundIcon = document.getElementById('kremlinSoundIcon');
+      var mutedIconHtml = soundIcon.innerHTML;
+      var unmutedIconHtml = '<polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="#E8DFC8" stroke="none"></polygon>'
+        + '<path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 6a9 9 0 0 1 0 12"></path>';
+      if (soundBtn) {
+        soundBtn.addEventListener('click', function() {
+          video.muted = !video.muted;
+          var soundOn = !video.muted;
+          soundIcon.innerHTML = soundOn ? unmutedIconHtml : mutedIconHtml;
+          var label = soundOn ? 'Выключить звук' : 'Включить звук';
+          soundBtn.setAttribute('aria-label', label);
+          soundBtn.title = label;
+        });
+      }
+    } else if (attempts > 100) {
+      clearInterval(interval);
+    }
+  }, 100);
+})();
 </script>
 </body>
 </html>
