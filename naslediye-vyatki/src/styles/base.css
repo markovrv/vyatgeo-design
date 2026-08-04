@@ -1,0 +1,50 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg, #FAF9F4);
+  font-family: var(--font-body);
+  color: var(--color-ink, #2A2118);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-teal, #3C7A8C);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-ochre, #C27E3A);
+  color: var(--color-bg);
+}
+
+a {
+  color: var(--color-ochre, #C27E3A);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-1);
+  z-index: 9999;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+  font-size: 14px;
+  transition: top 200ms;
+}
+.skip-link:focus {
+  top: var(--space-1);
+}

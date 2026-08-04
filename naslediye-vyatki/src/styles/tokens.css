@@ -1,0 +1,36 @@
+:root {
+  --color-bg: #FAF9F4;
+  --color-teal: #3C7A8C;
+  --color-ochre: #C27E3A;
+  --color-ochre-dark: #8B5E2B;
+  --color-oak: #E8DFC8;
+  --color-ink: #2A2118;
+  --color-birch: #F5F2EC;
+  --color-muted: #5C5954;
+  --color-border: #D4C9AA;
+  --color-surface: #FFFFFF;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Roboto Slab', Georgia, serif;
+
+  --radius: 4px;
+  --radius-lg: 8px;
+  --border-width: 1.5px;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+  --space-5: 64px;
+  --space-6: 96px;
+
+  --z-header: 1000;
+  --z-overlay: 1999;
+  --z-sidebar: 2000;
+
+  --anim-fast: 150ms ease;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --shadow-sm: 0 1px 3px rgba(42,33,24,0.08);
+  --shadow-lg: 0 8px 32px rgba(42,33,24,0.12);
+}
