@@ -89,7 +89,7 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
 
     <section id="modules" class="modules" :style="fadeStyle(1)">
       <h2 class="section-heading">Разделы проекта</h2>
-      <p class="section-sub">Шесть путей к наследию Вятского края</p>
+      <p class="section-sub">«Наследие Вятки» — цифровой архив к 90-летию Кировской области (1936–2026), где бережно собраны материалы об истории, культуре и природе Вятского края: от портретов фронтовиков и живых народных промыслов до архитектуры губернского Кирова и памятников археологии. Шесть разделов — шесть путей к наследию земли, хранящей память семи веков.</p>
       <div class="modules-grid">
         <RouterLink v-for="m in modules" :key="m.to" :to="m.to" class="module-card-wrap">
           <div class="module-card" :class="{ 'module-card--recommended': m.recommended }">
@@ -194,7 +194,7 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
 .cta-btn:hover { background: var(--color-teal); transform: translateY(-1px) }
 
 .section-heading { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px,3vw,36px); text-align: center; margin: 0 0 var(--space-2) }
-.section-sub { text-align: center; font-size: 16px; color: var(--color-teal); margin: 0 0 var(--space-4) }
+.section-sub { text-align: center; font-size: 16px; line-height: 1.65; color: var(--color-teal); max-width: 720px; margin: 0 auto var(--space-4) }
 .section-label { color: var(--color-ochre-dark); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; margin: 0 0 var(--space-1) }
 
 .modules { background: var(--color-bg); padding: var(--space-6) var(--space-3); max-width: 1200px; margin: 0 auto }
@@ -224,12 +224,15 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
 .tl-year { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--color-ochre-dark); white-space: nowrap }
 .tl-text { font-size: 13px; color: var(--color-muted); max-width: 120px; line-height: 1.4; margin-top: var(--space-3) }
 @media (max-width: 767px) {
-  .tl { flex-direction: column; align-items: flex-start; gap: var(--space-3) }
-  .tl-line { display: none }
-  .tl-dot { width: 24px; height: 24px; position: relative; top: auto; transform: none; flex-shrink: 0 }
-  .tl-item { display: flex; gap: var(--space-2); align-items: flex-start }
-  .tl-year { position: relative; top: auto; left: auto; transform: none; white-space: normal }
-  .tl-text { margin-top: 0 }
+  .tl { display: block; padding: var(--space-2) 0 }
+  .tl-line { left: 50%; right: auto; top: 0; bottom: 0; height: auto; width: 2px; transform: translateX(-50%) }
+  .tl-item {
+    display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center;
+    column-gap: var(--space-2); padding: var(--space-3) 0; flex: none; text-align: initial;
+  }
+  .tl-dot { grid-column: 2; justify-self: center; position: relative; top: auto; transform: none; z-index: 1 }
+  .tl-year { grid-column: 1; position: static; transform: none; text-align: right; white-space: normal }
+  .tl-text { grid-column: 3; text-align: left; max-width: none; margin-top: 0 }
 }
 
 .crafts { background: var(--color-bg); padding: var(--space-6) var(--space-3); position: relative }

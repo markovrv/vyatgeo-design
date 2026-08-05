@@ -3,6 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* Критические стили: применяются до загрузки Vue/CSS-модулей, чтобы ничего не мелькало на старте */
+      html, body { background: #FAF9F4; margin: 0; }
+      .skip-link {
+        position: absolute;
+        top: -100px;
+        left: 8px;
+        z-index: 9999;
+        background: #FAF9F4;
+        color: #2A2118;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: top 200ms;
+      }
+      .skip-link:focus { top: 8px; }
+    </style>
+    <script>
+      // Единый адрес API для всех модулей проекта. Меняется здесь же —
+      // без пересборки Vue-бандла (правка dist/index.html на сервере).
+      window.__API_BASE_URL__ = 'https://testsite.vyatgeo.ru/wp-json/';
+      // Ключ Яндекс.Карт (используется модулем «Архитектура Кирова»,
+      // тот же ключ, что и в админке плагина geopoints).
+      window.__YANDEX_MAPS_API_KEY__ = '47e70ac9-78de-4c21-9fba-ffd8e5855ee6';  // localhost ключ
+      //window.__YANDEX_MAPS_API_KEY__ = 'ba0d0589-f903-43e9-b3d3-cc290988b69a'; // ключ домена heritage.vyatgeo.ru
+      // Радиус поиска блока "Объекты рядом" на странице объекта архитектуры (км) —
+      // передаётся на сервер параметром запроса, см. src/config/attraction.js.
+      window.__ATTRACTION_NEARBY_RADIUS_KM__ = 1.5;
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet" />

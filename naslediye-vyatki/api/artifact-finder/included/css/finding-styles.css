@@ -1,0 +1,502 @@
+/* css/finding-styles.css */
+
+.finding-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+.finding-info-column {
+    flex: 1;
+    min-width: 300px;
+}
+
+.finding-gallery-column {
+    flex: 0 0 400px;
+    min-width: 300px;
+}
+
+.finding-details {
+    margin-bottom: 20px;
+}
+
+.field-row {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.catalog-number-field {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.field-name {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #555;
+}
+
+.field-value {
+    color: #666;
+    line-height: 1.4;
+    font-size: 0.95em;
+}
+
+.gallery-carousel {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.gallery-thumbnails {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.gallery-thumb {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    border-radius: 4px;
+}
+
+.gallery-thumb.active,
+.gallery-thumb:hover {
+    opacity: 1;
+    border-color: #007cba;
+}
+
+.gallery-thumb img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+.gallery-main {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.gallery-main img {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 4px;
+    transition: transform 0.3s ease, transform-origin 0.1s ease;
+}
+
+/* Стили для модального окна */
+.finding-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.finding-modal-container {
+    width: 95%;
+    height: 95%;
+    background: #1a1a1a;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.modal-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #2d2d2d;
+    border-bottom: 1px solid #444;
+}
+
+.controls-left,
+.controls-right {
+    display: flex;
+    gap: 10px;
+}
+
+.controls-center {
+    color: white;
+    font-weight: bold;
+}
+
+.control-btn {
+    background: #444;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    background: #555;
+    transform: scale(1.1);
+}
+
+.modal-image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-image-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+#modalImage {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.nav-prev {
+    left: 20px;
+}
+
+.nav-next {
+    right: 20px;
+}
+
+.modal-thumbnails {
+    display: flex;
+    gap: 10px;
+    padding: 15px 20px;
+    background: #2d2d2d;
+    border-top: 1px solid #444;
+    overflow-x: auto;
+}
+
+.modal-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.modal-thumb:hover {
+    opacity: 0.8;
+}
+
+.modal-thumb.active {
+    opacity: 1;
+    border-color: #007cba;
+}
+
+.modal-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-image-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    cursor: grab;
+}
+
+.modal-image-wrapper:active {
+    cursor: grabbing;
+}
+
+#modalImage {
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    transform-origin: center center;
+}
+
+.zoom-indicator {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+}
+
+/* Анимация для плавного скролла */
+.modal-image-wrapper {
+    scroll-behavior: smooth;
+}
+
+/* Стили для состояния перетаскивания */
+.modal-image-wrapper.dragging {
+    cursor: grabbing;
+}
+
+.modal-image-wrapper.dragging #modalImage {
+    cursor: grabbing;
+}
+
+.modal-image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-image-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    cursor: grab;
+    display: flex;
+    align-items: flex-start; /* Убираем центрирование по вертикали чтобы избежать обрезки */
+    justify-content: flex-start; /* Убираем центрирование по горизонтали */
+    position: relative;
+}
+
+.modal-image-wrapper.dragging {
+    cursor: grabbing;
+}
+
+#modalImage {
+    display: block;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    transform-origin: 0 0; /* Меняем точку трансформации */
+    flex-shrink: 0; /* Запрещаем сжатие изображения */
+}
+
+/* Убираем любые ограничения по высоте */
+.finding-modal-container {
+    width: 95%;
+    height: 95%;
+    background: #1a1a1a;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 0; /* Важно для правильной работы flex */
+}
+
+/* Улучшаем скролл */
+.modal-image-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.modal-image-wrapper::-webkit-scrollbar-track {
+    background: #2d2d2d;
+}
+
+.modal-image-wrapper::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.modal-image-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* Анимация для плавного скролла */
+.modal-image-wrapper {
+    scroll-behavior: smooth;
+}
+
+/* Убираем возможные ограничения высоты */
+.modal-image-container,
+.modal-image-wrapper {
+    min-height: 0;
+}
+
+.modal-image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-image-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Меняем на hidden чтобы изображение не выходило за границы */
+    cursor: zoom-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#modalImage {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    transform-origin: center center;
+    cursor: zoom-in;
+}
+
+/* Стили для увеличенного состояния */
+#modalImage.zoomed {
+    cursor: zoom-out;
+}
+
+/* Убираем скроллбар так как используем transform */
+.modal-image-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.modal-image-wrapper {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Анимация для плавного масштабирования */
+#modalImage {
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.filter-indicator {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+    font-family: monospace;
+}
+
+.controls-center {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Стили для временных уведомлений */
+#valueNotification {
+    animation: fadeInOut 1s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .finding-container {
+        flex-direction: column;
+    }
+    
+    .finding-gallery-column {
+        flex: 1;
+        order: -1;
+    }
+    
+    .finding-modal-container {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+    
+    .modal-controls {
+        padding: 10px 15px;
+    }
+    
+    .control-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    .nav-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .modal-thumb {
+        width: 50px;
+        height: 50px;
+    }
+
+    .fordesktop {
+        display: none;
+    }
+}

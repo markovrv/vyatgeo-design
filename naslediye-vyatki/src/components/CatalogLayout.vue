@@ -28,6 +28,7 @@ defineProps({
     <slot name="map" />
     <div v-if="showGrid && gridCount > 0" class="grid-count">Показано: {{ gridCount }}</div>
     <div class="grid"><slot name="grid" /></div>
+    <slot name="pagination" />
   </section>
 </template>
 
