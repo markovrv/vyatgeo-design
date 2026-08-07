@@ -124,11 +124,229 @@ add_action('init', function () {
         'show_in_rest' => true,
         'menu_position' => 15,
         'supports' => ['title', 'editor', 'comments', 'revisions', 'thumbnail', 'post-thumbnails'],
-        'taxonomies' => [],
+        'taxonomies' => ['city'],
         'menu_icon' => "dashicons-calendar",
         'has_archive' => true
     ]);
 });
+
+// Таксономия «Город»: каждая запись «Даты» относится ровно к одному городу
+// (используем hierarchical-таксономию — привычный editors чекбокс-список, а
+// не свободный tag-инпут). Ленты времени на фронте выводятся строго по
+// городам (см. history/v1/events). В фильтрах каталога эта таксономия не
+// участвует — выбор города происходит через отдельную страницу выбора
+// (HistoricCitiesView.vue), а не через чипы фильтра.
+add_action('init', function () {
+    register_taxonomy('city', ['history'], [
+        'labels' => [
+            'name' => 'Города',
+            'singular_name' => 'Город',
+            'search_items' => 'Поиск городов',
+            'all_items' => 'Все города',
+            'parent_item' => 'Родительский город',
+            'parent_item_colon' => 'Родительский город:',
+            'edit_item' => 'Изменить город',
+            'update_item' => 'Обновить город',
+            'add_new_item' => 'Добавить город',
+            'new_item_name' => 'Название нового города',
+            'menu_name' => 'Города',
+        ],
+        'hierarchical' => true,
+        'public' => true,
+        'show_in_rest' => true,
+        'show_admin_column' => true,
+        'show_in_nav_menus' => false,
+        'show_tagcloud' => false,
+    ]);
+
+    register_term_meta('city', 'city_short', [
+        'type' => 'string',
+        'single' => true,
+        'show_in_rest' => true,
+    ]);
+    register_term_meta('city', 'city_photo', [
+        'type' => 'integer',
+        'single' => true,
+        'show_in_rest' => true,
+    ]);
+    // "lat, lng" строкой — тот же формат, что у attraction_coord (см.
+    // api/attraction/rest-api.php), нужен для пина города на карте
+    // (HistoricCitiesView.vue, режим "На карте").
+    register_term_meta('city', 'city_coord', [
+        'type' => 'string',
+        'single' => true,
+        'show_in_rest' => true,
+    ]);
+});
+
+// Доп. поля термина «Город» в админке: краткая характеристика (для карточки
+// каталога) и фото (у терминов нет нативной миниатюры, поэтому свой
+// media-picker на wp.media). Одна и та же разметка/скрипт на экранах
+// добавления и редактирования — отличается только обёртка (div/tr), это
+// стандартные хуки WP для таксономий.
+add_action('city_add_form_fields', function () {
+    wp_enqueue_media();
+    history_city_map_admin_scripts();
+    ?>
+    <div class="form-field">
+        <label for="city_short">Краткая характеристика</label>
+        <textarea name="city_short" id="city_short" rows="3"></textarea>
+        <p>Короткий текст для карточки города на странице выбора города.</p>
+    </div>
+    <div class="form-field">
+        <label for="city_photo_id">Фото города</label>
+        <input type="hidden" name="city_photo" id="city_photo_id" value="">
+        <div id="city_photo_preview"></div>
+        <button type="button" class="button" id="city_photo_button">Выбрать фото</button>
+    </div>
+    <div class="form-field">
+        <label for="city_coord">Координаты (широта, долгота)</label>
+        <div id="city-map" style="width:100%;max-width:500px;height:300px;"></div>
+        <input type="search" style="width:100%;max-width:500px;margin-top:8px;" name="city_coord" id="city_coord" placeholder="58.603, 49.668">
+        <p>Клик по карте или ввод вручную. Нужны для пина города на карте в разделе «Исторические города».</p>
+    </div>
+    <?php echo history_city_photo_picker_script(); ?>
+    <?php
+});
+
+add_action('city_edit_form_fields', function ($term) {
+    wp_enqueue_media();
+    history_city_map_admin_scripts();
+    $short = get_term_meta($term->term_id, 'city_short', true);
+    $photo_id = get_term_meta($term->term_id, 'city_photo', true);
+    $photo_url = $photo_id ? wp_get_attachment_image_url($photo_id, 'medium') : '';
+    $coord = get_term_meta($term->term_id, 'city_coord', true);
+    ?>
+    <tr class="form-field">
+        <th scope="row"><label for="city_short">Краткая характеристика</label></th>
+        <td><textarea name="city_short" id="city_short" rows="3" style="width:100%;max-width:500px;"><?= esc_textarea($short) ?></textarea></td>
+    </tr>
+    <tr class="form-field">
+        <th scope="row"><label for="city_photo_id">Фото города</label></th>
+        <td>
+            <input type="hidden" name="city_photo" id="city_photo_id" value="<?= esc_attr($photo_id) ?>">
+            <div id="city_photo_preview"><?php if ($photo_url): ?><img src="<?= esc_url($photo_url) ?>" style="max-width:150px;display:block;"><?php endif; ?></div>
+            <button type="button" class="button" id="city_photo_button" style="margin-top:8px;">Выбрать фото</button>
+        </td>
+    </tr>
+    <tr class="form-field">
+        <th scope="row"><label for="city_coord">Координаты (широта, долгота)</label></th>
+        <td>
+            <div id="city-map" style="width:100%;max-width:500px;height:300px;"></div>
+            <input type="search" style="width:100%;max-width:500px;margin-top:8px;" name="city_coord" id="city_coord" placeholder="58.603, 49.668" value="<?= esc_attr($coord) ?>">
+            <p class="description">Клик по карте или ввод вручную. Нужны для пина города на карте в разделе «Исторические города».</p>
+        </td>
+    </tr>
+    <?php echo history_city_photo_picker_script(); ?>
+    <?php
+}, 10, 2);
+
+// Тот же классический Yandex Maps JS API (v2.1), что уже используется в
+// админке "Архитектуры"/"Гео-точек" (см. api/attraction/register-attraction.php,
+// api/geopoints/register-geopoints.php) — общий handle/apikey, поэтому
+// повторный enqueue безопасен, даже если он уже зарегистрирован где-то ещё.
+function history_city_map_admin_scripts() {
+    wp_enqueue_script('YandexMapAPI-alt-js', 'https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=ba0d0589-f903-43e9-b3d3-cc290988b69a&ver=2.1');
+    wp_enqueue_script('history_city_map_script', plugin_dir_url(__FILE__) . 'js/adminCityMap.js');
+}
+
+function history_city_photo_picker_script() {
+    ob_start();
+    ?>
+    <script>
+    jQuery(function ($) {
+        var frame;
+        $('#city_photo_button').on('click', function (e) {
+            e.preventDefault();
+            if (frame) { frame.open(); return; }
+            frame = wp.media({ title: 'Выберите фото города', multiple: false });
+            frame.on('select', function () {
+                var att = frame.state().get('selection').first().toJSON();
+                $('#city_photo_id').val(att.id);
+                $('#city_photo_preview').html('<img src="' + att.url + '" style="max-width:150px;display:block;">');
+            });
+            frame.open();
+        });
+    });
+    </script>
+    <?php
+    return ob_get_clean();
+}
+
+add_action('created_city', 'save_history_city_term_fields');
+add_action('edited_city', 'save_history_city_term_fields');
+function save_history_city_term_fields($term_id) {
+    if (isset($_POST['city_short'])) {
+        update_term_meta($term_id, 'city_short', sanitize_textarea_field($_POST['city_short']));
+    }
+    if (isset($_POST['city_photo'])) {
+        update_term_meta($term_id, 'city_photo', intval($_POST['city_photo']));
+    }
+    if (isset($_POST['city_coord'])) {
+        update_term_meta($term_id, 'city_coord', sanitize_text_field($_POST['city_coord']));
+    }
+}
+
+// Координаты центра Кирова известны заранее (см. api/attraction/js/adminMap.js) —
+// подставляем сразу, чтобы пин на карте городов появился без ручного шага в
+// админке. Гвардом на пустое значение защищаем ручное редактирование в
+// будущем: код перезапускается на каждый init, но перезаписывать уже
+// заданное (в т.ч. вручную изменённое) значение не должен.
+add_action('init', function () {
+    $kirov = get_term_by('slug', 'kirov', 'city');
+    if ($kirov && !get_term_meta($kirov->term_id, 'city_coord', true)) {
+        update_term_meta($kirov->term_id, 'city_coord', '58.603, 49.668');
+    }
+}, 21);
+
+// Единоразовый сидинг: 7 городов проекта (термины таксономии «Город») и
+// привязка уже существующих записей «Даты» к Кирову — на момент внедрения
+// таксономии данные были только по Кирову. Флаг в опциях защищает от
+// повторного запуска на каждый init; повторно менять принадлежность записей
+// городу этот код больше не будет (editors управляют этим вручную дальше).
+add_action('init', function () {
+    if (get_option('history_city_seeded')) {
+        return;
+    }
+
+    $cities = [
+        'kirov' => [
+            'name' => 'Киров',
+            'description' => 'Киров – крупный город в России, административный центр Кировской области. Город расположен на реке Вятке и является одним из старейших городов России. Годом его основания считается 1374 год. В течение почти двухсот лет город носил название Хлынов, затем в 1780 г. был переименован в Вятку, а свое современное название получил в 1934 году.',
+            'short' => 'Главный город области: от древнего поселения новгородцев до крупного промышленного и культурного центра.',
+        ],
+        'kotelnich' => ['name' => 'Котельнич', 'description' => '', 'short' => 'Древний город на реке Вятке, известный уникальным палеонтологическим местонахождением.'],
+        'orlov' => ['name' => 'Орлов', 'description' => '', 'short' => 'Небольшой купеческий город с застройкой провинциального классицизма.'],
+        'slobodskoy' => ['name' => 'Слободской', 'description' => '', 'short' => 'Крупнейший торговый город Вятской земли с выдающимися памятниками архитектуры.'],
+        'yaransk' => ['name' => 'Яранск', 'description' => '', 'short' => 'Культурный центр юго-запада области с архитектурными памятниками классицизма.'],
+        'malmyzh' => ['name' => 'Малмыж', 'description' => '', 'short' => 'Торговый центр на пути из Вятки в Казань и Пермь.'],
+        'urzhum' => ['name' => 'Уржум', 'description' => '', 'short' => 'Город, известный как место рождения советского государственного деятеля С.М. Кирова.'],
+    ];
+
+    foreach ($cities as $slug => $data) {
+        if (!term_exists($slug, 'city')) {
+            $inserted = wp_insert_term($data['name'], 'city', [
+                'slug' => $slug,
+                'description' => $data['description'],
+            ]);
+            if (!is_wp_error($inserted)) {
+                update_term_meta($inserted['term_id'], 'city_short', $data['short']);
+            }
+        }
+    }
+
+    $history_ids = get_posts([
+        'post_type' => 'history',
+        'post_status' => 'any',
+        'posts_per_page' => -1,
+        'fields' => 'ids',
+    ]);
+    foreach ($history_ids as $post_id) {
+        wp_set_object_terms($post_id, 'kirov', 'city');
+    }
+
+    update_option('history_city_seeded', 1);
+}, 20);
 
 // Добавление мета-полей в стандартный апи
 add_action('rest_api_init', function () {
@@ -253,6 +471,274 @@ add_action('pre_get_posts', function ($query)
 });
 
 
+
+// REST-маршруты модуля «Города» — по конвенции attraction/v1, findings/v1
+// (см. CLAUDE.md, «Паттерны модулей с реальным API»): bulk-список без
+// пагинации на город + adjacent/nearby по датам в рамках того же города.
+// Детальную запись событие фронт получает штатным /wp/v2/history/{id}?_embed=1
+// (как useAttraction ходит в /wp/v2/attraction/{id}) — отдельный эндпоинт не
+// нужен, history_date_text/history_date_value уже отданы через
+// register_rest_field выше.
+add_action('rest_api_init', function () {
+    register_rest_route('history/v1', '/cities', [
+        'methods' => 'GET',
+        'callback' => 'get_history_cities',
+        'permission_callback' => '__return_true',
+    ]);
+
+    register_rest_route('history/v1', '/events', [
+        'methods' => 'GET',
+        'callback' => 'get_history_events',
+        'permission_callback' => '__return_true',
+        'args' => [
+            'city' => [
+                'required' => true,
+            ],
+        ],
+    ]);
+
+    register_rest_route('history/v1', '/events/(?P<id>\d+)/adjacent', [
+        'methods' => 'GET',
+        'callback' => 'get_history_adjacent',
+        'permission_callback' => '__return_true',
+    ]);
+
+    register_rest_route('history/v1', '/events/(?P<id>\d+)/nearby', [
+        'methods' => 'GET',
+        'callback' => 'get_history_nearby',
+        'permission_callback' => '__return_true',
+    ]);
+});
+
+// Фото городов (их всего 7 — резолвим сразу на сервере, без батч-апгрейда
+// на фронте, как у карточек событий). Тот же URL используется и на карточке
+// в каталоге городов, и на полноэкранном hero ленты времени — hero там
+// крупнее (60vh на всю ширину), поэтому предпочитаем самый крупный
+// доступный вариант, а не "среднюю" ступень: bulk-список событий отдаёт
+// сырую миниатюру + id вложения, апгрейд качества делает фронт батч-запросом
+// к /wp/v2/media (см. useHistoryThumbnails) — здесь же экономить не на чем,
+// это одиночный запрос на редко меняющийся список из 7 записей.
+function history_resolve_image_url($attachment_id) {
+    if (!$attachment_id) {
+        return '';
+    }
+    foreach (['full', 'large', 'medium_large', 'medium'] as $size) {
+        $url = wp_get_attachment_image_url($attachment_id, $size);
+        if ($url) {
+            return $url;
+        }
+    }
+    return wp_get_attachment_url($attachment_id) ?: '';
+}
+
+// "lat, lng" из city_coord → [lat, lng] или null, если поле не заполнено
+// или заполнено некорректно (тот же формат, что у attraction_coord).
+function history_parse_city_coord($raw) {
+    $raw = trim((string) $raw);
+    if ($raw === '') {
+        return null;
+    }
+    $parts = array_map('floatval', explode(',', $raw));
+    return count($parts) === 2 ? $parts : null;
+}
+
+function get_history_cities() {
+    $terms = get_terms(['taxonomy' => 'city', 'hide_empty' => false]);
+    $result = [];
+
+    foreach ($terms as $term) {
+        $photo_id = get_term_meta($term->term_id, 'city_photo', true);
+        $result[] = [
+            'id' => $term->term_id,
+            'slug' => $term->slug,
+            'name' => $term->name,
+            'description' => $term->description,
+            'short' => get_term_meta($term->term_id, 'city_short', true),
+            'photo' => history_resolve_image_url($photo_id),
+            // Отдельно от "photo" — та же миниатюра 150×150, что и у карточек
+            // событий, специально для пина на карте (крупное фото там не нужно
+            // и не помещается в круглый пин, см. HistoricCitiesView.vue).
+            'photoThumb' => $photo_id ? wp_get_attachment_image_url($photo_id, 'thumbnail') : '',
+            'coordinates' => history_parse_city_coord(get_term_meta($term->term_id, 'city_coord', true)),
+            'eventsCount' => (int) $term->count,
+        ];
+    }
+
+    return rest_ensure_response($result);
+}
+
+// Границы века для серверного meta_query по history_date_value (Y-m-d) — те
+// же 5 корзин, что и кнопки быстрого выбора периода в старом плагине
+// (history.php, "замена заголовка архива", setperiod(13,16) и т.п.).
+function history_century_range($century) {
+    $ranges = [
+        '14-17' => ['1300-01-01', '1699-12-31'],
+        '18' => ['1700-01-01', '1799-12-31'],
+        '19' => ['1800-01-01', '1899-12-31'],
+        '20' => ['1900-01-01', '1999-12-31'],
+        '21' => ['2000-01-01', '2099-12-31'],
+    ];
+    return $ranges[$century] ?? null;
+}
+
+// Постранично, по 10 записей — у Кирова уже 666 событий, единым запросом
+// (как у attraction/v1/objects) грузить смысла нет: карте тут делать нечего,
+// лента времени рендерится строго последовательно, поэтому подгружаем по
+// мере прокрутки. Фильтр по веку — тоже на сервере (meta_query по
+// history_date_value), а не на клиенте поверх уже загруженного куска,
+// иначе первая страница при активном фильтре могла бы прийти пустой,
+// хотя подходящие записи есть дальше.
+function get_history_events($request) {
+    $city_slug = $request->get_param('city');
+    $term = get_term_by('slug', $city_slug, 'city');
+
+    if (!$term) {
+        return new WP_Error('city_not_found', 'Город не найден', ['status' => 404]);
+    }
+
+    $page = max(1, intval($request->get_param('page') ?: 1));
+    $per_page = max(1, intval($request->get_param('per_page') ?: 10));
+
+    $meta_query = [];
+    $range = history_century_range($request->get_param('century'));
+    if ($range) {
+        $meta_query[] = [
+            'key' => 'history_date_value',
+            'value' => $range,
+            'compare' => 'BETWEEN',
+            'type' => 'DATE',
+        ];
+    }
+
+    $args = [
+        'post_type' => 'history',
+        'post_status' => 'publish',
+        'posts_per_page' => $per_page,
+        'paged' => $page,
+        // Вторичная сортировка по ID — детерминированный тай-брейк при
+        // совпадающих history_date_value (в летописи Кирова таких десятки:
+        // несколько событий одного года), иначе порядок записей с одинаковой
+        // датой не гарантирован между запросами разных страниц.
+        'orderby' => ['meta_value' => 'ASC', 'ID' => 'ASC'],
+        'meta_key' => 'history_date_value',
+        'meta_query' => $meta_query,
+        'tax_query' => [[
+            'taxonomy' => 'city',
+            'field' => 'slug',
+            'terms' => $city_slug,
+        ]],
+    ];
+
+    // Поиск по названию/тексту события — тот же паттерн, что и в findings/v1
+    // (artifact-finder/rest-api.php): штатный параметр 's' у WP_Query,
+    // остальные условия (город, век, сортировка, пагинация) применяются как обычно.
+    $search = $request->get_param('search');
+    if (!empty($search)) {
+        $args['s'] = sanitize_text_field($search);
+    }
+
+    $query = new WP_Query($args);
+
+    $events = [];
+    foreach ($query->posts as $post) {
+        $thumbnail_id = get_post_thumbnail_id($post->ID);
+        $events[] = [
+            'id' => $post->ID,
+            'title' => get_the_title($post),
+            'dateText' => get_post_meta($post->ID, 'history_date_text', true),
+            'dateValue' => get_post_meta($post->ID, 'history_date_value', true),
+            'imgSrc' => $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : '',
+            'img' => $thumbnail_id,
+        ];
+    }
+
+    return rest_ensure_response([
+        'events' => $events,
+        'pagination' => [
+            'page' => $page,
+            'perPage' => $per_page,
+            'total' => (int) $query->found_posts,
+            'totalPages' => (int) $query->max_num_pages,
+        ],
+    ]);
+}
+
+// Упорядоченные по дате id событий в рамках того же города, что и у $post_id
+// — общий helper для /adjacent и /nearby, аналог format_attraction_nav_item.
+function get_history_city_ordered_ids($post_id) {
+    $terms = wp_get_post_terms($post_id, 'city', ['fields' => 'slugs']);
+    $city_slug = $terms[0] ?? null;
+    if (!$city_slug) {
+        return [];
+    }
+
+    return get_posts([
+        'post_type' => 'history',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        // Тот же тай-брейк по ID, что и в get_history_events — иначе соседство
+        // "Предыдущий/Следующий" при совпадающих датах могло бы плавать между запросами.
+        'orderby' => ['meta_value' => 'ASC', 'ID' => 'ASC'],
+        'meta_key' => 'history_date_value',
+        'fields' => 'ids',
+        'tax_query' => [[
+            'taxonomy' => 'city',
+            'field' => 'slug',
+            'terms' => $city_slug,
+        ]],
+    ]);
+}
+
+function format_history_nav_item($post_id) {
+    $thumbnail_id = get_post_thumbnail_id($post_id);
+    return [
+        'id' => $post_id,
+        'title' => get_the_title($post_id),
+        'dateText' => get_post_meta($post_id, 'history_date_text', true),
+        'imgSrc' => $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : '',
+        'img' => $thumbnail_id,
+    ];
+}
+
+// Предыдущее/следующее событие по дате в рамках того же города.
+function get_history_adjacent($request) {
+    $id = intval($request['id']);
+    $ids = get_history_city_ordered_ids($id);
+    $position = array_search($id, $ids);
+    $result = ['prev' => null, 'next' => null];
+
+    if ($position !== false) {
+        if ($position > 0) {
+            $result['prev'] = format_history_nav_item($ids[$position - 1]);
+        }
+        if ($position < count($ids) - 1) {
+            $result['next'] = format_history_nav_item($ids[$position + 1]);
+        }
+    }
+
+    return rest_ensure_response($result);
+}
+
+// Окно из до 5 событий (2 до, текущее, 2 после) по дате в рамках того же
+// города — для мини-ленты навигации на странице события.
+function get_history_nearby($request) {
+    $id = intval($request['id']);
+    $ids = get_history_city_ordered_ids($id);
+    $position = array_search($id, $ids);
+
+    if ($position === false) {
+        return rest_ensure_response(['nearby' => []]);
+    }
+
+    $window_ids = array_slice($ids, max(0, $position - 2), 5);
+    $nearby = array_map(function ($nid) use ($id) {
+        $item = format_history_nav_item($nid);
+        $item['active'] = ($nid === $id);
+        return $item;
+    }, $window_ids);
+
+    return rest_ensure_response(['nearby' => $nearby]);
+}
 
 // свой апи с фильтром по дате
 add_action('rest_api_init', function () {

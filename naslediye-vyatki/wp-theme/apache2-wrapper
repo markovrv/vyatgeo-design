@@ -1,0 +1,7 @@
+#!/bin/sh
+# Wrapper that runs startup setup before handing off to Apache.
+# Name must start with "apache2" so the WordPress entrypoint
+# (docker-entrypoint.sh) matches the apache2* condition and
+# performs WordPress file initialization.
+sh /usr/local/bin/ensure-htaccess.sh
+exec apache2-foreground

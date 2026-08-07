@@ -1,0 +1,7 @@
+/*
+Theme Name: Наследие Вятки — SPA Shell
+Description: Тема-«оболочка» для headless-режима WordPress: отключает стандартный вывод страниц/записей/архивов и отдаёт статическую прод-сборку Vue-приложения naslediye-vyatki на все фронтовые URL. wp-admin и REST API (/wp-json/) продолжают работать в обычном режиме — тема их не затрагивает.
+Author: Vyatgeo
+Version: 1.0.0
+Text Domain: naslediye-vyatki-theme
+*/

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "copy:theme": "node scripts/copy-dist-to-theme.mjs",
+    "build:theme": "vite build && npm run copy:theme"
   },
   "dependencies": {
     "vue": "^3.5.40",

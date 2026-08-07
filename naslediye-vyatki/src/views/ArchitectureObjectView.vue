@@ -53,10 +53,6 @@ watch(() => route.params.id, (id) => load(id))
 
     <template v-else>
       <section class="intro">
-        <div class="frame">
-          <img v-if="attraction.imgSrc" :src="attraction.imgSrc" :alt="attraction.title" />
-          <div v-else class="frame-empty" aria-hidden="true">🏛</div>
-        </div>
         <h1 class="title">{{ attraction.title }}</h1>
         <p v-if="attraction.place" class="meta">{{ attraction.place }}</p>
       </section>
@@ -67,7 +63,7 @@ watch(() => route.params.id, (id) => load(id))
       </section>
 
       <section v-if="attraction.gallery?.length" class="section gallery-section">
-        <h2 class="gallery-heading">Фотографии</h2>
+        <h2 class="gallery-heading">Изображения</h2>
         <AttractionGallery :items="attraction.gallery" :alt="attraction.title" />
       </section>
 
@@ -129,9 +125,6 @@ watch(() => route.params.id, (id) => load(id))
 .current { color: var(--color-ink) }
 
 .intro { max-width: 1000px; margin: 0 auto; padding: var(--space-3) var(--space-3) 0; text-align: center }
-.frame { border: 1.5px dashed var(--color-border); border-radius: var(--radius); overflow: hidden; background: var(--color-surface); margin-bottom: var(--space-3) }
-.frame img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; filter: sepia(15%) }
-.frame-empty { aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 48px; background: var(--color-birch); opacity: 0.5 }
 .title { font-family: var(--font-display); font-weight: 700; font-size: clamp(28px,3.5vw,42px); margin: 0 0 4px }
 .meta { font-size: 14px; color: var(--color-teal); margin: 0 }
 

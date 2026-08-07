@@ -155,7 +155,16 @@ export function useAttractionThumbnails() {
       const updates = {}
       for (const item of data || []) {
         const sizes = item.media_details?.sizes || {}
-        updates[item.id] = sizes.medium_large?.source_url || sizes.large?.source_url || null
+        // WP генерирует размер, только если оригинал больше его порога — у
+        // небольших фото может не быть ни medium_large (768), ни large (1024).
+        // Раньше в этом случае updates[id] уходил null и карточка молча
+        // откатывалась на миниатюру 150×150 из массового ответа — вместо
+        // этого перебираем оставшиеся варианты вплоть до оригинала (full).
+        updates[item.id] = sizes.medium_large?.source_url
+          || sizes.large?.source_url
+          || sizes.medium?.source_url
+          || sizes.full?.source_url
+          || null
       }
       thumbnails.value = { ...thumbnails.value, ...updates }
     } catch {

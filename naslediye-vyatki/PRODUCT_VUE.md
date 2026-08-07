@@ -26,7 +26,7 @@ The only digital archive that unifies all seven heritage domains of Kirov Oblast
 
 ## Operating Context
 
-Visitors browse the site on desktop and mobile. The landing page serves as a navigational hub with parallax hero, timeline, module grid, video, and crafts carousel. Each module offers a filterable catalog with map and list views, linking to individual detail pages. Two modules — Ethnography and Architecture of Kirov — are wired to their live WordPress REST APIs (see `src/composables/useFindings.js`, `useAttractions.js`, and the shared module patterns documented in `CLAUDE.md`); the remaining modules (Victory Faces, Historic Cities, Nature, Archeology) still run on static prototype data.
+Visitors browse the site on desktop and mobile. The landing page serves as a navigational hub with parallax hero, a real-data timeline of Kirov history milestones, module grid, video, and crafts carousel. Each module offers a filterable catalog with map and list views, linking to individual detail pages. Three modules — Ethnography, Architecture of Kirov, and Historic Cities — are wired to their live WordPress REST APIs (see `src/composables/useFindings.js`, `useAttractions.js`, `useHistory.js`, and the shared module patterns documented in `CLAUDE.md`). Historic Cities has a different shape from the other two: a `city` taxonomy groups events by city, a real Yandex map plots cities by their taxonomy-term coordinates, and each city's timeline is server-paginated (10 events per page, infinite scroll) with server-side century filter and search — the dataset (666+ events for Kirov alone) is too large to load and filter client-side like the other catalogs. The remaining modules (Victory Faces, Nature, Archeology) still run on static prototype data.
 
 ## Capabilities and Constraints
 
@@ -36,10 +36,10 @@ Visitors browse the site on desktop and mobile. The landing page serves as a nav
 - WCAG AA accessibility (4.5:1 contrast, focus-visible, min 44px targets)
 - Design token system via CSS custom properties in `tokens.css`
 - SPA architecture — 15 routes, lazy-loaded
-- Shared components: FilterBar, CatalogCard, CatalogMap, CatalogLayout, KremlinVideo, Pagination, ImageLightbox, MultiSelectFilter, TypeFilterTiles, plus module-specific ones for Architecture (AttractionMap, AttractionControls, AttractionGallery, AttractionPopup, AttractionClusterIcon)
-- Composables: useScrollFadeIn, useHeaderScroll (UI-only) alongside useFindings.js and useAttractions.js (live WP REST API data for Ethnography/Architecture — list, single item, adjacent nav, nearby/similar, image-size thumbnails)
-- Ethnography and Architecture have live WordPress backends (see `CLAUDE.md` for the established integration patterns); the other 4 catalog modules are still static-only
-- Design mockup phase — largely complete for Ethnography/Architecture; remaining modules still deferred
+- Shared components: FilterBar, CatalogCard, CatalogMap, CatalogLayout, KremlinVideo, Pagination, ImageLightbox, MultiSelectFilter, TypeFilterTiles, plus module-specific ones for Architecture (AttractionMap, AttractionControls, AttractionGallery, AttractionPopup, AttractionClusterIcon) and Historic Cities (HistoryCitiesMap — lighter Yandex map with photo pins, no clustering)
+- Composables: useScrollFadeIn, useHeaderScroll (UI-only) alongside useFindings.js, useAttractions.js and useHistory.js (live WP REST API data for Ethnography/Architecture/Historic Cities — list, single item, adjacent nav, nearby/similar, image-size thumbnails)
+- Ethnography, Architecture, and Historic Cities have live WordPress backends (see `CLAUDE.md` for the established integration patterns); the other 3 catalog modules are still static-only
+- Design + live-data integration complete for Ethnography/Architecture/Historic Cities; the remaining 3 modules (Victory Faces, Nature, Archeology) are still design-mockup-only, integration not started
 
 ## Brand Commitments
 
@@ -79,20 +79,23 @@ naslediye-vyatki/
       KremlinVideo.vue   # muted, playbackRate 0.5, IntersectionObserver, disconnect
       Pagination.vue, ImageLightbox.vue, MultiSelectFilter.vue, TypeFilterTiles.vue
       AttractionMap/Controls/Gallery/Popup/ClusterIcon.vue  # Architecture module (Yandex map)
+      HistoryCitiesMap.vue  # Historic Cities module (lighter Yandex map, no clustering/polygons/popup)
     composables/
       useScrollFadeIn.js  # staggered entrance (fadeStyle pattern)
       useHeaderScroll.js  # scrolled + isMobile reactive
       useFindings.js      # live API — Ethnography (findings/v1/*)
       useAttractions.js   # live API — Architecture (attraction/v1/*)
+      useHistory.js       # live API — Historic Cities (history/v1/*): cities, paginated events, thumbnails
+                           # (sessionStorage-backed cache), event detail, adjacent/nearby, homepage milestones
     views/
-      IndexView.vue              # hero+parallax, modules, video, timeline, crafts, quote
+      IndexView.vue              # hero+parallax, modules, video, real-data Kirov milestones timeline, crafts, quote
       VictoryFacesView.vue       # catalog, era filter, 1:1 cards, no map
       VictoryPersonView.vue      # detail: timeline, stat cards, awards
       EthnographyView.vue        # live API: catalog + map view, type tiles, multi-select filters, search
       EthnographyItemView.vue    # live API: detail, gallery+lightbox, adjacent nav, similar items, edit link
-      HistoricCitiesView.vue     # static: catalog + SVG map, era + view filters
-      CityTimelineView.vue       # static: detail: vertical timeline, image links
-      CityEventView.vue          # static: detail: event page, nearby timeline nav
+      HistoricCitiesView.vue     # live API: city selection, real Yandex map (HistoryCitiesMap) + catalog, "coming soon" for cities with no events yet
+      CityTimelineView.vue       # live API: server-paginated timeline per city (10/page, infinite scroll), server-side century filter + search, real event thumbnails
+      CityEventView.vue          # live API: event detail, text-parsed gallery+captions, adjacent + nearby-in-time nav (Architecture-style item-nav/nearby-grid), edit link
       NatureView.vue             # static: catalog + map, type + view filters
       NatureSiteView.vue         # static: detail: landscape, stats
       ArcheologyView.vue         # static: catalog + map, era + type + view filters

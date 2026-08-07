@@ -1,132 +1,177 @@
 <script setup>
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
-import image from '@/assets/img/kremlin.jpeg'
+import { computed, onMounted, watch } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+import { useHistoryEvent, useHistoryAdjacent, useHistoryNearby, useHistoryThumbnails, SITE_URL } from '@/composables/useHistory'
+import AttractionGallery from '@/components/AttractionGallery.vue'
 
-const evt = ref({
-  year: '1580',
-  img: image,
-  caption: 'Монах Трифон Вятский основывает Успенский монастырь',
-  fullText: 'В 1580 году преподобный Трифон Вятский основал на берегу реки Вятки мужской Успенский монастырь — первую каменную обитель Вятской земли. Монастырь быстро стал духовным и культурным центром всего края, вокруг него формировалась городская застройка Хлынова. Трифон лично руководил строительством первого каменного Успенского собора, заложив традицию каменного зодчества на Вятке. Монастырь пережил Смутное время, пожары и перестройки, но сохранил своё значение до наших дней как главный архитектурный ансамбль города.',
-  era: 'Средневековье',
-  location: 'г. Киров, ул. Горбачева, 4',
-})
+const route = useRoute()
+const { event, loading, error, fetchEvent } = useHistoryEvent()
+const { prev, next, fetchAdjacent } = useHistoryAdjacent()
+const { nearby, fetchNearby } = useHistoryNearby()
+const { thumbnails, fetchThumbnails } = useHistoryThumbnails()
 
-const stats = [
-  { n: evt.value.year, label: 'год события' },
-  { n: evt.value.era, label: 'эпоха' },
-  { n: evt.value.location, label: 'место' },
-]
+const editUrl = computed(() => event.value ? `${SITE_URL}wp-admin/post.php?post=${event.value.id}&action=edit` : '')
 
-const nearby = [
-  { year: '1489', label: 'Присоединение к Москве', active: false, alt: false },
-  { year: '1580', label: 'Трифонов монастырь', active: true, alt: false },
-  { year: '1780', label: 'Переименован в Вятку', active: false, alt: false },
-  { year: '1796', label: 'Вятская губерния', active: false, alt: false },
-  { year: '1858', label: 'Публичная библиотека', active: false, alt: true },
-]
+// "Ближайшие даты" внутри окна включают и само текущее событие (см.
+// history/v1/events/{id}/nearby) — в отличие от "Объектов рядом" в
+// Архитектуре, где текущий объект в выдачу не попадает. Карточку текущего
+// события не делаем ссылкой на саму себя.
+const nearbyOthers = computed(() => nearby.value.filter(n => !n.active))
+
+// Карточки крупнее миниатюры из ответа nearby (та же WP-миниатюра 150×150,
+// что и у карточек ленты времени) — подтягиваем более крупный вариант тем же
+// способом, что и в каталоге (см. useHistoryThumbnails).
+function nearbyImg(n) {
+  return thumbnails.value[n.imgId] || n.imgSrc
+}
+watch(nearby, items => fetchThumbnails(items.map(n => n.imgId)))
+
+function load(id) {
+  fetchEvent(id)
+  fetchAdjacent(id)
+  fetchNearby(id)
+}
+
+onMounted(() => load(route.params.id))
+watch(() => route.params.id, id => load(id))
 </script>
 
 <template>
   <div class="page">
     <div class="spacer" />
     <nav class="breadcrumb">
-      <RouterLink to="/">Все разделы</RouterLink><span>/</span>
+      <RouterLink to="/">Главная</RouterLink><span>/</span>
       <RouterLink to="/cities">Исторические города</RouterLink><span>/</span>
-      <RouterLink to="/cities/kirov">Киров</RouterLink><span>/</span>
-      <span class="current">Событие {{ evt.year }} года</span>
+      <RouterLink v-if="event?.citySlug" :to="`/cities/${event.citySlug}`">{{ event.cityName }}</RouterLink><span>/</span>
+      <span class="current">{{ event?.dateText || '…' }}</span>
     </nav>
 
-    <section class="intro">
-      <div class="frame">
-        <img :src="evt.img" :alt="evt.caption" />
-      </div>
-      <h1 class="title">Событие {{ evt.year }} года</h1>
-      <p class="meta">{{ evt.caption }}</p>
-    </section>
+    <p v-if="loading" class="state-msg">Загрузка…</p>
+    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+    <p v-else-if="!event" class="state-msg">Событие не найдено.</p>
 
-    <section class="section">
-      <h2 class="heading">Исторический контекст</h2>
-      <p class="text">{{ evt.fullText }}</p>
+    <template v-else>
+      <section class="intro">
+        <h1 class="title">{{ event.title }}</h1>
+        <p class="meta">{{ event.dateText }}<template v-if="event.cityName"> · {{ event.cityName }}</template></p>
+      </section>
 
-      <div class="stats">
-        <div v-for="s in stats" :key="s.label" class="stat">
-          <strong class="stat-n">{{ s.n }}</strong>
-          <span class="stat-label">{{ s.label }}</span>
-        </div>
-      </div>
-    </section>
+      <section v-if="event.content" class="section">
+        <div class="content" v-html="event.content" />
+      </section>
 
-    <div class="back-bar">
-      <RouterLink to="/cities/kirov" class="cta-btn">← К ленте времени Кирова</RouterLink>
-    </div>
+      <section v-if="event.gallery?.length" class="section gallery-section">
+        <h2 class="gallery-heading">Изображения</h2>
+        <AttractionGallery :items="event.gallery" :alt="event.title" />
+      </section>
 
-    <section class="nearby">
-      <h2 class="nearby-heading">События в истории Кирова</h2>
-      <p class="nearby-sub">Навигация по ленте времени — выберите событие</p>
-      <div class="ctln">
-        <div class="ctln-line" />
-        <RouterLink
-          v-for="n in nearby"
-          :key="n.year"
-          :to="'/cities/kirov/event'"
-          class="ctln-item"
-        >
-          <div class="ctln-dot" :class="{ 'ctln-dot--active': n.active, 'ctln-dot--alt': n.alt }" />
-          <span class="ctln-year" :class="{ 'ctln-year--active': n.active, 'ctln-year--alt': n.alt }">{{ n.year }}</span>
-          <span class="ctln-label" :class="{ 'ctln-label--active': n.active }">{{ n.label }}</span>
+      <nav v-if="prev || next" class="item-nav" aria-label="Навигация по событиям">
+        <RouterLink v-if="prev" :to="`/cities/${event.citySlug}/event/${prev.id}`" class="nav-card nav-card--prev">
+          <div class="nav-thumb" :style="{ backgroundImage: `url(${prev.imgSrc})` }" />
+          <div class="nav-text">
+            <span class="nav-direction">
+              <span class="nav-direction-full">← Предыдущее</span>
+              <span class="nav-direction-short">← Пред.</span>
+            </span>
+            <span class="nav-title" :title="prev.title">{{ prev.title }}</span>
+          </div>
         </RouterLink>
+        <span v-else class="nav-card nav-card--empty" />
+
+        <RouterLink v-if="next" :to="`/cities/${event.citySlug}/event/${next.id}`" class="nav-card nav-card--next">
+          <div class="nav-text">
+            <span class="nav-direction">
+              <span class="nav-direction-full">Следующее →</span>
+              <span class="nav-direction-short">След. →</span>
+            </span>
+            <span class="nav-title" :title="next.title">{{ next.title }}</span>
+          </div>
+          <div class="nav-thumb" :style="{ backgroundImage: `url(${next.imgSrc})` }" />
+        </RouterLink>
+        <span v-else class="nav-card nav-card--empty" />
+      </nav>
+
+      <div class="back-bar">
+        <RouterLink v-if="event.citySlug" :to="`/cities/${event.citySlug}`" class="cta-btn">← К ленте времени</RouterLink>
+        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
       </div>
-      <div class="nearby-nav">
-        <RouterLink to="/cities/kirov/event" class="cta-btn">← Ранее</RouterLink>
-        <RouterLink to="/cities/kirov/event" class="cta-btn">Позднее →</RouterLink>
-      </div>
-    </section>
+
+      <section v-if="nearbyOthers.length" class="section nearby-section">
+        <h2 class="nearby-heading">Ближайшие даты</h2>
+        <div class="nearby-grid">
+          <RouterLink v-for="n in nearbyOthers" :key="n.id" :to="`/cities/${event.citySlug}/event/${n.id}`" class="nearby-card">
+            <div class="nearby-img" :style="{ backgroundImage: `url(${nearbyImg(n)})` }" />
+            <div class="nearby-body">
+              <span class="nearby-date">{{ n.dateText }}</span>
+              <h3 class="nearby-title">{{ n.title }}</h3>
+            </div>
+          </RouterLink>
+        </div>
+      </section>
+    </template>
   </div>
 </template>
 
 <style scoped>
 .page { font-family: var(--font-body) }
 .spacer { height: 80px }
+.state-msg { text-align: center; color: var(--color-muted); padding: var(--space-5) var(--space-3); }
+.state-msg--error { color: var(--color-error, #b3261e); }
 .breadcrumb { max-width: 1000px; margin: 0 auto; padding: var(--space-2) var(--space-3) 0; display: flex; flex-wrap: wrap; gap: var(--space-1); align-items: center; font-size: 13px; color: var(--color-muted) }
 .breadcrumb a { color: var(--color-ochre); text-decoration: none }
 .current { color: var(--color-ink) }
 
-.intro { max-width: 1000px; margin: 0 auto; padding: var(--space-3) var(--space-3) 0 }
-.frame { border: 1.5px dashed var(--color-border); border-radius: var(--radius); overflow: hidden; background: var(--color-surface); margin-bottom: var(--space-3) }
-.frame img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; filter: sepia(20%) }
+.intro { max-width: 1000px; margin: 0 auto; padding: var(--space-3) var(--space-3) 0; text-align: center }
 .title { font-family: var(--font-display); font-weight: 700; font-size: clamp(28px,3.5vw,42px); margin: 0 0 4px }
-.meta { font-size: 14px; color: var(--color-teal); margin-bottom: var(--space-3) }
+.meta { font-size: 14px; color: var(--color-teal); margin: 0 }
 
-.section { max-width: 1000px; margin: 0 auto; padding: 0 var(--space-3) var(--space-5) }
-.heading { font-family: var(--font-display); font-weight: 700; font-size: 22px; margin: 0 0 12px }
-.text { line-height: 1.75; margin-bottom: 1em }
+.section { max-width: 1000px; margin: 0 auto; padding: var(--space-3) var(--space-3) var(--space-5) }
+.content { line-height: 1.75; color: var(--color-ink) }
+.content :deep(img) { max-width: 100%; border-radius: var(--radius); }
+.content :deep(center) { display: block; text-align: center; margin: 1em 0; }
 
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); margin-top: var(--space-4) }
-.stat { text-align: center; padding: var(--space-2); border: 1.5px dashed var(--color-border); border-radius: var(--radius); background: var(--color-surface) }
-.stat-n { display: block; font-family: var(--font-display); font-size: 24px; color: var(--color-teal) }
-.stat-label { font-size: 13px; color: var(--color-muted) }
+.gallery-heading { font-family: var(--font-display); font-weight: 700; font-size: 22px; margin: 0 0 var(--space-2); text-align: center; }
+
+/* minmax(0, 1fr), а не просто 1fr — иначе длинный несжимаемый (white-space:
+   nowrap) заголовок раздувает свою колонку сетки шире 50%, а не обрезается. */
+.item-nav { max-width: 1000px; margin: 0 auto; padding: 0 var(--space-3); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-2); }
+.nav-card {
+  display: flex; align-items: center; gap: var(--space-2); text-decoration: none; color: inherit;
+  background: var(--color-surface); border: 1.5px dashed var(--color-border); border-radius: var(--radius);
+  padding: 10px; transition: border-color 200ms, transform 200ms;
+}
+.nav-card:hover { border-color: var(--color-ochre); transform: translateY(-2px); }
+.nav-card--next { justify-content: flex-end; text-align: right; }
+.nav-card--empty { border-style: solid; border-color: transparent; background: none; }
+.nav-thumb { flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius); background-size: cover; background-position: center; background-color: var(--color-birch); }
+.nav-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.nav-direction { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-teal); }
+.nav-direction-short { display: none; }
+.nav-title { font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--color-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 767px) {
+  .nav-direction-full { display: none; }
+  .nav-direction-short { display: inline; }
+}
 
 .back-bar { padding: var(--space-3); max-width: 1000px; margin: 0 auto; border-top: 1.5px dashed var(--color-border); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2) }
 
-.nearby { background: var(--color-birch); padding: var(--space-5) var(--space-3) var(--space-6) }
-.nearby-heading { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px,2.5vw,28px); text-align: center; margin: 0 0 var(--space-1) }
-.nearby-sub { text-align: center; font-size: 14px; color: var(--color-muted); margin: 0 0 var(--space-5) }
-
-.ctln { position: relative; display: flex; justify-content: space-between; max-width: 600px; margin: 0 auto; padding: 48px 0 0 }
-.ctln-line { position: absolute; left: 0; right: 0; top: 48px; height: 2px; background: var(--color-ochre) }
-.ctln-item { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1; text-align: center; text-decoration: none }
-.ctln-dot { position: absolute; top: 0; transform: translateY(-50%); width: 16px; height: 16px; background: var(--color-ochre); border-radius: 50%; border: 3px solid var(--color-birch); box-shadow: 0 0 0 2px var(--color-ochre); touch-action: manipulation; flex-shrink: 0; transition: transform 200ms }
-.ctln-item:hover .ctln-dot { transform: translateY(-50%) scale(1.25) }
-.ctln-dot--active { width: 18px; height: 18px }
-.ctln-dot--alt { background: var(--color-teal); box-shadow: 0 0 0 2px var(--color-teal) }
-.ctln-year { position: absolute; top: -32px; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--color-ochre); white-space: nowrap }
-.ctln-year--active { font-size: 22px }
-.ctln-year--alt { color: var(--color-teal) }
-.ctln-label { font-size: 12px; color: var(--color-muted); max-width: 80px; line-height: 1.3; margin-top: 20px }
-.ctln-label--active { color: var(--color-ochre) }
-
-.nearby-nav { display: flex; justify-content: center; gap: var(--space-2); margin-top: var(--space-5) }
+.nearby-section { padding-top: 0; }
+.nearby-heading { font-family: var(--font-display); font-weight: 700; font-size: 22px; margin: 0 0 var(--space-2); text-align: center; }
+.nearby-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-2); }
+.nearby-card {
+  display: block; text-decoration: none; color: inherit; background: var(--color-surface);
+  border: 1.5px dashed var(--color-border); border-radius: var(--radius); overflow: hidden;
+  transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out), border-color 150ms;
+}
+.nearby-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--color-ochre); }
+.nearby-img { width: 100%; aspect-ratio: 4/3; background-size: cover; background-position: center; background-color: var(--color-birch); }
+.nearby-body { padding: var(--space-2); }
+.nearby-date {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; color: var(--color-bg);
+  background: var(--color-teal); padding: 2px 10px; border-radius: 999px; margin-bottom: 6px;
+}
+.nearby-title { font-family: var(--font-display); font-weight: 700; font-size: 14px; margin: 0; color: var(--color-ink); line-height: 1.3; }
 
 .cta-btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -138,14 +183,10 @@ const nearby = [
 }
 .cta-btn:hover { background: var(--color-teal); transform: translateY(-1px) }
 
-@media (max-width: 767px) {
-  .ctln { flex-direction: column; align-items: flex-start; gap: var(--space-3) }
-  .ctln-line { display: none }
-  .ctln-dot { width: 24px; height: 24px; position: relative; top: auto; transform: none; flex-shrink: 0 }
-  .ctln-item:hover .ctln-dot { transform: none }
-  .ctln-item { display: flex; gap: var(--space-2); align-items: flex-start }
-  .ctln-year { position: relative; top: auto; left: auto; transform: none; white-space: normal }
-  .ctln-label { margin-top: 0 }
-  .stats { grid-template-columns: 1fr }
+.edit-link {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 10px 6px;
+  font-family: var(--font-body); font-size: 12px; color: var(--color-muted);
+  text-decoration: none; opacity: 0.65; transition: opacity 150ms, color 150ms;
 }
+.edit-link:hover { opacity: 1; color: var(--color-teal); text-decoration: underline; text-underline-offset: 3px; }
 </style>

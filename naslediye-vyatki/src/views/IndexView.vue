@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useScrollFadeIn } from '@/composables/useScrollFadeIn'
+import { useHistoryMilestones } from '@/composables/useHistory'
 import KremlinVideo from '@/components/KremlinVideo.vue'
 import heroImg from '@/assets/img/hero-trifonov.jpg'
 import archImg from '@/assets/img/architecture-dom-vitberga.jpg'
@@ -38,6 +39,11 @@ onMounted(() => {
 })
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
+// Вехи блока "Вятский край: семь веков истории" — реальные события Кирова
+// (модуль "Города"), не выдуманный список дат, см. useHistoryMilestones.
+const { milestones: timelineItems, fetchMilestones } = useHistoryMilestones()
+onMounted(() => fetchMilestones('kirov'))
+
 const modules = [
   { title: 'Лица Победы', to: '/victory', img: victoryFacesImg, desc: 'Портреты и судьбы жителей Кировской области — участников Великой Отечественной войны.', recommended: true },
   { title: 'Этнографическое наследие', to: '/ethnography', img: ethnographyImg, desc: 'Дымковская игрушка, капокорень, кружевоплетение — живые традиции Вятского края.' },
@@ -51,14 +57,6 @@ const crafts = [
   { title: 'Дымковская игрушка', img: craftDymkovo, desc: 'Один из старейших русских народных промыслов — глиняные расписные фигурки из слободы Дымково. Их история насчитывает более 400 лет. Яркие геометрические узоры делают дымковскую игрушку символом Вятского края.' },
   { title: 'Изделия из капокорня', img: craftKapokoren, desc: 'Уникальный вятский промысел — обработка капа и капокорня. Природный рисунок древесины превращается в неповторимые шкатулки, вазы и декоративные панно. Каждое изделие единственно в своём роде.' },
   { title: 'Вятское кружевоплетение', img: craftKruzhevo, desc: 'Кружевоплетение на коклюшках пришло на Вятку в XVIII веке: строгий геометрический орнамент, белый или кремовый лён, тонкие ажурные узоры. Украшало одежду и интерьеры купеческих особняков.' },
-]
-
-const timelineItems = [
-  { year: 'XII в.', text: 'первое упоминание Вятки в летописях' },
-  { year: '1580', text: 'основание Успенского Трифонова монастыря' },
-  { year: '1780', text: 'учреждение Вятского наместничества' },
-  { year: '1936', text: 'образование Кировской области' },
-  { year: '2026', text: '90-летний юбилей региона' },
 ]
 
 const currentCraft = computed(() => crafts[craftIndex.value])
@@ -119,11 +117,11 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
 
       <div class="tl">
         <div class="tl-line" />
-        <div v-for="t in timelineItems" :key="t.year" class="tl-item">
+        <RouterLink v-for="t in timelineItems" :key="t.id" :to="`/cities/kirov/event/${t.id}`" class="tl-item">
           <div class="tl-dot" />
           <span class="tl-year">{{ t.year }}</span>
-          <span class="tl-text">{{ t.text }}</span>
-        </div>
+          <span class="tl-text">{{ t.title }}</span>
+        </RouterLink>
       </div>
     </section>
 
@@ -219,8 +217,10 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
 
 .tl { position: relative; display: flex; justify-content: space-between; padding: var(--space-5) 0 0 }
 .tl-line { position: absolute; left: 0; right: 0; top: 64px; height: 2px; background: var(--color-ochre) }
-.tl-item { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1; text-align: center }
-.tl-dot { width: 16px; height: 16px; background: var(--color-ochre); border-radius: 50%; border: 3px solid var(--color-birch); box-shadow: 0 0 0 2px var(--color-ochre); position: absolute; top: 0; transform: translateY(-50%); touch-action: manipulation }
+.tl-item { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1; text-align: center; text-decoration: none; color: inherit }
+.tl-dot { width: 16px; height: 16px; background: var(--color-ochre); border-radius: 50%; border: 3px solid var(--color-birch); box-shadow: 0 0 0 2px var(--color-ochre); position: absolute; top: 0; transform: translateY(-50%); touch-action: manipulation; transition: transform 200ms }
+.tl-item:hover .tl-dot { transform: translateY(-50%) scale(1.2) }
+.tl-item:hover .tl-text { color: var(--color-teal) }
 .tl-year { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--color-ochre-dark); white-space: nowrap }
 .tl-text { font-size: 13px; color: var(--color-muted); max-width: 120px; line-height: 1.4; margin-top: var(--space-3) }
 @media (max-width: 767px) {

@@ -1,0 +1,3 @@
+# Генерируется `npm run build:theme` (vite build + scripts/copy-dist-to-theme.mjs),
+# в репозитории не хранится.
+dist

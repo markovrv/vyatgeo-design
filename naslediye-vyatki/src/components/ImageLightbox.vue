@@ -33,6 +33,33 @@ const SCALE_MAX = 5
 const current = computed(() => props.images[index.value])
 const filterCss = computed(() => `brightness(${brightness.value}%) contrast(${contrast.value}%)`)
 
+// Реальный размер картинки "по размеру экрана" (как раньше давал CSS
+// object-fit: contain) — считаем сами в пикселях и от него уже масштабируем,
+// вместо object-fit + transform: scale(). object-fit не меняет layout-размер
+// элемента, поэтому в момент scale>1 картинка "прыгала" на свой натуральный
+// (часто в разы больший) пиксельный размер — отсюда рывок при первом же
+// шаге зума.
+const fitWidth = ref(0)
+const fitHeight = ref(0)
+
+function computeFitSize() {
+  const img = imgEl.value
+  const wrapper = wrapperEl.value
+  if (!img || !wrapper || !img.naturalWidth || !img.naturalHeight) return
+  const wrapperRatio = wrapper.clientWidth / wrapper.clientHeight
+  const imgRatio = img.naturalWidth / img.naturalHeight
+  if (imgRatio > wrapperRatio) {
+    fitWidth.value = wrapper.clientWidth
+    fitHeight.value = wrapper.clientWidth / imgRatio
+  } else {
+    fitHeight.value = wrapper.clientHeight
+    fitWidth.value = wrapper.clientHeight * imgRatio
+  }
+}
+
+const displayWidth = computed(() => fitWidth.value ? fitWidth.value * scale.value : null)
+const displayHeight = computed(() => fitHeight.value ? fitHeight.value * scale.value : null)
+
 function loadSettings() {
   try {
     const b = localStorage.getItem('findingGallery_brightness')
@@ -60,14 +87,55 @@ function notify(message) {
 
 function resetZoom() {
   scale.value = 1
-  if (imgEl.value) imgEl.value.style.transformOrigin = 'center center'
+  if (wrapperEl.value) {
+    wrapperEl.value.scrollLeft = 0
+    wrapperEl.value.scrollTop = 0
+  }
 }
 
-function zoomIn() { scale.value = Math.min(SCALE_MAX, +(scale.value + SCALE_STEP).toFixed(2)) }
-function zoomOut() { scale.value = Math.max(SCALE_MIN, +(scale.value - SCALE_STEP).toFixed(2)) }
+function clampScale(next) { return Math.max(SCALE_MIN, Math.min(SCALE_MAX, +next.toFixed(2))) }
+
+// Масштабирование "от точки": точка контента под (pointerX, pointerY)
+// остаётся на том же месте экрана после смены scale — вместо CSS
+// transform-origin, который считает не относительно точки на экране, а
+// относительно самого элемента, и из-за этого при масштабировании не от
+// центра часть картинки "уезжает" в отрицательные координаты, недоступные
+// прокруткой (см. также margin: auto в стилях — вторая часть той же
+// проблемы с непрокручиваемым верхним/левым краем).
+function zoomAt(nextScale, pointerX, pointerY) {
+  const wrapper = wrapperEl.value
+  const prevScale = scale.value
+  if (nextScale === prevScale) return
+  if (!wrapper) { scale.value = nextScale; return }
+
+  const contentX = wrapper.scrollLeft + pointerX
+  const contentY = wrapper.scrollTop + pointerY
+  const ratio = nextScale / prevScale
+
+  scale.value = nextScale
+  nextTick(() => {
+    wrapper.scrollLeft = contentX * ratio - pointerX
+    wrapper.scrollTop = contentY * ratio - pointerY
+  })
+}
+
+function zoomIn() {
+  const wrapper = wrapperEl.value
+  zoomAt(clampScale(scale.value + SCALE_STEP), (wrapper?.clientWidth ?? 0) / 2, (wrapper?.clientHeight ?? 0) / 2)
+}
+function zoomOut() {
+  const wrapper = wrapperEl.value
+  zoomAt(clampScale(scale.value - SCALE_STEP), (wrapper?.clientWidth ?? 0) / 2, (wrapper?.clientHeight ?? 0) / 2)
+}
 
 function goTo(i) {
   index.value = (i + props.images.length) % props.images.length
+  // Сбрасываем и посчитанный размер — иначе до срабатывания @load у новой
+  // картинки короткое время показывался бы habitat-размер предыдущей
+  // (другого соотношения сторон). Пока идёт загрузка, работает CSS-фолбэк
+  // (max-width/max-height/object-fit), как и при самом первом открытии.
+  fitWidth.value = 0
+  fitHeight.value = 0
   resetZoom()
   emit('change-index', index.value)
 }
@@ -100,10 +168,8 @@ function onWheel(e) {
   if (!zoomEnabled.value) return
   e.preventDefault()
   const rect = wrapperEl.value.getBoundingClientRect()
-  const xPercent = ((e.clientX - rect.left) / rect.width) * 100
-  const yPercent = ((e.clientY - rect.top) / rect.height) * 100
-  if (imgEl.value) imgEl.value.style.transformOrigin = `${xPercent}% ${yPercent}%`
-  e.deltaY < 0 ? zoomIn() : zoomOut()
+  const nextScale = clampScale(scale.value + (e.deltaY < 0 ? SCALE_STEP : -SCALE_STEP))
+  zoomAt(nextScale, e.clientX - rect.left, e.clientY - rect.top)
 }
 
 function onMouseDown(e) {
@@ -139,13 +205,16 @@ onMounted(async () => {
   loadSettings()
   document.body.style.overflow = 'hidden'
   window.addEventListener('keydown', onKeydown)
+  window.addEventListener('resize', computeFitSize)
   await nextTick()
+  computeFitSize()
   resetZoom()
 })
 
 onUnmounted(() => {
   document.body.style.overflow = ''
   window.removeEventListener('keydown', onKeydown)
+  window.removeEventListener('resize', computeFitSize)
   clearTimeout(notificationTimer)
 })
 </script>
@@ -213,8 +282,16 @@ onUnmounted(() => {
         >
           <img
             ref="imgEl" :src="current" :alt="alt"
-            :style="{ transform: `scale(${scale})`, filter: filterCss, cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in' }"
+            :style="{
+              width: displayWidth ? `${displayWidth}px` : undefined,
+              height: displayHeight ? `${displayHeight}px` : undefined,
+              maxWidth: displayWidth ? 'none' : undefined,
+              maxHeight: displayHeight ? 'none' : undefined,
+              filter: filterCss,
+              cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+            }"
             @click="scale <= 1 && zoomIn()"
+            @load="computeFitSize"
           />
         </div>
 
@@ -249,10 +326,8 @@ onUnmounted(() => {
 }
 @keyframes lightbox-fade-in { from { opacity: 0 } to { opacity: 1 } }
 .lightbox-container {
-  width: 95%; height: 95%; background: var(--color-ink); border-radius: var(--radius-lg, 8px);
+  width: 100%; height: 100%; background: var(--color-ink);
   display: flex; flex-direction: column; position: relative; overflow: hidden;
-  box-shadow: var(--shadow-lg, 0 8px 32px rgba(0,0,0,0.4));
-  border: 1.5px solid rgba(232,223,200,0.15);
 }
 .lightbox-controls {
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-1);
@@ -276,19 +351,24 @@ onUnmounted(() => {
 .ctrl-btn--close:hover { border-color: var(--color-oak); color: var(--color-bg); background: rgba(232,223,200,0.12); }
 .icon { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 
-.lightbox-image-area { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: var(--space-3); overflow: hidden; min-height: 0; }
+.lightbox-image-area { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden; min-height: 0; }
 .image-wrapper {
-  width: 100%; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%; overflow: hidden; display: flex;
   position: relative;
 }
 .image-wrapper.zoomed { overflow: auto; cursor: grab; }
 .image-wrapper.dragging { cursor: grabbing; }
 .image-wrapper img {
-  display: block; max-width: 100%; max-height: 100%; object-fit: contain;
-  transition: transform 200ms ease, filter 200ms ease; transform-origin: center center; user-select: none;
+  /* margin: auto вместо align-items/justify-content: center на .image-wrapper —
+     центрирует картинку, пока она меньше контейнера, но (в отличие от
+     центрирования на самом флекс-контейнере) не обрезает прокрутку к
+     верхнему/левому краю, когда картинка становится больше контейнера при
+     зуме: без этого приёма overflow в сторону начала осей недоступен прокруткой
+     ни в одном браузере — известная особенность flexbox-центрирования. */
+  display: block; margin: auto; max-width: 100%; max-height: 100%; object-fit: contain;
+  transition: filter 200ms ease; user-select: none;
   border-radius: var(--radius);
 }
-.image-wrapper.zoomed img { max-width: none; max-height: none; }
 
 .nav-btn {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;

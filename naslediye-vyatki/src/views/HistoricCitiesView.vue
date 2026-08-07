@@ -1,71 +1,94 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import heroCities from '@/assets/img/historic-cities.jpg'
-import kremlinImg from '@/assets/img/kremlin.jpeg'
 import CatalogLayout from '@/components/CatalogLayout.vue'
-import CatalogMap from '@/components/CatalogMap.vue'
 import FilterBar from '@/components/FilterBar.vue'
+import HistoryCitiesMap from '@/components/HistoryCitiesMap.vue'
+import { useHistoryCities } from '@/composables/useHistory'
 
-const era = ref('all')
+const placeholderImg = heroCities
+const { cities, loading, error, fetchCities } = useHistoryCities()
+onMounted(fetchCities)
+
 const viewMode = ref('map')
-
-const cities = [
-  { slug: 'kirov', name: 'Киров', x: 380, y: 300, era: 'early', meta: 'Основан: 1374 · Областной центр', desc: 'Главный город области: от древнего поселения новгородцев до крупного промышленного и культурного центра.', img: kremlinImg },
-  { slug: 'kotelnich', name: 'Котельнич', x: 240, y: 200, era: 'early', meta: 'Первое упоминание: 1143', desc: 'Древний город на реке Вятке, известный уникальным палеонтологическим местонахождением.', img: heroCities },
-  { slug: 'orlov', name: 'Орлов', x: 300, y: 260, era: 'mid', meta: 'Основан: 1459', desc: 'Небольшой купеческий город с застройкой провинциального классицизма.', img: heroCities },
-  { slug: 'slobodskoy', name: 'Слободской', x: 430, y: 220, era: 'mid', meta: 'Основан: 1505', desc: 'Крупнейший торговый город Вятской земли с выдающимися памятниками архитектуры.', img: heroCities },
-  { slug: 'yaransk', name: 'Яранск', x: 220, y: 400, era: 'late', meta: 'Первое упоминание: 1584', desc: 'Культурный центр юго-запада области с архитектурными памятниками классицизма.', img: heroCities },
-  { slug: 'malmyzh', name: 'Малмыж', x: 500, y: 460, era: 'mid', meta: 'Основан: XVI век', desc: 'Торговый центр на пути из Вятки в Казань и Пермь.', img: heroCities },
-  { slug: 'urzhum', name: 'Уржум', x: 400, y: 500, era: 'late', meta: 'Основан: 1584 · Родина С.М. Кирова', desc: 'Город, известный как место рождения советского государственного деятеля.', img: heroCities },
-]
-
-const eraOptions = [{ value: 'all', label: 'Все века' }, { value: 'early', label: 'До XV века' }, { value: 'mid', label: 'XV–XVI века' }, { value: 'late', label: 'Конец XVI века' }]
 const viewOptions = [{ value: 'map', label: 'На карте' }, { value: 'catalog', label: 'Каталог' }]
 
-const filtered = computed(() => era.value === 'all' ? cities : cities.filter(c => c.era === era.value))
+// На карту попадают только города с заданными координатами (город без
+// координат — только карточка в каталоге, пин рисовать не из чего).
+const mapPoints = computed(() => cities.value
+  .filter(c => c.coordinates)
+  .map(c => ({ id: c.id, slug: c.slug, name: c.name, photoThumb: c.photoThumb, coordinates: c.coordinates })))
 </script>
 
 <template>
-  <CatalogLayout :heroImg="heroCities" eyebrow="Исторические города · К 90-летию Кировской области" title="Исторические города Вятской земли" subtitle="Семь городов, каждый из которых хранит свою уникальную историю — от крепостей и купеческих центров до современных городов" :gridCount="filtered.length" :showGrid="false">
+  <CatalogLayout
+    :heroImg="heroCities"
+    eyebrow="Исторические города · К 90-летию Кировской области"
+    title="Исторические города Вятской земли"
+    subtitle="Семь городов, каждый из которых хранит свою уникальную историю — от крепостей и купеческих центров до современных городов"
+    :gridCount="cities.length"
+    :showGrid="false"
+  >
     <template #heading>Города на карте и в каталоге</template>
     <template #description>Семь исторических городов: Киров (Вятка / Хлынов), Котельнич, Орлов, Слободской, Яранск, Малмыж и Уржум. Нажмите на метку или карточку, чтобы открыть ленту времени города.</template>
-    <template #filters>
-      <FilterBar label="По веку основания" :options="eraOptions" :active="era" @select="v => era = v" />
-      <FilterBar label="Режим отображения" :options="viewOptions" :active="viewMode" @select="v => viewMode = v" />
-    </template>
-    <template v-if="viewMode === 'map'" #map>
-      <CatalogMap viewBox="0 0 800 620">
-        <path d="M 100 70 L 660 60 L 740 190 L 700 360 L 640 490 L 540 570 L 360 590 L 180 560 L 90 430 L 60 260 L 70 140 Z" fill="#E8DFC8" stroke="#C27E3A" stroke-width="1.5" stroke-dasharray="6 3" />
-        <path d="M 140 130 Q 220 180 300 250 Q 380 320 440 360 Q 540 420 620 400" fill="none" stroke="#3C7A8C" stroke-width="3" opacity="0.5" />
-        <template v-for="c in filtered" :key="c.slug">
-          <a :href="`/cities/${c.slug}`" class="map-marker">
-            <circle :cx="c.x" :cy="c.y" r="9" fill="#C27E3A" stroke="#FAF9F4" stroke-width="2" class="map-dot" />
-            <text :x="c.x > 550 ? c.x - 60 : c.x + 14" :y="c.y + 4" class="map-label">{{ c.name }}</text>
-          </a>
+
+    <template #map>
+      <div class="map-shell">
+        <div class="controls" :class="{ 'controls--floating': viewMode === 'map' }">
+          <FilterBar :options="viewOptions" :active="viewMode" @select="v => viewMode = v" />
+        </div>
+        <template v-if="viewMode === 'map'">
+          <p v-if="loading" class="state-msg">Загрузка…</p>
+          <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+          <HistoryCitiesMap v-else :points="mapPoints" />
         </template>
-      </CatalogMap>
+      </div>
     </template>
+
     <template #grid>
-      <div v-if="viewMode === 'catalog'" class="grid-count">Показано: {{ filtered.length }} городов</div>
-      <template v-if="viewMode === 'catalog'" v-for="c in filtered" :key="c.slug">
-        <RouterLink :to="`/cities/${c.slug}`" class="city-card">
-          <div class="city-img" :style="{ backgroundImage: `url(${c.img})` }" />
-          <div class="city-body">
-            <h3 class="city-name">{{ c.name }}</h3>
-            <p class="city-meta">{{ c.meta }}</p>
-            <p class="city-desc">{{ c.desc }}</p>
-            <span class="btn-sm">Лента времени →</span>
-          </div>
-        </RouterLink>
+      <template v-if="viewMode === 'catalog'">
+        <p v-if="loading" class="state-msg">Загрузка…</p>
+        <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+        <template v-else>
+          <div class="grid-count">Показано: {{ cities.length }} городов</div>
+          <template v-for="c in cities" :key="c.slug">
+            <RouterLink v-if="c.eventsCount > 0" :to="`/cities/${c.slug}`" class="city-card">
+              <div class="city-img" :style="{ backgroundImage: `url(${c.photo || placeholderImg})` }" />
+              <div class="city-body">
+                <h3 class="city-name">{{ c.name }}</h3>
+                <p class="city-desc">{{ c.short }}</p>
+                <span class="btn-sm">Лента времени →</span>
+              </div>
+            </RouterLink>
+            <div v-else class="city-card city-card--soon">
+              <div class="city-img" :style="{ backgroundImage: `url(${c.photo || placeholderImg})` }" />
+              <div class="city-body">
+                <h3 class="city-name">{{ c.name }}</h3>
+                <p class="city-desc">{{ c.short }}</p>
+                <span class="badge-soon">Скоро</span>
+              </div>
+            </div>
+          </template>
+        </template>
       </template>
     </template>
   </CatalogLayout>
 </template>
 
 <style scoped>
-.map-dot { transition: fill 200ms; cursor: pointer }
-.map-dot:hover { fill: var(--color-teal) }
-.map-label { font-family: var(--font-body); font-size: 13px; fill: var(--color-ink); pointer-events: none }
+.state-msg { grid-column: 1 / -1; text-align: center; color: var(--color-muted); padding: var(--space-5) var(--space-3); }
+.state-msg--error { color: var(--color-error, #b3261e); }
+
+/* Панель управления — плавает над картой в режиме карты; в режиме каталога
+   это обычная панель в потоке, сразу над списком карточек (тот же паттерн,
+   что и в ArchitectureView.vue). Отступ от левого/правого края — одинаковые
+   16px в обоих режимах, чтобы кнопки не «прыгали» по горизонтали. */
+.map-shell { position: relative; margin-bottom: var(--space-3); }
+.controls { margin: 0 16px var(--space-2); padding-top: 16px; }
+.controls--floating {
+  position: absolute; top: 16px; left: 16px; right: 16px; z-index: 20; margin: 0; padding-top: 0;
+}
+
 .grid-count { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--color-muted); margin-bottom: var(--space-3) }
 .btn-sm {
   display: inline-flex; align-items: center; justify-content: center;
@@ -80,9 +103,14 @@ const filtered = computed(() => era.value === 'all' ? cities : cities.filter(c =
   transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out);
 }
 .city-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--color-ochre) }
+.city-card--soon { opacity: 0.6; filter: grayscale(40%); cursor: default }
 .city-img { width: 100%; aspect-ratio: 16/9; background-color: var(--color-birch); background-size: cover; background-position: center }
 .city-body { padding: var(--space-3) }
-.city-name { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--color-ink); margin: 0 0 4px }
-.city-meta { font-size: 13px; color: var(--color-teal); letter-spacing: 0.04em; margin: 0 0 8px }
-.city-desc { font-size: 14px; color: var(--color-muted); line-height: 1.6; margin: 0 }
+.city-name { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--color-ink); margin: 0 0 8px }
+.city-desc { font-size: 14px; color: var(--color-muted); line-height: 1.6; margin: 0 0 var(--space-2) }
+.badge-soon {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--color-muted); border: 1.5px dashed var(--color-border);
+  border-radius: 999px; padding: 4px 12px;
+}
 </style>
