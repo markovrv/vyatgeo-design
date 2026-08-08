@@ -191,6 +191,77 @@ function nv_spa_render_app() {
     header('Cache-Control: no-cache, must-revalidate');
 
     $html = file_get_contents(NV_SPA_INDEX_FILE);
-    $html = str_replace('</head>', nv_spa_customizer_script() . '</head>', $html);
+    $html = str_replace('</head>', nv_spa_customizer_script() . nv_spa_admin_bar_head_html() . '</head>', $html);
+
+    if (is_admin_bar_showing()) {
+        $html = nv_spa_add_body_class($html, 'admin-bar');
+        $html = nv_spa_inject_after_body_open($html, nv_spa_admin_bar_body_html());
+    }
+
     echo $html;
+}
+
+/**
+ * Панель администратора (wp-admin toolbar) поверх статического SPA.
+ *
+ * dist/index.html отдаётся как обычный статический файл — без вызова
+ * wp_head()/wp_footer(), на которые в стандартной теме вешаются enqueue
+ * и печать ассетов панели, поэтому сама по себе она не появляется, хотя
+ * WP ей полностью управляет (видимость, пункты меню, права) через свой
+ * стандартный механизм. К моменту вызова этой функции панель уже
+ * инициализирована: _wp_admin_bar_init() висит на том же хуке
+ * template_redirect с приоритетом 0, но зарегистрирован раньше
+ * nv_spa_bootstrap (это дефолтный хук самого ядра, подключается до того,
+ * как загружается functions.php темы) — глобальный $wp_admin_bar и очередь
+ * ассетов admin-bar/dashicons уже готовы, остаётся только вручную
+ * допечатать их в статическую разметку.
+ *
+ * is_admin_bar_showing() — тот же стандартный чек, что использует само
+ * ядро: залогиненный пользователь и его личная настройка «Показывать
+ * панель инструментов» (профиль → показывать панель при просмотре сайта).
+ * Отдельная проверка на роль/capability не нужна — на проекте это и так
+ * единственный админ-аккаунт, а поведение остаётся штатным для WP.
+ */
+function nv_spa_admin_bar_head_html() {
+    if (!is_admin_bar_showing()) {
+        return '';
+    }
+
+    // В обычной теме эти две функции вызывает wp_enqueue_scripts() из
+    // wp_head() — добавляют на хендл admin-bar инлайн-CSS (отступ под
+    // панель сверху страницы + скрытие панели при печати).
+    wp_enqueue_admin_bar_bump_styles();
+    wp_enqueue_admin_bar_header_styles();
+
+    ob_start();
+    wp_styles()->do_items(['admin-bar']);
+    return ob_get_clean();
+}
+
+function nv_spa_admin_bar_body_html() {
+    if (!is_admin_bar_showing()) {
+        return '';
+    }
+
+    ob_start();
+    wp_admin_bar_render();
+    // Скрипт — после разметки, а не до: admin-bar.js навешивает обработчики
+    // на #wpadminbar через hoverIntent, элемент должен уже быть в DOM.
+    wp_scripts()->do_items(['admin-bar']);
+    return ob_get_clean();
+}
+
+function nv_spa_add_body_class($html, $class) {
+    if (strpos($html, '<body>') !== false) {
+        return str_replace('<body>', '<body class="' . esc_attr($class) . '">', $html);
+    }
+    return preg_replace_callback('/<body\b([^>]*)class="([^"]*)"/i', function ($m) use ($class) {
+        return '<body' . $m[1] . 'class="' . esc_attr($class) . ' ' . $m[2] . '"';
+    }, $html, 1);
+}
+
+function nv_spa_inject_after_body_open($html, $insert) {
+    return preg_replace_callback('/<body\b[^>]*>/i', function ($m) use ($insert) {
+        return $m[0] . $insert;
+    }, $html, 1);
 }

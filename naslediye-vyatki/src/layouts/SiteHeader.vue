@@ -132,3 +132,27 @@ onUnmounted(() => window.removeEventListener('keydown', onEscape))
 }
 .sidebar-link.active { color: var(--color-ochre); }
 </style>
+
+<style>
+/* Смещение шапки/сайдбара под панель администратора WordPress (не scoped —
+ * body.admin-bar задаётся темой WP снаружи Vue-приложения, см.
+ * wp-theme/naslediye-vyatki-theme/functions.php).
+ *
+ * WP пушит обычный контент вниз через margin-top на <html> — но margin
+ * предка не действует на потомков с position: fixed, а .site-header/.sidebar
+ * зафиксированы у верхнего края сами по себе, поэтому без этой правки
+ * панель администратора перекрывает шапку сайта вместо того, чтобы её
+ * сдвигать. Высота (32px) и брейкпоинт (782px, панель становится 46px на
+ * тач-устройствах) — те же, что использует сама панель администратора
+ * (wp-includes/css/admin-bar.min.css), чтобы сдвиг всегда совпадал с её
+ * реальной высотой.
+ */
+@media screen {
+  body.admin-bar .site-header { top: 32px; }
+  body.admin-bar .sidebar { top: 32px; height: calc(100vh - 32px); }
+}
+@media screen and (max-width: 782px) {
+  body.admin-bar .site-header { top: 46px; }
+  body.admin-bar .sidebar { top: 46px; height: calc(100vh - 46px); }
+}
+</style>

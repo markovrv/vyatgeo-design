@@ -43,8 +43,12 @@ add_action('rest_api_init', function () {
                 return get_post_meta($object["id"], $field_name, true);
             },
             'update_callback' => function ($value, $object, $field_name) {
-                if (!$value)  return 0;
-                return update_post_meta($object->ID, $field_name, $value);
+                // register_rest_field вызывает update_callback только когда ключ
+                // реально присутствует в теле запроса — значит, явно переданная
+                // пустая строка/null означает "очистить поле", а не "оставить как
+                // есть". Раньше `if (!$value) return 0;` тихо игнорировал такие
+                // запросы, и поле было невозможно очистить через REST.
+                return update_post_meta($object->ID, $field_name, $value ?? '');
             },
             'schema' => null
         ]);
@@ -89,6 +93,7 @@ function display_attraction_summarize($attraction) {
 }
 
 function display_attraction_map_box($attraction) {
+	wp_enqueue_script('YandexMapAPI-alt-js', 'https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=ba0d0589-f903-43e9-b3d3-cc290988b69a&ver=2.1');
     wp_enqueue_script('my_yamap_script', plugin_dir_url(file: __FILE__) . '/js/adminMap.js');
     $attraction_coord =  esc_html(get_post_meta($attraction->ID, 'attraction_coord', true));
     $attraction_place =  esc_html(get_post_meta($attraction->ID, 'attraction_place', true));
@@ -112,6 +117,13 @@ function display_attraction_map_box($attraction) {
 
 // сохранение своих полей в админке
 add_action('save_post', function ($attraction_id, $attraction) {
+    // При запросах через REST API (SPA, скрипты импорта и т.п.) $_POST всегда
+    // пуст — значения полей приходят через register_rest_field и сохраняются
+    // его update_callback независимо от этого хука. Без этой проверки любое
+    // REST-обновление поста обнуляло бы все мета-поля объекта до пустой строки.
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     global $wpdb;
     if ($attraction->post_type == 'attraction') {
         if (isset ($_POST['attraction_summarize']) && $_POST['attraction_summarize'] != '') {

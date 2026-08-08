@@ -37,12 +37,21 @@ add_action('rest_api_init', function () {
                 return get_post_meta($object["id"], $field, true);
             },
             'update_callback' => function ($value, $object) use ($field) {
-                if ($field === 'area' || $field === 'begin_time' || $field === 'end_time') {
-                    if (!$value || !is_numeric($value)) return;
-                } elseif (!$value) {
-                    return;
+                // update_callback вызывается только когда ключ реально есть в
+                // теле запроса — явные null/''/[] означают "очистить поле", а
+                // не повод молча ничего не делать (раньше `if (!$value) return;`
+                // это игнорировал, из-за чего поле было невозможно очистить
+                // через REST).
+                if (in_array($field, ['area', 'begin_time', 'end_time'], true)) {
+                    if ($value !== null && $value !== '' && !is_numeric($value)) {
+                        return new WP_Error('rest_invalid_param', "Поле {$field} должно быть числом.", ['status' => 400]);
+                    }
+                    return update_post_meta($object->ID, $field, $value ?? '');
                 }
-                return update_post_meta($object->ID, $field, $value);
+                if ($field === 'geopoints_pages') {
+                    return update_post_meta($object->ID, $field, is_array($value) ? $value : []);
+                }
+                return update_post_meta($object->ID, $field, $value ?? '');
             },
             'schema' => null
         ]);
@@ -137,6 +146,13 @@ add_action('created_headman', 'headman_save_term_fields');
 add_action('edited_headman', 'headman_save_term_fields');
 
 function headman_save_term_fields($term_id) {
+    // REST-запросы (создание/обновление термина с meta через register_rest_field)
+    // сохраняют headman-color/headman-image-id собственным механизмом; без этой
+    // проверки $_POST при REST пуст, и функция бы удаляла оба поля через
+    // delete_term_meta при каждом REST-обновлении термина.
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     if (isset($_POST['headman-color'])) {
         update_term_meta($term_id, 'headman-color', sanitize_text_field($_POST['headman-color']));
     } else {
@@ -180,20 +196,18 @@ add_action('rest_api_init', function () {
             return get_term_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_term_meta($object->term_id, $field_name, $value);
+            return update_term_meta($object->term_id, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
-    
+
     register_rest_field('headman', 'headman-image', [
         'get_callback' => function ($object, $field_name, $request) {
             $image_id = get_term_meta($object["id"], 'headman-image-id', true);
             return $image_id ? wp_get_attachment_url($image_id) : null;
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_term_meta($object->term_id, 'headman-image-id', $value);
+            return update_term_meta($object->term_id, 'headman-image-id', $value ?? '');
         },
         'schema' => null
     ]);
@@ -340,6 +354,11 @@ add_action('created_deep', 'deep_save_term_fields');
 add_action('edited_deep', 'deep_save_term_fields');
 
 function deep_save_term_fields($term_id) {
+    // См. аналогичный комментарий у headman_save_term_fields — $_POST пуст
+    // при REST, deep-color сохраняется через register_rest_field отдельно.
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     if (isset($_POST['deep-color'])) {
         update_term_meta($term_id, 'deep-color', sanitize_text_field($_POST['deep-color']));
     } else {
@@ -364,9 +383,7 @@ add_action('rest_api_init', function () {
             return get_term_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value)
-                return;
-            return update_term_meta($object->ID, $field_name, $value);
+            return update_term_meta($object->term_id, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -444,6 +461,11 @@ add_action('created_workdate', 'workdate_save_term_fields');
 add_action('edited_workdate', 'workdate_save_term_fields');
 
 function workdate_save_term_fields($term_id){
+    // См. аналогичный комментарий у headman_save_term_fields — $_POST пуст
+    // при REST, workdate-start/stop/npp сохраняются через register_rest_field.
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     if (isset($_POST['workdate-start'])) {
         update_term_meta($term_id, 'workdate-start', sanitize_text_field($_POST['workdate-start']));
     } else {
@@ -481,8 +503,12 @@ add_action('rest_api_init', function () {
             return get_term_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_term_meta($object->ID, $field_name, $value);
+            // Явные null/'' — запрос на очистку, а не повод молча ничего не
+            // делать. Заодно поправлено $object->ID → $object->term_id: для
+            // объекта таксономии (WP_Term) свойства ID не существует, поэтому
+            // update_term_meta раньше вызывался с $term_id = null и тихо не
+            // сохранял значение ни при каком $value.
+            return update_term_meta($object->term_id, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -491,8 +517,12 @@ add_action('rest_api_init', function () {
             return get_term_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_term_meta($object->ID, $field_name, $value);
+            // Явные null/'' — запрос на очистку, а не повод молча ничего не
+            // делать. Заодно поправлено $object->ID → $object->term_id: для
+            // объекта таксономии (WP_Term) свойства ID не существует, поэтому
+            // update_term_meta раньше вызывался с $term_id = null и тихо не
+            // сохранял значение ни при каком $value.
+            return update_term_meta($object->term_id, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -501,8 +531,12 @@ add_action('rest_api_init', function () {
             return get_term_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_term_meta($object->ID, $field_name, $value);
+            // Явные null/'' — запрос на очистку, а не повод молча ничего не
+            // делать. Заодно поправлено $object->ID → $object->term_id: для
+            // объекта таксономии (WP_Term) свойства ID не существует, поэтому
+            // update_term_meta раньше вызывался с $term_id = null и тихо не
+            // сохранял значение ни при каком $value.
+            return update_term_meta($object->term_id, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -560,6 +594,11 @@ add_action('created_worktype', 'worktype_save_term_fields');
 add_action('edited_worktype', 'worktype_save_term_fields');
 
 function worktype_save_term_fields($term_id){
+    // См. аналогичный комментарий у headman_save_term_fields — $_POST пуст
+    // при REST, worktype-color сохраняется через register_rest_field.
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     if (isset($_POST['worktype-color'])) {
         update_term_meta($term_id, 'worktype-color', sanitize_text_field($_POST['worktype-color']));
     } else {
@@ -584,8 +623,12 @@ add_action('rest_api_init', function () {
             return get_term_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_term_meta($object->ID, $field_name, $value);
+            // Явные null/'' — запрос на очистку, а не повод молча ничего не
+            // делать. Заодно поправлено $object->ID → $object->term_id: для
+            // объекта таксономии (WP_Term) свойства ID не существует, поэтому
+            // update_term_meta раньше вызывался с $term_id = null и тихо не
+            // сохранял значение ни при каком $value.
+            return update_term_meta($object->term_id, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -760,6 +803,14 @@ function display_geopoints_meta_box($geopoints) {
 
 // сохранение своих полей в админке
 add_action('save_post', function ($geopoints_id, $geopoints) {
+    // При запросах через REST API $_POST всегда пуст — значения полей
+    // приходят через register_rest_field. Без этой проверки любое REST-
+    // обновление поста обнуляло бы geopoints_coord/geopoints_pages до
+    // пустых значений (у остальных полей этого хука есть условные ветки без
+    // безусловной очистки, но координаты и связанные страницы — нет).
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     global $wpdb;
     if ($geopoints->post_type == 'geopoints') {
         if (isset($_POST['geopoints_deep'])) {

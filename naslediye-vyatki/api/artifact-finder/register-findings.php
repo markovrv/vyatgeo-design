@@ -179,6 +179,13 @@ add_action('created_finding_type', 'finding_type_save_term_fields');
 add_action('edited_finding_type', 'finding_type_save_term_fields');
 
 function finding_type_save_term_fields($term_id) {
+    // REST-запросы сохраняют finding_type-image через register_rest_field
+    // отдельно; $_POST пуст при REST, без этой проверки функция бы удаляла
+    // finding_type-image-id через delete_term_meta при каждом REST-обновлении
+    // термина.
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     if (isset($_POST['finding_type-image-id']) && !empty($_POST['finding_type-image-id'])) {
         update_term_meta($term_id, 'finding_type-image-id', absint($_POST['finding_type-image-id']));
     } else {
@@ -210,8 +217,10 @@ add_action('rest_api_init', function () {
             return $image_id ? wp_get_attachment_url($image_id) : null;
         },
         'update_callback' => function ($value, $object) {
-            if (!$value) return;
-            return update_term_meta($object->term_id, 'finding_type-image-id', absint($value));
+            // Ключ приходит в update_callback только если реально есть в теле
+            // запроса — явные null/0/'' означают "открепить изображение", а не
+            // "оставить как есть" (раньше `if (!$value) return;` это игнорировал).
+            return update_term_meta($object->term_id, 'finding_type-image-id', absint($value ?? 0));
         },
         'schema' => null
     ]);
@@ -277,8 +286,10 @@ add_action('rest_api_init', function () {
             return get_post_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_post_meta($object->ID, $field_name, $value);
+            // Явные null/'' в теле запроса — запрос на очистку поля, а не
+            // повод молча ничего не делать (см. комментарий в других плагинах
+            // про `if (!$value) return;`).
+            return update_post_meta($object->ID, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -289,8 +300,10 @@ add_action('rest_api_init', function () {
             return get_post_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_post_meta($object->ID, $field_name, $value);
+            // Явные null/'' в теле запроса — запрос на очистку поля, а не
+            // повод молча ничего не делать (см. комментарий в других плагинах
+            // про `if (!$value) return;`).
+            return update_post_meta($object->ID, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -301,8 +314,10 @@ add_action('rest_api_init', function () {
             return get_post_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_post_meta($object->ID, $field_name, $value);
+            // Явные null/'' в теле запроса — запрос на очистку поля, а не
+            // повод молча ничего не делать (см. комментарий в других плагинах
+            // про `if (!$value) return;`).
+            return update_post_meta($object->ID, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -313,8 +328,10 @@ add_action('rest_api_init', function () {
             return get_post_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value) return;
-            return update_post_meta($object->ID, $field_name, $value);
+            // Явные null/'' в теле запроса — запрос на очистку поля, а не
+            // повод молча ничего не делать (см. комментарий в других плагинах
+            // про `if (!$value) return;`).
+            return update_post_meta($object->ID, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -585,8 +602,18 @@ function display_finding_images_box($finding) {
 
 // Сохранение метаполей
 add_action('save_post', function ($finding_id, $finding) {
+    // При запросах через REST API (импорт, SPA и т.п.) $_POST всегда пуст —
+    // значения полей приходят через register_rest_field. Формально этот хук
+    // и так безопасен при REST (ниже nonce-проверка не проходит, раз нет
+    // $_POST — при REST выходит по return раньше, чем что-то стирает), но
+    // проверка REST_REQUEST добавлена явно и в этот плагин — для единообразия
+    // с attraction/hero/oopt/geopoints, где без неё тот же save_post обнулял
+    // все мета-поля при любом REST-обновлении.
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     if ($finding->post_type != 'finding') return;
-    
+
     // Проверяем nonce
     if (!isset($_POST['finding_meta_nonce']) || !wp_verify_nonce($_POST['finding_meta_nonce'], 'finding_meta_nonce')) {
         return;

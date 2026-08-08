@@ -67,6 +67,14 @@ Term `workdate` для конкретной работы вычисляется 
 
 Не относится к REST API — классический WP-виджет (`WP_Widget`) для вывода списка терминов произвольной таксономии в сайдбаре темы. Изолирован от остального плагина, использует свой Walker для dropdown-режима. Упомянут для полноты картины, но фронтенд naslediye-vyatki с ним не взаимодействует.
 
+## REST-запросы на запись и очистка полей
+
+Самый крупный набор правок из всех плагинов (см. `CLAUDE.md`, «REST-паттерны на бэкенде»): `defined('REST_REQUEST') && REST_REQUEST` guard добавлен в главный `save_post` (у `geopoints_coord`/`geopoints_pages` была безусловная `else`-очистка — стирались при любом REST-обновлении поста) и во все 4 term-meta хука таксономий (`headman_save_term_fields`, `deep_save_term_fields`, `workdate_save_term_fields`, `worktype_save_term_fields` — у всех деструктивная `else`-ветка с `delete_term_meta`). Во всех 7 `register_rest_field` (CPT + 4 таксономии, `workdate` — 3 отдельных поля) `update_callback` переписан на `$value ?? ''` вместо `if (!$value) return;`, не дававшего очистить поле через REST.
+
+Заодно найден и исправлен отдельный баг, не связанный с REST: в 4 term-meta `update_callback` (`deep-color`, `workdate-start`/`workdate-stop`/`workdate-npp`, `worktype-color`) использовался `update_term_meta($object->ID, ...)` — но у объекта таксономии (`WP_Term`), в отличие от `WP_Post`, свойства `ID` не существует, поэтому значение не сохранялось вообще ни при каком `$value`. Исправлено на `$object->term_id`.
+
+Очистка полей работает только через `''`, не через `null`. Проверено живым CRUD-тестом на посте `geopoints` и на term-meta `headman`.
+
 ## CORS
 
 `geopoints.php:7` явно выставляет `header('Access-Control-Allow-Origin: *')` на каждом `init` — но, как показала проверка живого сервера, фактический ответ содержит **не `*`, а отражённый Origin запроса** (`Access-Control-Allow-Origin: http://localhost:5173`) — значит поверх этого явного заголовка ядро WP всё равно перезаписывает его своей логикой CORS (`rest_send_cors_headers`). Явный заголовок в коде плагина, по сути, избыточен для `/wp-json/*` запросов.

@@ -63,6 +63,10 @@ Gutenberg отключён для `attraction` (`register-attraction.php:55-59`)
 
 `/nearby` — `{ "nearby": [ { id, title, place, imgSrc, distanceKm }, ... ] }`, до 4 штук, `distanceKm` округлён до 3 знаков.
 
+## REST-запросы на запись и очистка полей
+
+`save_post` (`register-attraction.php`) и `update_callback` в `register_rest_field` пофикшены под REST-запросы на запись (были проверены/исправлены заодно с `geroi-vyatki`/`oopt-kirov`, см. `CLAUDE.md`, «REST-паттерны на бэкенде»): без `defined('REST_REQUEST') && REST_REQUEST` в начале `save_post` любое REST-обновление поста (даже не трогающее `attraction_*`-поля вовсе) стирало их все до пустой строки — `$_POST`, который читает этот хук, всегда пуст при REST. `update_callback` теперь пишет `$value ?? ''` вместо прежнего `if (!$value) return 0;`, которое не давало **очистить** поле через REST. Очистка работает только через `''`, не через `null` (WP считает `null` отсутствующим ключом и не вызывает `update_callback` вовсе). Проверено живым CRUD-тестом.
+
 ## CORS
 
 Явного заголовка нет, но WP-ядро отражает `Origin` так же, как и в остальных плагинах — проверено, работает.

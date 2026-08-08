@@ -85,7 +85,13 @@ Bulk-список `/events` отдаёт только миниатюру 150×15
 ```
 Проверено на живом сервере — реальные записи с HTML-контентом внутри `content` (включает `<img>`-теги с относительными путями `../../wp-content/uploads/...`, рассчитанными на то, что рендерящая страница лежит на 2 уровня глубже корня сайта).
 
-Записи для write-операций нет вообще — это единственный из 4 плагинов, где REST-слой строго read-only; всё редактирование — через `wp-admin` (метабокс `history_meta_box`, `history.php:178-189`).
+Собственного write-маршрута в `history/v1` нет — весь этот namespace read-only. Запись возможна штатным `/wp/v2/history` (CPT зарегистрирован с `show_in_rest: true`, `history_date_value`/`history_date_text` — через `register_rest_field`), для авторизованного клиента с `edit_posts`; в редакторе `wp-admin` это тот же метабокс `history_meta_box` (`history.php:178-189`).
+
+## REST-запросы на запись и очистка полей
+
+`save_post` (главный, `history.php`) пофикшен под REST-запросы на запись, как и в остальных плагинах (см. `CLAUDE.md`, «REST-паттерны на бэкенде»): без `defined('REST_REQUEST') && REST_REQUEST` в начале хука любое REST-обновление поста стирало бы `history_date_text`/`history_date_value` (использующиеся для сортировки/фильтра ленты, см. `pre_get_posts` выше) до пустой строки. `update_callback` в `register_rest_field` переписан на `$value ?? ''` вместо `if (!$value) return;`, не дававшего очистить поле через REST. Очистка работает только через `''`, не через `null`. Проверено живым CRUD-тестом.
+
+Term-meta хук таксономии `city` (`save_history_city_term_fields`, `created_city`/`edited_city`) этой правки **не потребовал** — в отличие от аналогичных хуков в `geopoints`/`artifact-finder`/`oopt-kirov`, у него нет деструктивной `else`-ветки с `delete_term_meta`, при REST он просто не срабатывает (не читает `$_POST`), а `city_short`/`city_photo`/`city_coord` и так пишутся штатным REST term-meta механизмом независимо от этого хука.
 
 ## CORS
 

@@ -54,6 +54,10 @@ Gutenberg для `finding` отключён — редактирование т�
 ```
 Разрешённый список `meta_fields` жёстко задан в коде (`rest-api.php:178-184`); попытка обновить произвольное поле вернёт `meta_errors`. ID терминов и метаполе `finding_additional_images` валидируются построчно, ошибки собираются в ответ (`taxonomy_errors`/`meta_errors`), а не прерывают весь запрос — частичный успех возможен.
 
+## REST-запросы на запись и очистка полей
+
+`save_post` (`register-findings.php`) здесь и так был устойчив к REST-обновлениям (гейт по `wp_nonce_field`/`wp_verify_nonce`, который никогда не проходит при REST — `$_POST['finding_meta_nonce']` пуст), но явный `defined('REST_REQUEST') && REST_REQUEST` guard добавлен и сюда для единообразия с остальными плагинами (см. `CLAUDE.md`, «REST-паттерны на бэкенде»). Реальный баг был в term-meta хуке `finding_type_save_term_fields` (`created_finding_type`/`edited_finding_type`) — деструктивная `else`-ветка с `delete_term_meta` стирала бы `finding_type-image-id` при любом REST-обновлении термина «Тип»; исправлено тем же guard'ом. Все `update_callback` (`finding_dimensions`/`finding_cat_id`/`finding_functionality`/`finding_features`/`finding_type-image`) переписаны на `$value ?? ''`/`absint($value ?? 0)` — раньше `if (!$value) return;` не давал очистить поле через REST. Очистка работает только через `''`, не через `null`. Проверено живым CRUD-тестом на `finding` и на term-meta `finding_type`.
+
 ## CORS
 
 Явного CORS-заголовка плагин не выставляет. Проверка живого сервера с `Origin: http://localhost:5173` показала, что WordPress-ядро само отражает Origin запроса (`Access-Control-Allow-Origin: <origin запроса>`, `Access-Control-Allow-Credentials: true`) для всех `/wp-json/*` маршрутов — межпоточные запросы из Vue SPA работают без дополнительной настройки.

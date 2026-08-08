@@ -355,9 +355,9 @@ add_action('rest_api_init', function () {
             return get_post_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value)
-                return;
-            return update_post_meta($object->ID, $field_name, $value);
+            // Явные null/'' — запрос на очистку поля, а не повод молча ничего
+            // не делать (см. аналогичные комментарии в остальных плагинах).
+            return update_post_meta($object->ID, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -366,9 +366,9 @@ add_action('rest_api_init', function () {
             return get_post_meta($object["id"], $field_name, true);
         },
         'update_callback' => function ($value, $object, $field_name) {
-            if (!$value)
-                return;
-            return update_post_meta($object->ID, $field_name, $value);
+            // Явные null/'' — запрос на очистку поля, а не повод молча ничего
+            // не делать (см. аналогичные комментарии в остальных плагинах).
+            return update_post_meta($object->ID, $field_name, $value ?? '');
         },
         'schema' => null
     ]);
@@ -408,6 +408,14 @@ function display_history_meta_box($history) {
 
 // сохранение своих полей в админке
 add_action('save_post', function ($history_id, $history) {
+    // При запросах через REST API $_POST всегда пуст — значения полей
+    // приходят через register_rest_field. Без этой проверки любое REST-
+    // обновление поста обнуляло бы history_date_text/history_date_value
+    // до пустой строки (используется как раз для сортировки/фильтра
+    // ленты времени, см. pre_get_posts ниже).
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return;
+    }
     global $wpdb;
     if ($history->post_type == 'history') {
         if (isset ($_POST['history_date_text']) && $_POST['history_date_text'] != '') {

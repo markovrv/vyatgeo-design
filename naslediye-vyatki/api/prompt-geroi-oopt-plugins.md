@@ -98,6 +98,7 @@
 | Описание подвига, заслуг, вклада | meta `hero_feat_description` | textarea (аннотация; это же значение отдаётся в `/objects` как `summarize`) |
 | Перечень наград (ордена, медали, звания) | meta `hero_awards` | textarea |
 | Профессия, деятельность в мирное время | meta `hero_profession` | text |
+| Характер связи с Вятским краем («родился», «жил», «работал», «совершил подвиг», «похоронен» и т.п.) | meta `hero_connection` | textarea — значение переносится как есть, без парсинга на отдельные факты (было таксономией, отказались: в источнике это не короткие метки, а россыпь предложений произвольной длины, и деление по `,`/`.` неизбежно даёт либо склеенные, либо разорванные посреди сокращений («пос.», «г.») факты) |
 | Координаты места в Вятском крае | meta `hero_coord` | text `"lat, lng"` — по аналогии с `attraction_coord` |
 | *(нет прямого столбца)* | meta `hero_imgSrc` | text URL — ручной override картинки для маркера на карте (label в админке «Url картинки для карты»); если пусто — фоллбэк на featured image |
 | *(нет прямого столбца)* | meta `hero_color` | color picker — цвет маркера на карте. По умолчанию проставлять при импорте по значению таксономии `hero_status` (например, «историческая» — один цвет, «современная» — другой); поле остаётся редактируемым вручную |
@@ -107,15 +108,14 @@
 | Колонка Excel | Таксономия | Тип | Термины |
 |---|---|---|---|
 | Статус персоналии («историческая», «современная») | `hero_status` | иерархическая (как категории), ровно 2 термина | «Историческая», «Современная» |
-| Характер связи с Вятским краем («родился», «жил», «работал», «совершил подвиг», «похоронен» и т.п.) | `hero_connection` | неиерархическая (как метки), множественный выбор | значения парсятся из ячейки по разделителю `,` (в источнике встречается `\xa0` — неразрывный пробел, при импорте нормализовать через `trim`/`str_replace`) |
 
-Обе таксономии регистрировать с `show_in_rest => true`, чтобы термины были доступны в стандартном REST-ответе `/wp/v2/hero`.
+Единственная таксономия у `hero` — `hero_status`, регистрировать с `show_in_rest => true`, чтобы термин был доступен в стандартном REST-ответе `/wp/v2/hero`. «Характер связи с Вятским краем» — meta-поле, не таксономия (см. §1.1).
 
 ### 1.3. Админ-панель
 
 Два `add_meta_box` (по аналогии с `attraction_summarize` и `attraction_map_box`):
 
-- **«Подвиг и биография»** — поля `hero_feat_description` (textarea), `hero_awards` (textarea), `hero_profession` (input text).
+- **«Подвиг и биография»** — поля `hero_feat_description` (textarea), `hero_awards` (textarea), `hero_profession` (input text), `hero_connection` (textarea).
 - **«Место и координаты»** — карта Yandex Maps (переиспользовать `adminMap.js` из `attraction`, тот же паттерн `id="map"` + `id="attraction_coord-input"` → переименовать в `hero_coord-input`), input `hero_coord`, input `hero_birth_place`, input `hero_death_place`, input `hero_birth_date`, input `hero_death_date`, input text `hero_imgSrc` («Url картинки для карты»), input `type="color"` `hero_color` («Цвет маркера для карты»).
 
 `save_post`-обработчик — по образцу `register-attraction.php`: для каждого поля `isset($_POST['...']) && $_POST['...'] != ''` → `update_post_meta`, иначе — очистка meta пустой строкой.
@@ -136,11 +136,11 @@
   | `content` | `''` (всегда пусто в bulk-ответе) |
   | `img` | `$thumbnail_id` |
 
-  Доменные поля (даты, награды, профессия, таксономии) в этот эндпоинт **не включаются** — они доступны через `/wp/v2/hero/{id}`.
+  Доменные поля (даты, награды, профессия, характер связи, таксономия статуса) в этот эндпоинт **не включаются** — они доступны через `/wp/v2/hero/{id}`.
 
 - `GET hero/v1/objects/{id}/adjacent` — предыдущий/следующий по `ID`, без фильтра. Ответ: `{ "prev": navItem | null, "next": navItem | null }`, где `navItem` = `{ id, title, place, imgSrc, img }`.
 - `GET hero/v1/objects/{id}/nearby?max_distance=N` — гаверсинус по `hero_coord`, `max_distance` обязателен, до 4 ближайших, сортировка по расстоянию. Ответ: `{ "nearby": [ { ...navItem, distanceKm }, ... ] }`.
-- В `register_rest_field` (для `/wp/v2/hero`) зарегистрировать все мета-поля: `hero_birth_date`, `hero_death_date`, `hero_birth_place`, `hero_death_place`, `hero_feat_description`, `hero_awards`, `hero_profession`, `hero_coord`, `hero_imgSrc`, `hero_color` — с `get_callback`/`update_callback` через `get_post_meta`/`update_post_meta`.
+- В `register_rest_field` (для `/wp/v2/hero`) зарегистрировать все мета-поля: `hero_birth_date`, `hero_death_date`, `hero_birth_place`, `hero_death_place`, `hero_feat_description`, `hero_awards`, `hero_profession`, `hero_connection`, `hero_coord`, `hero_imgSrc`, `hero_color` — с `get_callback`/`update_callback` через `get_post_meta`/`update_post_meta`.
 
 ---
 
@@ -170,7 +170,7 @@
 |---|---|---|---|
 | Район | `oopt_district` | иерархическая (категории) | список районов извлекается из уникальных значений столбца при импорте |
 | Профиль | `oopt_profile` | иерархическая (категории) | значения из источника: «Гидрологический», «Ботанический», «Геологический» и др. — полный список выгрузить скриптом импорта, не хардкодить |
-| Охраняемые виды | `oopt_species` | неиерархическая (как метки), множественный выбор | значения парсятся из ячейки по разделителю `,`, по аналогии с `hero_connection` |
+| Охраняемые виды | `oopt_species` | неиерархическая (как метки), множественный выбор | значения парсятся из ячейки по разделителю `,` |
 
 Все три — `show_in_rest => true`.
 
@@ -234,12 +234,15 @@
 ### 3.3. REST API
 
 - Все кастомные эндпоинты регистрируются с `permission_callback => '__return_true'`.
-- **`GET {slug}/v1/objects`** — без пагинации (`posts_per_page => -1`), все опубликованные записи, `array_reverse` в конце. Ответ — массив объектов в обобщённом формате `{ id, coordinates: [lat, lng], title, place, imgSrc, color, summarize, content: "", img }`. Тяжёлые поля (`content`, `summarize`) в bulk-ответе пустые — полная информация через `/wp/v2/{cpt}/{id}?_embed=1`.
+- **`GET {slug}/v1/objects`** — без пагинации (`posts_per_page => -1`), все опубликованные записи, `array_reverse` в конце. Ответ — массив объектов в обобщённом формате `{ id, coordinates: [lat, lng], title, place, imgSrc, color, summarize, content: "", img }`. `summarize` — короткая аннотация из соответствующего meta-поля (`hero_feat_description`/`oopt_summary`, см. §1.4/§2.4), отдаётся сразу в bulk-ответе. `content` — единственное тяжёлое поле, всегда пустая строка в bulk-ответе; полный текст — через `/wp/v2/{cpt}/{id}?_embed=1`.
 - **`GET {slug}/v1/objects/{id}/adjacent`** — `{ prev: navItem | null, next: navItem | null }`, сортировка по возрастанию ID.
 - **`GET {slug}/v1/objects/{id}/nearby?max_distance=N`** — геопоиск по формуле гаверсинуса, `max_distance` обязателен (значение передаётся с клиента, не хардкодится на сервере), до 4 ближайших, `{ nearby: [ { ...navItem, distanceKm }, ... ] }`.
 - **`register_rest_field`** для всех доменных мета-полей — чтобы они были доступны в стандартном REST `/wp/v2/{cpt}/{id}?_embed=1`. Обязательные поля: координаты, `imgSrc`, `color` + все доменные поля из §1.1/§2.1.
 - **`show_in_rest => true`** для CPT и всех таксономий.
 - `coordinates` в `/objects` — всегда массив `[lat, lng]` (SPA меняет порядок на `[lng, lat]` при использовании). Если координаты отсутствуют — `[0, 0]` (как в образце).
+- **`save_post` обязан выходить раньше своей логики при `defined('REST_REQUEST') && REST_REQUEST`.** При запросах через REST (SPA, скрипты импорта) `$_POST` всегда пуст; если хук по образцу `attraction` безусловно очищает meta-поле, не найдя ключ в `$_POST` (`else { update_post_meta($id, 'field', ''); }`), то любое REST-обновление поста — даже не трогающее эти поля вовсе — стирает их все до пустой строки. Тот же guard — в аналогичных `created_{taxonomy}`/`edited_{taxonomy}` хуках term-meta, если у них есть деструктивная `else`-ветка с `delete_term_meta` (без такой ветки хук не деструктивен и в guard'е не нуждается).
+- **`update_callback` в `register_rest_field` не должен быть `if (!$value) return;`/`return 0;`.** Такая охрана не даёт **очистить** поле через REST — `update_callback` и так вызывается WP только когда ключ реально присутствует в теле запроса, поэтому явная пустая строка — осознанный запрос на очистку. Верная форма: `return update_post_meta($object->ID, $field_name, $value ?? '');` (для term-meta — `$object->term_id`, не `$object->ID`, которого у `WP_Term` не существует). Клиент, желающий очистить поле, обязан передавать `''`, не `null` — `null` в JSON-теле WP-ядро (`isset()`) считает отсутствующим ключом и `update_callback` не вызывает вовсе.
+- **`register_term_meta` для term-meta, которое должно приходить в `_embedded['wp:term']` при `?_embed=1`**, — недостаточно `'show_in_rest' => true`: короткая форма добавляет поле только в контексты `view`/`edit`, но не `embed`. Нужно явно: `'show_in_rest' => ['schema' => ['type' => 'string', 'context' => ['view', 'edit', 'embed']]]` — иначе клиенту придётся делать отдельный запрос к `/wp/v2/{taxonomy}/{term_id}` на каждый термин вместо получения значения одним запросом вместе с постом.
 
 ### 3.4. Админ-панель и `adminMap.js`
 
@@ -261,7 +264,7 @@
 
 - `wp_insert_post` с `post_title`, `post_content`, `post_status => 'publish'`, `post_type` → `hero`/`oopt`.
 - `update_post_meta` для каждого мета-поля из §1.1/§2.1.
-- `wp_set_object_terms` для таксономий (`hero_status`, `hero_connection`, `oopt_district`, `oopt_profile`, `oopt_species`). Термины создаются автоматически через `wp_set_object_terms` (если термина нет — он будет создан для иерархических таксономий через `wp_insert_term` при необходимости).
+- `wp_set_object_terms` для таксономий (`hero_status`, `oopt_district`, `oopt_profile`, `oopt_species`). Термины создаются автоматически через `wp_set_object_terms` (если термина нет — он будет создан для иерархических таксономий через `wp_insert_term` при необходимости). `hero_connection` — meta-поле, не таксономия, переносится через `update_post_meta` вместе с остальными доменными полями.
 - **Парсинг «Охраняемые виды» → `oopt_species`**: split ячейки по `,`, для каждого элемента — `preg_match('/^(.*?)\s*\(([^)]+)\)\s*$/u', ...)`; если совпало — группа 1 (после `trim`) идёт названием термина, группа 2 — в `oopt_species_status`; если скобок нет — весь элемент целиком идёт названием термина, `oopt_species_status` не заполняется. Термин ищется по имени перед созданием (`get_term_by('name', $name, 'oopt_species')`), чтобы повторяющиеся виды из разных строк схлопывались в один термин, а не дублировались. Значение вида «Редких видов не выявлено» (используется как признак отсутствия охраняемых видов, а не как название вида) — не создавать термином, при импорте пропускать.
 - Загрузка фото по URL/файлу в медиатеку (`media_handle_sideload` или `wp_insert_attachment`) и назначение `set_post_thumbnail`.
 - Значения `hero_color`/`oopt_color` проставлять программно по таксономии: например, `hero_status = 'Историческая'` → один цвет, `'Современная'` → другой; `oopt_profile = 'Гидрологический'` → синий, `'Ботанический'` → зелёный и т.д. — полный маппинг цветов определить на этапе реализации.
