@@ -4,11 +4,14 @@
 // floating-плашка над картой в режиме карты, обычная строка над сеткой
 // в режиме каталога — см. .controls/.controls--floating в HeroesView.vue.
 import FilterBar from '@/components/FilterBar.vue'
+import { useStrings } from '@/i18n'
 import { heroesCatalogState as state } from '@/composables/useHeroes'
 
+const { t } = useStrings()
+
 const viewOptions = [
-  { value: 'map', label: 'На карте' },
-  { value: 'catalog', label: 'Каталог' },
+  { value: 'map', label: t('common.onMap') },
+  { value: 'catalog', label: t('common.catalog') },
 ]
 
 function onSearchInput(e) {
@@ -23,8 +26,8 @@ function onSearchInput(e) {
     <div class="search-box">
       <svg viewBox="0 0 20 20" class="search-icon" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" /><path d="M16.5 16.5 12.8 12.8" /></svg>
       <input
-        type="search" class="search-input" placeholder="Поиск по названию и месту…"
-        :value="state.search" @input="onSearchInput" aria-label="Поиск по названию и месту"
+        type="search" class="search-input" :placeholder="t('components.HeroControls.searchPlaceholder')"
+        :value="state.search" @input="onSearchInput" :aria-label="t('components.HeroControls.searchAria')"
       />
     </div>
   </div>

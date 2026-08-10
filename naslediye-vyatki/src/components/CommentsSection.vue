@@ -1,6 +1,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useComments, useCurrentUser, loadGuestAuthor, saveGuestAuthor } from '@/composables/useComments'
+import { useStrings } from '@/i18n'
+const { t } = useStrings()
 
 const props = defineProps({
   postId: { type: [Number, String], required: true },
@@ -30,10 +32,10 @@ function resetForm() {
 }
 
 function validateForm() {
-  if (!authorName.value.trim()) return 'Укажите имя'
-  if (!authorEmail.value.trim()) return 'Укажите email'
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authorEmail.value.trim())) return 'Некорректный email'
-  if (!content.value.trim()) return 'Напишите текст комментария'
+  if (!authorName.value.trim()) return t('components.CommentsSection.nameRequired')
+  if (!authorEmail.value.trim()) return t('components.CommentsSection.emailRequired')
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authorEmail.value.trim())) return t('components.CommentsSection.emailInvalid')
+  if (!content.value.trim()) return t('components.CommentsSection.contentRequired')
   return null
 }
 
@@ -77,10 +79,10 @@ onMounted(() => {
 
 <template>
   <section class="comments-section">
-    <h2 class="comments-heading">Комментарии <span class="comments-count">({{ comments.length }})</span></h2>
+    <h2 class="comments-heading">{{ t('components.CommentsSection.heading', { count: comments.length }) }}</h2>
 
-    <p v-if="loading" class="msg">Загрузка комментариев…</p>
-    <p v-else-if="error" class="msg msg--error">Не удалось загрузить комментарии.</p>
+    <p v-if="loading" class="msg">{{ t('components.CommentsSection.loading') }}</p>
+    <p v-else-if="error" class="msg msg--error">{{ t('components.CommentsSection.loadError') }}</p>
 
     <ul v-if="comments.length" class="comments-list">
       <li v-for="c in comments" :key="c.id" class="comment-item">
@@ -94,26 +96,26 @@ onMounted(() => {
 
     <template v-if="commentStatus === 'open'">
       <div v-if="submitted" class="success-msg">
-        Комментарий отправлен и появится после проверки модератором.
+        {{ t('components.CommentsSection.success') }}
       </div>
 
       <form v-else class="comment-form" @submit.prevent="onSubmit">
-        <h3 class="form-heading">Оставить комментарий</h3>
+        <h3 class="form-heading">{{ t('components.CommentsSection.formHeading') }}</h3>
 
         <div v-if="formError" class="form-error">{{ formError }}</div>
-        <div v-if="submitError === 'closed'" class="form-error">Комментарии к этой записи закрыты.</div>
-        <div v-else-if="submitError === 'forbidden'" class="form-error">Отправка комментариев временно недоступна.</div>
-        <div v-else-if="submitError === 'network'" class="form-error">Не удалось отправить комментарий. Попробуйте позже.</div>
-        <div v-else-if="submitError === 'duplicate'" class="form-error">Такой комментарий уже был отправлен.</div>
+        <div v-if="submitError === 'closed'" class="form-error">{{ t('components.CommentsSection.errClosed') }}</div>
+        <div v-else-if="submitError === 'forbidden'" class="form-error">{{ t('components.CommentsSection.errForbidden') }}</div>
+        <div v-else-if="submitError === 'network'" class="form-error">{{ t('components.CommentsSection.errNetwork') }}</div>
+        <div v-else-if="submitError === 'duplicate'" class="form-error">{{ t('components.CommentsSection.errDuplicate') }}</div>
 
         <div class="form-grid">
-          <input v-model="authorName" class="field" type="text" placeholder="Ваше имя *" :disabled="submitting" />
-          <input v-model="authorEmail" class="field" type="email" placeholder="Email *" :disabled="submitting" />
+          <input v-model="authorName" class="field" type="text" :placeholder="t('components.CommentsSection.namePlaceholder')" :disabled="submitting" />
+          <input v-model="authorEmail" class="field" type="email" :placeholder="t('components.CommentsSection.emailPlaceholder')" :disabled="submitting" />
         </div>
-        <textarea v-model="content" class="field field--textarea" rows="4" placeholder="Текст комментария *" :disabled="submitting" />
+        <textarea v-model="content" class="field field--textarea" rows="4" :placeholder="t('components.CommentsSection.contentPlaceholder')" :disabled="submitting" />
 
         <button class="submit-btn" type="submit" :disabled="submitting">
-          {{ submitting ? 'Отправка…' : 'Отправить' }}
+          {{ submitting ? t('components.CommentsSection.submitting') : t('components.CommentsSection.submit') }}
         </button>
       </form>
     </template>

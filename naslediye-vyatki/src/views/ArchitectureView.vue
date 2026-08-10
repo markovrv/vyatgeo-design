@@ -1,12 +1,15 @@
 <script setup>
 import { computed, nextTick, onMounted, watch } from 'vue'
 import { RouterLink, onBeforeRouteLeave } from 'vue-router'
+import { useStrings } from '@/i18n'
 import heroImg from '@/assets/img/architecture-kirov.jpg'
 import CatalogLayout from '@/components/CatalogLayout.vue'
 import Pagination from '@/components/Pagination.vue'
 import AttractionMap from '@/components/AttractionMap.vue'
 import AttractionControls from '@/components/AttractionControls.vue'
 import { useAttractions, useAttractionThumbnails, attractionCatalogState as state } from '@/composables/useAttractions'
+
+const { t } = useStrings()
 
 const { attractions, loading, error, fetchAttractions } = useAttractions()
 const { thumbnails, fetchThumbnails } = useAttractionThumbnails()
@@ -61,20 +64,20 @@ onBeforeRouteLeave(() => {
 <template>
   <CatalogLayout
     :heroImg="heroImg"
-    eyebrow="К 90-летию Кировской области · От деревянного Хлынова до каменной Вятки"
-    title="Архитектура Кирова"
-    subtitle="Цифровой архив архитектурного облика областного центра — сохранившиеся и утраченные памятники зодчества и скульптуры"
+    :eyebrow="t('views.ArchitectureView.eyebrow')"
+    :title="t('views.ArchitectureView.title')"
+    :subtitle="t('views.ArchitectureView.subtitle')"
     :gridCount="state.viewMode === 'catalog' ? filtered.length : 0"
   >
-    <template #heading>Архитектурное наследие города</template>
-    <template #description>Архитектурный облик Кирова (Вятки) складывался веками: от деревянных укреплений Хлынова до каменных особняков в стиле провинциального классицизма, купеческих домов в стиле модерн и советского конструктивизма.</template>
+    <template #heading>{{ t('views.ArchitectureView.heading') }}</template>
+    <template #description>{{ t('views.ArchitectureView.description') }}</template>
 
     <template #map>
       <div class="map-shell">
         <AttractionControls class="controls" :class="{ 'controls--floating': state.viewMode === 'map' }" />
         <template v-if="state.viewMode === 'map'">
-          <p v-if="loading" class="state-msg">Загрузка карты…</p>
-          <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+          <p v-if="loading" class="state-msg">{{ t('common.loadingMap') }}</p>
+          <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
           <AttractionMap v-else :points="filtered" />
         </template>
       </div>
@@ -82,9 +85,9 @@ onBeforeRouteLeave(() => {
 
     <template #grid>
       <template v-if="state.viewMode === 'catalog'">
-        <p v-if="loading" class="state-msg">Загрузка…</p>
-        <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-        <p v-else-if="pageItems.length === 0" class="state-msg">По запросу ничего не найдено.</p>
+        <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+        <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+        <p v-else-if="pageItems.length === 0" class="state-msg">{{ t('common.emptyQuery') }}</p>
         <RouterLink v-for="a in pageItems" :key="a.id" :to="`/architecture/${a.id}`" class="card">
           <div class="card-img" :style="{ backgroundImage: `url(${cardImg(a)})` }" role="img" :aria-label="a.title" />
           <div class="card-body">

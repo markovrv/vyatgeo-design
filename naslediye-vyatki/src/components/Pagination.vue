@@ -1,4 +1,7 @@
 <script setup>
+import { useStrings } from '@/i18n'
+const { t } = useStrings()
+
 const props = defineProps({
   page: { type: Number, required: true },
   totalPages: { type: Number, required: true },
@@ -23,21 +26,21 @@ function onPerPageChange(e) {
   <div class="pagination">
     <div class="pagination-info">
       <template v-if="total > 0">
-        Показано {{ (page - 1) * perPage + 1 }}–{{ Math.min(page * perPage, total) }} из {{ total }}
+        {{ t('components.Pagination.showingRange', { from: (page - 1) * perPage + 1, to: Math.min(page * perPage, total), total }) }}
       </template>
-      <template v-else>Ничего не найдено</template>
+      <template v-else>{{ t('components.Pagination.emptyResults') }}</template>
     </div>
 
     <div class="pagination-controls">
-      <button type="button" class="page-btn" :disabled="page <= 1" @click="go(1)" aria-label="Первая страница">«</button>
-      <button type="button" class="page-btn" :disabled="page <= 1" @click="go(page - 1)" aria-label="Предыдущая страница">‹</button>
-      <span class="page-current">Стр. {{ page }} из {{ Math.max(totalPages, 1) }}</span>
-      <button type="button" class="page-btn" :disabled="page >= totalPages" @click="go(page + 1)" aria-label="Следующая страница">›</button>
-      <button type="button" class="page-btn" :disabled="page >= totalPages" @click="go(totalPages)" aria-label="Последняя страница">»</button>
+      <button type="button" class="page-btn" :disabled="page <= 1" @click="go(1)" :aria-label="t('components.Pagination.firstPageAria')">«</button>
+      <button type="button" class="page-btn" :disabled="page <= 1" @click="go(page - 1)" :aria-label="t('components.Pagination.prevPageAria')">‹</button>
+      <span class="page-current">{{ t('components.Pagination.pageOf', { page, totalPages: Math.max(totalPages, 1) }) }}</span>
+      <button type="button" class="page-btn" :disabled="page >= totalPages" @click="go(page + 1)" :aria-label="t('components.Pagination.nextPageAria')">›</button>
+      <button type="button" class="page-btn" :disabled="page >= totalPages" @click="go(totalPages)" :aria-label="t('components.Pagination.lastPageAria')">»</button>
     </div>
 
     <label class="per-page">
-      <span>Показывать по:</span>
+      <span>{{ t('components.Pagination.perPageLabel') }}</span>
       <select :value="perPage" @change="onPerPageChange">
         <option v-for="n in perPageOptions" :key="n" :value="n">{{ n }}</option>
       </select>

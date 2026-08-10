@@ -8,6 +8,9 @@ import MultiSelectFilter from '@/components/MultiSelectFilter.vue'
 import ArcheologyMap from '@/components/ArcheologyMap.vue'
 import ArcheologyControls from '@/components/ArcheologyControls.vue'
 import { useArcheologySites, useArcheologyThumbnails, archeologyCatalogState as state } from '@/composables/useArcheology'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const { sites, loading, error, fetchSites } = useArcheologySites()
 const { thumbnails, fetchThumbnails } = useArcheologyThumbnails()
@@ -17,19 +20,19 @@ const { thumbnails, fetchThumbnails } = useArcheologyThumbnails()
 // уместен (в отличие от oopt_district/oopt_profile у Природы, где то же
 // самое было бы багом — см. историю с hero_status/oopt_profile).
 const eraOptions = [
-  { id: 'mezolit', slug: 'mezolit', name: 'Мезолит', count: 0 },
-  { id: 'neolit', slug: 'neolit', name: 'Неолит', count: 0 },
-  { id: 'bronze', slug: 'bronze', name: 'Эпоха бронзы', count: 0 },
-  { id: 'iron', slug: 'iron', name: 'Ранний железный век', count: 0 },
-  { id: 'medieval', slug: 'medieval', name: 'Средневековье', count: 0 },
+  { id: 'mezolit', slug: 'mezolit', name: t('composables.useArcheology.eraMezolit'), count: 0 },
+  { id: 'neolit', slug: 'neolit', name: t('composables.useArcheology.eraNeolit'), count: 0 },
+  { id: 'bronze', slug: 'bronze', name: t('composables.useArcheology.eraBronze'), count: 0 },
+  { id: 'iron', slug: 'iron', name: t('composables.useArcheology.eraIron'), count: 0 },
+  { id: 'medieval', slug: 'medieval', name: t('composables.useArcheology.eraMedieval'), count: 0 },
 ]
 
 const typeOptions = [
-  { id: 'gorodishche', slug: 'gorodishche', name: 'Городище', count: 0 },
-  { id: 'selishche', slug: 'selishche', name: 'Селище', count: 0 },
-  { id: 'stoyanka', slug: 'stoyanka', name: 'Стоянка', count: 0 },
-  { id: 'mogilnik', slug: 'mogilnik', name: 'Могильник', count: 0 },
-  { id: 'klad', slug: 'klad', name: 'Клад', count: 0 },
+  { id: 'gorodishche', slug: 'gorodishche', name: t('composables.useArcheology.typeGorodishche'), count: 0 },
+  { id: 'selishche', slug: 'selishche', name: t('composables.useArcheology.typeSelishche'), count: 0 },
+  { id: 'stoyanka', slug: 'stoyanka', name: t('composables.useArcheology.typeStoyanka'), count: 0 },
+  { id: 'mogilnik', slug: 'mogilnik', name: t('composables.useArcheology.typeMogilnik'), count: 0 },
+  { id: 'klad', slug: 'klad', name: t('composables.useArcheology.typeKlad'), count: 0 },
 ]
 
 function onMultiSelectChange(field, value) {
@@ -86,17 +89,15 @@ onBeforeRouteLeave(() => {
 <template>
   <CatalogLayout
     :heroImg="heroImg"
-    eyebrow="К 90-летию Кировской области · От мезолита до Средневековья"
-    title="Памятники археологии Кировской области"
-    subtitle="Около 150 памятников от эпохи мезолита до позднего Средневековья: городища, селища, стоянки, могильники"
+    :eyebrow="t('views.ArcheologyView.eyebrow')"
+    :title="t('views.ArcheologyView.title')"
+    :subtitle="t('views.ArcheologyView.subtitle')"
     :gridCount="state.viewMode === 'catalog' ? filtered.length : 0"
   >
-    <template #heading>Памятники на карте и в каталоге</template>
+    <template #heading>{{ t('views.ArcheologyView.heading') }}</template>
     <template #description>
       <p style="text-align:center; max-width:700px; margin: 0 auto var(--space-3); line-height: 1.75;">
-        Археологическое наследие Вятского края насчитывает около 150 памятников — от стоянок
-        эпохи мезолита (VIII–VI тыс. до н.э.) до средневековых городищ XII–XV веков.
-        Фильтрация по эпохе и типу памятника доступна в обоих режимах просмотра.
+        {{ t('views.ArcheologyView.description') }}
       </p>
     </template>
 
@@ -105,13 +106,13 @@ onBeforeRouteLeave(() => {
         <div class="controls-group" :class="{ 'controls-group--floating': state.viewMode === 'map' }">
           <ArcheologyControls />
           <div v-if="state.filtersOpen" class="filters-panel">
-            <MultiSelectFilter label="Эпоха" :options="eraOptions" :modelValue="state.era" @update:modelValue="v => onMultiSelectChange('era', v)" />
-            <MultiSelectFilter label="Тип" :options="typeOptions" :modelValue="state.type" @update:modelValue="v => onMultiSelectChange('type', v)" />
+            <MultiSelectFilter :label="t('views.ArcheologyView.eraLabel')" :options="eraOptions" :modelValue="state.era" @update:modelValue="v => onMultiSelectChange('era', v)" />
+            <MultiSelectFilter :label="t('views.ArcheologyView.typeLabel')" :options="typeOptions" :modelValue="state.type" @update:modelValue="v => onMultiSelectChange('type', v)" />
           </div>
         </div>
         <template v-if="state.viewMode === 'map'">
-          <p v-if="loading" class="state-msg">Загрузка карты…</p>
-          <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+          <p v-if="loading" class="state-msg">{{ t('common.loadingMap') }}</p>
+          <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
           <ArcheologyMap v-else :points="filtered" />
         </template>
       </div>
@@ -119,9 +120,9 @@ onBeforeRouteLeave(() => {
 
     <template #grid>
       <template v-if="state.viewMode === 'catalog'">
-        <p v-if="loading" class="state-msg">Загрузка…</p>
-        <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-        <p v-else-if="pageItems.length === 0" class="state-msg">По запросу ничего не найдено.</p>
+        <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+        <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+        <p v-else-if="pageItems.length === 0" class="state-msg">{{ t('common.emptyQuery') }}</p>
         <RouterLink v-for="s in pageItems" :key="s.id" :to="`/archeology/${s.id}`" class="card">
           <div class="card-img" :style="{ backgroundImage: `url(${cardImg(s)})` }" role="img" :aria-label="s.title" />
           <div class="card-body">

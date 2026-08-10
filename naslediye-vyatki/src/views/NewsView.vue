@@ -3,7 +3,9 @@ import { onMounted, nextTick } from 'vue'
 import { RouterLink, onBeforeRouteLeave } from 'vue-router'
 import { usePosts, postsCatalogState } from '@/composables/usePosts'
 import Pagination from '@/components/Pagination.vue'
+import { useStrings } from '@/i18n'
 
+const { t } = useStrings()
 const { posts, total, totalPages, loading, error, fetchPosts } = usePosts()
 
 function formatDate(iso) {
@@ -46,24 +48,24 @@ onMounted(() => {
   <div class="news-page">
     <div class="spacer" />
     <section class="hero">
-      <h1 class="hero-title">Новости</h1>
-      <p class="hero-desc">Актуальные события и новости проекта «Наследие Вятки»</p>
+      <h1 class="hero-title">{{ t('views.NewsView.heroTitle') }}</h1>
+      <p class="hero-desc">{{ t('views.NewsView.heroDesc') }}</p>
     </section>
 
     <section class="content-section">
       <div class="search-row">
         <input
-          class="search-box" type="search" placeholder="Поиск по новостям…"
+          class="search-box" type="search" :placeholder="t('views.NewsView.searchPlaceholder')"
           :value="postsCatalogState.search" @input="onSearchInput"
         />
       </div>
 
-      <p v-if="loading" class="state-msg">Загрузка…</p>
-      <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить новости. Попробуйте обновить страницу.</p>
-      <p v-else-if="!posts.length" class="state-msg">Новостей не найдено.</p>
+      <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+      <p v-else-if="error" class="state-msg state-msg--error">{{ t('views.NewsView.loadError') }}</p>
+      <p v-else-if="!posts.length" class="state-msg">{{ t('views.NewsView.emptyState') }}</p>
 
       <template v-else>
-        <div class="grid-count">Показано: {{ posts.length }} из {{ total }}</div>
+        <div class="grid-count">{{ t('views.NewsView.showingOfTotal', { shown: posts.length, total }) }}</div>
         <div class="grid">
           <RouterLink v-for="p in posts" :key="p.id" :to="`/news/${p.id}`" class="news-card">
             <div v-if="p.imgSrc" class="news-img" :style="{ backgroundImage: `url(${p.imgSrc})` }" />

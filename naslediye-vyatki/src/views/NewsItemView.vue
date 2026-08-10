@@ -4,7 +4,9 @@ import { RouterLink, useRoute } from 'vue-router'
 import { usePost } from '@/composables/usePosts'
 import { SITE_URL } from '@/composables/usePosts'
 import CommentsSection from '@/components/CommentsSection.vue'
+import { useStrings } from '@/i18n'
 
+const { t } = useStrings()
 const route = useRoute()
 const { post, loading, error, fetchPost } = usePost()
 
@@ -28,14 +30,14 @@ watch(() => route.params.id, (id) => load(id))
   <div class="page">
     <div class="spacer" />
     <nav class="breadcrumb">
-      <RouterLink to="/">Главная</RouterLink><span>/</span>
-      <RouterLink to="/news">Новости</RouterLink><span>/</span>
-      <span class="current">{{ post?.title || '…' }}</span>
+      <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+      <RouterLink to="/news">{{ t('views.NewsView.heroTitle') }}</RouterLink><span>/</span>
+      <span class="current">{{ post?.title || t('common.ellipsis') }}</span>
     </nav>
 
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить новость. Попробуйте обновить страницу.</p>
-    <p v-else-if="!post" class="state-msg">Новость не найдена.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('views.NewsItemView.loadError') }}</p>
+    <p v-else-if="!post" class="state-msg">{{ t('views.NewsItemView.notFound') }}</p>
 
     <template v-else>
       <section class="intro">
@@ -48,8 +50,8 @@ watch(() => route.params.id, (id) => load(id))
       </section>
 
       <div class="back-bar">
-        <RouterLink to="/news" class="cta-btn">← К ленте новостей</RouterLink>
-        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
+        <RouterLink to="/news" class="cta-btn">{{ t('views.NewsItemView.backToList') }}</RouterLink>
+        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">{{ t('common.edit') }}</a>
       </div>
 
       <CommentsSection :post-id="post.id" :comment-status="post.commentStatus" />

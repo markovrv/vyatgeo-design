@@ -6,6 +6,9 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { RouterLink } from 'vue-router'
 import ImageLightbox from '@/components/ImageLightbox.vue'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const props = defineProps({
   attraction: { type: Object, default: null },
@@ -55,11 +58,11 @@ onUnmounted(() => {
     @click.self="emit('close')"
   >
     <div class="popup-card">
-      <button ref="closeBtnEl" type="button" class="popup-x" @click="emit('close')" aria-label="Закрыть">
+      <button ref="closeBtnEl" type="button" class="popup-x" @click="emit('close')" :aria-label="t('common.close')">
         <svg viewBox="0 0 20 20" class="icon"><path d="M5 5l10 10M15 5 5 15" /></svg>
       </button>
 
-      <p v-if="loading" class="popup-loading">Загрузка…</p>
+      <p v-if="loading" class="popup-loading">{{ t('common.loading') }}</p>
       <template v-else-if="attraction">
         <div class="popup-body" :class="{ 'popup-body--split': images.length > 0 }">
           <header class="popup-header">
@@ -75,7 +78,7 @@ onUnmounted(() => {
           <div v-if="images.length" class="popup-media">
             <div class="gallery-frame">
               <span v-if="images.length > 1" class="gallery-counter">{{ activeImage + 1 }} / {{ images.length }}</span>
-              <button v-if="images.length > 1" type="button" class="gallery-nav gallery-nav--prev" @click="goTo(activeImage - 1)" aria-label="Предыдущее фото">
+              <button v-if="images.length > 1" type="button" class="gallery-nav gallery-nav--prev" @click="goTo(activeImage - 1)" :aria-label="t('common.galleryPrev')">
                 <svg viewBox="0 0 20 20" class="icon"><polyline points="12.5 4 6.5 10 12.5 16" /></svg>
               </button>
               <transition name="gallery-fade" mode="out-in">
@@ -84,8 +87,8 @@ onUnmounted(() => {
                   @click="lightboxOpen = true"
                 />
               </transition>
-              <span class="gallery-zoom-hint" aria-hidden="true">⤢ Во весь экран</span>
-              <button v-if="images.length > 1" type="button" class="gallery-nav gallery-nav--next" @click="goTo(activeImage + 1)" aria-label="Следующее фото">
+              <span class="gallery-zoom-hint" aria-hidden="true">{{ t('common.fullscreenHint') }}</span>
+              <button v-if="images.length > 1" type="button" class="gallery-nav gallery-nav--next" @click="goTo(activeImage + 1)" :aria-label="t('common.galleryNext')">
                 <svg viewBox="0 0 20 20" class="icon"><polyline points="7.5 4 13.5 10 7.5 16" /></svg>
               </button>
             </div>
@@ -93,9 +96,9 @@ onUnmounted(() => {
               <button
                 v-for="(img, i) in images" :key="img" type="button"
                 class="popup-thumb" :class="{ 'popup-thumb--active': i === activeImage }"
-                @click="goTo(i)" :aria-label="`Фото ${i + 1}`" :aria-current="i === activeImage"
+                @click="goTo(i)" :aria-label="t('common.photoAlt', { n: i + 1 })" :aria-current="i === activeImage"
               >
-                <img :src="img" :alt="`Фото ${i + 1}`" />
+                <img :src="img" :alt="t('common.photoAlt', { n: i + 1 })" />
               </button>
             </div>
           </div>
@@ -105,10 +108,10 @@ onUnmounted(() => {
 
             <div class="popup-footer">
               <RouterLink :to="objectLink" class="popup-source-btn">
-                Подробнее
+                {{ t('components.AttractionPopup.readMore') }}
                 <svg viewBox="0 0 20 20" class="icon icon--sm"><polyline points="7.5 4 13.5 10 7.5 16" /></svg>
               </RouterLink>
-              <button type="button" class="popup-close-link" @click="emit('close')">Закрыть</button>
+              <button type="button" class="popup-close-link" @click="emit('close')">{{ t('common.close') }}</button>
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useStrings } from '@/i18n'
+const { t } = useStrings()
 
 const props = defineProps({
   label: { type: String, required: true },
@@ -56,9 +58,9 @@ onUnmounted(() => {
 
     <div v-if="open" class="ms-panel">
       <div v-if="selectedCount" class="ms-panel-header">
-        <button type="button" class="ms-clear" @click="clear">Сбросить</button>
+        <button type="button" class="ms-clear" @click="clear">{{ t('common.reset') }}</button>
       </div>
-      <p v-if="!options.length" class="ms-empty">Нет вариантов</p>
+      <p v-if="!options.length" class="ms-empty">{{ t('components.MultiSelectFilter.noOptions') }}</p>
       <label v-for="opt in options" :key="opt.id" class="ms-option">
         <input type="checkbox" :checked="isChecked(opt.slug)" @change="toggle(opt.slug)" />
         <span class="ms-option-name">{{ opt.name }}</span>

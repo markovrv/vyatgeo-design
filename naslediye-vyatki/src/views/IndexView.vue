@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useStrings } from '@/i18n'
 import { useScrollFadeIn } from '@/composables/useScrollFadeIn'
 import { useHistoryMilestones } from '@/composables/useHistory'
 import KremlinVideo from '@/components/KremlinVideo.vue'
@@ -15,6 +16,8 @@ import historicCitiesImg from '@/assets/img/historic-cities.jpg'
 import natureImg from '@/assets/img/nature.jpg'
 import archeologyImg from '@/assets/img/archeology.jpg'
 import architectureKirovImg from '@/assets/img/architecture-kirov.jpg'
+
+const { t } = useStrings()
 
 const { fadeStyle } = useScrollFadeIn()
 
@@ -45,18 +48,18 @@ const { milestones: timelineItems, fetchMilestones } = useHistoryMilestones()
 onMounted(() => fetchMilestones('kirov'))
 
 const modules = [
-  { title: 'Лица Победы', to: '/victory', img: victoryFacesImg, desc: 'Портреты и судьбы жителей Кировской области — участников Великой Отечественной войны.', recommended: true },
-  { title: 'Этнографическое наследие', to: '/ethnography', img: ethnographyImg, desc: 'Дымковская игрушка, капокорень, кружевоплетение — живые традиции Вятского края.' },
-  { title: 'Исторические города', to: '/cities', img: historicCitiesImg, desc: 'Киров, Котельнич, Слободской, Яранск — купеческая застройка и старинные соборы.' },
-  { title: 'Памятники природы', to: '/nature', img: natureImg, desc: 'Река Вятка, карстовые провалы, вековые боры — природное наследие региона.' },
-  { title: 'Памятники археологии', to: '/archeology', img: archeologyImg, desc: 'Городища ананьинской культуры, средневековые поселения, клады эпохи бронзы.' },
-  { title: 'Архитектура Кирова', to: '/architecture', img: architectureKirovImg, desc: 'От провинциального классицизма до конструктивизма — стили всех эпох в облике города.' },
+  { title: t('views.IndexView.moduleVictory'), to: '/victory', img: victoryFacesImg, desc: t('views.IndexView.moduleVictoryDesc'), recommended: true },
+  { title: t('views.IndexView.moduleEthnography'), to: '/ethnography', img: ethnographyImg, desc: t('views.IndexView.moduleEthnographyDesc') },
+  { title: t('views.IndexView.moduleCities'), to: '/cities', img: historicCitiesImg, desc: t('views.IndexView.moduleCitiesDesc') },
+  { title: t('views.IndexView.moduleNature'), to: '/nature', img: natureImg, desc: t('views.IndexView.moduleNatureDesc') },
+  { title: t('views.IndexView.moduleArcheology'), to: '/archeology', img: archeologyImg, desc: t('views.IndexView.moduleArcheologyDesc') },
+  { title: t('views.IndexView.moduleArchitecture'), to: '/architecture', img: architectureKirovImg, desc: t('views.IndexView.moduleArchitectureDesc') },
 ]
 
 const crafts = [
-  { title: 'Дымковская игрушка', img: craftDymkovo, desc: 'Один из старейших русских народных промыслов — глиняные расписные фигурки из слободы Дымково. Их история насчитывает более 400 лет. Яркие геометрические узоры делают дымковскую игрушку символом Вятского края.' },
-  { title: 'Изделия из капокорня', img: craftKapokoren, desc: 'Уникальный вятский промысел — обработка капа и капокорня. Природный рисунок древесины превращается в неповторимые шкатулки, вазы и декоративные панно. Каждое изделие единственно в своём роде.' },
-  { title: 'Вятское кружевоплетение', img: craftKruzhevo, desc: 'Кружевоплетение на коклюшках пришло на Вятку в XVIII веке: строгий геометрический орнамент, белый или кремовый лён, тонкие ажурные узоры. Украшало одежду и интерьеры купеческих особняков.' },
+  { title: t('views.IndexView.craftDymkovo'), img: craftDymkovo, desc: t('views.IndexView.craftDymkovoDesc') },
+  { title: t('views.IndexView.craftKapokoren'), img: craftKapokoren, desc: t('views.IndexView.craftKapokorenDesc') },
+  { title: t('views.IndexView.craftLace'), img: craftKruzhevo, desc: t('views.IndexView.craftLaceDesc') },
 ]
 
 const currentCraft = computed(() => crafts[craftIndex.value])
@@ -67,16 +70,16 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
 
 <template>
   <div class="page">
-    <a href="#modules" class="skip-link">К разделам проекта</a>
+    <a href="#modules" class="skip-link">{{ t('views.IndexView.skipLink') }}</a>
 
     <section class="hero">
       <div class="hero-bg" :style="{ backgroundImage: `url(${heroImg})`, transform: `translateY(${heroOffset}px)` }" />
       <div class="hero-overlay" />
       <div class="hero-content" :style="fadeStyle(0)">
-        <p class="hero-eyebrow">К 90-ЛЕТИЮ КИРОВСКОЙ ОБЛАСТИ · 1936–2026</p>
-        <h1 class="hero-title">Историко-культурное наследие Вятского края</h1>
-        <p class="hero-subtitle">Семь веков истории, народных промыслов и архитектуры — живая память земли вятской</p>
-        <a href="#modules" class="cta-btn">Исследовать наследие</a>
+        <p class="hero-eyebrow">{{ t('views.IndexView.heroEyebrow') }}</p>
+        <h1 class="hero-title">{{ t('views.IndexView.heroTitle') }}</h1>
+        <p class="hero-subtitle">{{ t('views.IndexView.heroSubtitle') }}</p>
+        <a href="#modules" class="cta-btn">{{ t('views.IndexView.heroCta') }}</a>
       </div>
       <div class="hero-arrow">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8DFC8" stroke-width="2" stroke-linecap="round">
@@ -86,8 +89,8 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
     </section>
 
     <section id="modules" class="modules" :style="fadeStyle(1)">
-      <h2 class="section-heading">Разделы проекта</h2>
-      <p class="section-sub">«Наследие Вятки» — цифровой архив к 90-летию Кировской области (1936–2026), где бережно собраны материалы об истории, культуре и природе Вятского края: от портретов фронтовиков и живых народных промыслов до архитектуры губернского Кирова и памятников археологии. Шесть разделов — шесть путей к наследию земли, хранящей память семи веков.</p>
+      <h2 class="section-heading">{{ t('views.IndexView.modulesHeading') }}</h2>
+      <p class="section-sub">{{ t('views.IndexView.modulesSub') }}</p>
       <div class="modules-grid">
         <RouterLink v-for="m in modules" :key="m.to" :to="m.to" class="module-card-wrap">
           <div class="module-card" :class="{ 'module-card--recommended': m.recommended }">
@@ -105,12 +108,12 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
     <section class="history" :style="fadeStyle(2)">
       <div class="history-inner">
         <div class="history-text">
-          <p class="section-label">История Вятского края</p>
-          <h2 class="section-heading">Вятский край: семь веков истории</h2>
-          <p class="history-p">Вятская земля впервые упоминается в летописях XII века. Основанная новгородскими переселенцами, Вятка стала самобытным краем на стыке севернорусской, финно-угорской и пермской культур. Здесь в 1580 году монах Трифон заложил Успенский монастырь — первую каменную обитель Вятки, ставшую духовным центром края на века.</p>
-          <p class="history-p">В 1780 году Екатерина II учредила Вятское наместничество, а город получил регулярный план и каменную застройку в стиле провинциального классицизма. Купеческие особняки, приходские церкви, земские здания — всё это формировало неповторимый облик губернского города.</p>
-          <p class="history-p">5 декабря 1936 года была образована Кировская область. В 2026 году мы отмечаем 90-летие региона — повод вспомнить и сохранить всё, чем богата вятская земля.</p>
-          <RouterLink to="/cities" class="cta-btn">Исторические города</RouterLink>
+          <p class="section-label">{{ t('views.IndexView.historyLabel') }}</p>
+          <h2 class="section-heading">{{ t('views.IndexView.historyHeading') }}</h2>
+          <p class="history-p">{{ t('views.IndexView.historyP1') }}</p>
+          <p class="history-p">{{ t('views.IndexView.historyP2') }}</p>
+          <p class="history-p">{{ t('views.IndexView.historyP3') }}</p>
+          <RouterLink to="/cities" class="cta-btn">{{ t('views.IndexView.historyCta') }}</RouterLink>
         </div>
         <KremlinVideo />
       </div>
@@ -127,21 +130,21 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
 
     <section class="crafts" :style="fadeStyle(3)">
       <div class="crafts-heading">
-        <p class="section-label">Народные промыслы Вятского края</p>
-        <h2 class="section-heading">Живые традиции</h2>
+        <p class="section-label">{{ t('views.IndexView.craftsLabel') }}</p>
+        <h2 class="section-heading">{{ t('views.IndexView.craftsHeading') }}</h2>
       </div>
       <div class="craft-card">
         <div class="craft-img" :style="{ backgroundImage: `url(${currentCraft.img})` }" />
         <div class="craft-body">
           <h3 class="craft-title">{{ currentCraft.title }}</h3>
           <p class="craft-desc">{{ currentCraft.desc }}</p>
-          <RouterLink to="/ethnography" class="craft-link">Подробнее →</RouterLink>
+          <RouterLink to="/ethnography" class="craft-link">{{ t('views.IndexView.craftMore') }}</RouterLink>
         </div>
       </div>
       <div class="craft-nav">
-        <button aria-label="Предыдущий" class="craft-arrow" @click="prevCraft">‹</button>
+        <button :aria-label="t('views.IndexView.craftPrevAria')" class="craft-arrow" @click="prevCraft">‹</button>
         <button v-for="(c, i) in crafts" :key="c.title" :aria-label="c.title" class="craft-dot" :class="{ active: i === craftIndex }" @click="craftIndex = i" />
-        <button aria-label="Следующий" class="craft-arrow" @click="nextCraft">›</button>
+        <button :aria-label="t('views.IndexView.craftNextAria')" class="craft-arrow" @click="nextCraft">›</button>
       </div>
     </section>
 
@@ -150,18 +153,18 @@ function nextCraft() { craftIndex.value = (craftIndex.value + 1) % crafts.length
       <div class="parallax-bg" :style="{ backgroundImage: `url(${archImg})`, transform: `translateY(${archOffset}px)` }" />
       <div class="parallax-overlay" />
       <div class="parallax-card">
-        <h2 class="parallax-title">Архитектура Вятки: от монастырских стен до купеческих палат</h2>
-        <p class="parallax-text">Кремлёвский холм над рекой Вяткой, белые стены Трифонова монастыря, нарядные особняки купцов Булычёва и Прозорова — архитектурный облик Кирова хранит слои истории от XVII по XX век.</p>
-        <RouterLink to="/architecture" class="cta-btn">Архитектура Кирова</RouterLink>
+        <h2 class="parallax-title">{{ t('views.IndexView.parallaxTitle') }}</h2>
+        <p class="parallax-text">{{ t('views.IndexView.parallaxText') }}</p>
+        <RouterLink to="/architecture" class="cta-btn">{{ t('views.IndexView.parallaxCta') }}</RouterLink>
       </div>
       </div>
     </section>
 
     <section class="quote" :style="fadeStyle(5)">
       <blockquote class="quote-text">
-        <span class="quote-mark">&#8220;</span>Вятка — страна своеобразная. Есть в ней что-то нетронутое, лесное, медленное и в то же время крепкое. Здесь чтут старину не из привычки, а из любви к ней.
+        <span class="quote-mark">&#8220;</span>{{ t('views.IndexView.quoteText') }}
       </blockquote>
-      <cite class="quote-cite">Александр Андреевич Спицын (1858–1931), русский археолог, историк и краевед Вятской губернии</cite>
+      <cite class="quote-cite">{{ t('views.IndexView.quoteCite') }}</cite>
     </section>
   </div>
 </template>

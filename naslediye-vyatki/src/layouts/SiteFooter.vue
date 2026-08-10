@@ -1,21 +1,26 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useResolvedNav } from '@/composables/useMenu'
+import { useSiteInfo } from '@/composables/useSiteInfo'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
+const { siteName, fetchSiteInfo } = useSiteInfo()
 
 const HARDCODED_FOOTER_NAV = [
-  ['home', 'Главная', '/'],
-  ['victory', 'Лица Победы', '/victory'],
-  ['ethnography', 'Этнографическое наследие', '/ethnography'],
-  ['cities', 'Исторические города', '/cities'],
-  ['nature', 'Памятники природы', '/nature'],
-  ['archeology', 'Памятники археологии', '/archeology'],
-  ['architecture', 'Архитектура Кирова', '/architecture'],
-  ['about', 'О проекте', '/about'],
+  ['home', t('layouts.SiteFooter.navHome'), '/'],
+  ['victory', t('layouts.SiteFooter.navVictory'), '/victory'],
+  ['ethnography', t('layouts.SiteFooter.navEthnography'), '/ethnography'],
+  ['cities', t('layouts.SiteFooter.navCities'), '/cities'],
+  ['nature', t('layouts.SiteFooter.navNature'), '/nature'],
+  ['archeology', t('layouts.SiteFooter.navArcheology'), '/archeology'],
+  ['architecture', t('layouts.SiteFooter.navArchitecture'), '/architecture'],
+  ['about', t('layouts.SiteFooter.navAbout'), '/about'],
 ]
 
 const { navItems, load: loadMenu } = useResolvedNav('spa_footer', HARDCODED_FOOTER_NAV)
 
-onMounted(loadMenu)
+onMounted(() => { loadMenu(); fetchSiteInfo() })
 </script>
 
 <template>
@@ -38,12 +43,12 @@ onMounted(loadMenu)
             <path d="M12 30c0-6 4-10 8-10s8 4 8 10" stroke="currentColor" stroke-width="2" fill="none" />
             <circle cx="20" cy="12" r="4" fill="currentColor" />
           </svg>
-          Наследие Вятки
+          {{ siteName }}
         </h4>
-        <p class="footer-desc">Просветительский проект к 90-летию Кировской области. 2026</p>
+        <p class="footer-desc">{{ t('layouts.SiteFooter.desc') }}</p>
       </div>
       <div>
-        <strong class="footer-heading">Разделы</strong>
+        <strong class="footer-heading">{{ t('layouts.SiteFooter.sections') }}</strong>
         <div class="footer-links">
           <template v-for="item in navItems" :key="item.key">
             <RouterLink v-if="item.spaRoute" :to="item.to">{{ item.label }}</RouterLink>
@@ -52,12 +57,12 @@ onMounted(loadMenu)
         </div>
       </div>
       <div>
-        <p class="footer-desc">Проект реализован при поддержке Правительства Кировской области и Кировского областного краеведческого музея.</p>
+        <p class="footer-desc">{{ t('layouts.SiteFooter.supportText') }}</p>
       </div>
     </div>
 
     <div class="footer-bottom">
-      &copy; 2026 Историко-культурное наследие Кировской области.
+      {{ t('layouts.SiteFooter.copyright') }}
     </div>
   </footer>
 </template>

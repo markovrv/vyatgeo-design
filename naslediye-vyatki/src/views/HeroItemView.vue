@@ -3,6 +3,9 @@ import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useHero, useHeroAdjacent, useHeroNearby, useHeroThumbnails, SITE_URL } from '@/composables/useHeroes'
 import CommentsSection from '@/components/CommentsSection.vue'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const route = useRoute()
 const { hero, loading, error, fetchHero } = useHero()
@@ -16,7 +19,7 @@ const editUrl = computed(() => hero.value ? `${SITE_URL}wp-admin/post.php?post=$
 
 function formatDistance(km) {
   if (km == null) return ''
-  return km < 1 ? `${Math.round(km * 1000)} м` : `${km.toFixed(1)} км`
+  return km < 1 ? t('common.distMeters', { n: Math.round(km * 1000) }) : t('common.distKm', { n: km.toFixed(1) })
 }
 function nearbyImg(n) { return thumbnails.value[n.imgId] || n.imgSrc }
 watch(nearby, (items) => fetchThumbnails(items.map(n => n.imgId)))
@@ -30,13 +33,13 @@ watch(() => route.params.id, (id) => load(id))
   <div class="page">
     <div class="spacer" />
     <nav class="breadcrumb">
-      <RouterLink to="/">Главная</RouterLink><span>/</span>
-      <RouterLink to="/victory">Лица Победы</RouterLink><span>/</span>
-      <span class="current">{{ hero?.title || '…' }}</span>
+      <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+      <RouterLink to="/victory">{{ t('views.HeroesView.title') }}</RouterLink><span>/</span>
+      <span class="current">{{ hero?.title || t('common.ellipsis') }}</span>
     </nav>
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-    <p v-else-if="!hero" class="state-msg">Персоналия не найдена.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+    <p v-else-if="!hero" class="state-msg">{{ t('views.HeroItemView.notFound') }}</p>
     <template v-else>
       <section class="intro">
         <div class="tags">
@@ -49,14 +52,14 @@ watch(() => route.params.id, (id) => load(id))
         <p v-if="hero.birthPlace" class="meta">{{ hero.birthPlace }}</p>
       </section>
       <section v-if="hero.feat" class="section">
-        <h2 class="heading">Подвиг</h2>
+        <h2 class="heading">{{ t('views.HeroItemView.featHeading') }}</h2>
         <p class="text">{{ hero.feat }}</p>
       </section>
       <section v-if="hero.profession || hero.awards || hero.connection" class="section">
         <dl class="info-grid">
-          <template v-if="hero.profession"><dt>Профессия</dt><dd>{{ hero.profession }}</dd></template>
-          <template v-if="hero.awards"><dt>Награды</dt><dd>{{ hero.awards }}</dd></template>
-          <template v-if="hero.connection"><dt>Связь с Вятским краем</dt><dd>{{ hero.connection }}</dd></template>
+          <template v-if="hero.profession"><dt>{{ t('views.HeroItemView.professionLabel') }}</dt><dd>{{ hero.profession }}</dd></template>
+          <template v-if="hero.awards"><dt>{{ t('views.HeroItemView.awardsLabel') }}</dt><dd>{{ hero.awards }}</dd></template>
+          <template v-if="hero.connection"><dt>{{ t('views.HeroItemView.connectionLabel') }}</dt><dd>{{ hero.connection }}</dd></template>
         </dl>
       </section>
       <section v-if="hero.content" class="section">
@@ -66,14 +69,14 @@ watch(() => route.params.id, (id) => load(id))
         <RouterLink v-if="prev" :to="`/victory/${prev.id}`" class="nav-card nav-card--prev">
           <div class="nav-thumb" :style="{ backgroundImage: `url(${prev.imgSrc})` }" />
           <div class="nav-text">
-            <span class="nav-direction"><span class="nav-direction-full">← Предыдущий</span><span class="nav-direction-short">← Пред.</span></span>
+            <span class="nav-direction"><span class="nav-direction-full">{{ t('common.prevFull') }}</span><span class="nav-direction-short">{{ t('common.prevShort') }}</span></span>
             <span class="nav-title" :title="prev.title">{{ prev.title }}</span>
           </div>
         </RouterLink>
         <span v-else class="nav-card nav-card--empty" />
         <RouterLink v-if="next" :to="`/victory/${next.id}`" class="nav-card nav-card--next">
           <div class="nav-text">
-            <span class="nav-direction"><span class="nav-direction-full">Следующий →</span><span class="nav-direction-short">След. →</span></span>
+            <span class="nav-direction"><span class="nav-direction-full">{{ t('common.nextFull') }}</span><span class="nav-direction-short">{{ t('common.nextShort') }}</span></span>
             <span class="nav-title" :title="next.title">{{ next.title }}</span>
           </div>
           <div class="nav-thumb" :style="{ backgroundImage: `url(${next.imgSrc})` }" />
@@ -81,11 +84,11 @@ watch(() => route.params.id, (id) => load(id))
         <span v-else class="nav-card nav-card--empty" />
       </nav>
       <div class="back-bar">
-        <RouterLink to="/victory" class="cta-btn">← К списку Лиц Победы</RouterLink>
-        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
+        <RouterLink to="/victory" class="cta-btn">{{ t('views.HeroItemView.backToList') }}</RouterLink>
+        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">{{ t('common.edit') }}</a>
       </div>
       <section v-if="nearby.length" class="section nearby-section">
-        <h2 class="nearby-heading">Герои рядом</h2>
+        <h2 class="nearby-heading">{{ t('views.HeroItemView.nearbyHeading') }}</h2>
         <div class="nearby-grid">
           <RouterLink v-for="n in nearby" :key="n.id" :to="`/victory/${n.id}`" class="nearby-card">
             <div class="nearby-img" :style="{ backgroundImage: `url(${nearbyImg(n)})` }" />

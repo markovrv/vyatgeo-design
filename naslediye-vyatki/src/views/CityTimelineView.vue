@@ -4,7 +4,9 @@ import { RouterLink, onBeforeRouteLeave, useRoute } from 'vue-router'
 import fallbackHero from '@/assets/img/kremlin.jpeg'
 import FilterBar from '@/components/FilterBar.vue'
 import { useHistoryCity, useHistoryEvents, useHistoryThumbnails, historyTimelineState, SITE_URL } from '@/composables/useHistory'
+import { useStrings } from '@/i18n'
 
+const { t } = useStrings()
 const route = useRoute()
 const { city, loading: cityLoading, error: cityError, fetchCity } = useHistoryCity()
 const { events, total, hasMore, loading: eventsLoading, loadingMore, error: eventsError, fetchEvents, fetchMore } = useHistoryEvents()
@@ -24,12 +26,12 @@ const loading = computed(() => cityLoading.value)
 const error = computed(() => cityError.value || eventsError.value)
 
 const centuryOptions = [
-  { value: 'all', label: 'Все века' },
-  { value: '14-17', label: '14–17 века' },
-  { value: '18', label: '18 век' },
-  { value: '19', label: '19 век' },
-  { value: '20', label: '20 век' },
-  { value: '21', label: '21 век' },
+  { value: 'all', label: t('views.CityTimelineView.centuryAll') },
+  { value: '14-17', label: t('views.CityTimelineView.century14_17') },
+  { value: '18', label: t('views.CityTimelineView.century18') },
+  { value: '19', label: t('views.CityTimelineView.century19') },
+  { value: '20', label: t('views.CityTimelineView.century20') },
+  { value: '21', label: t('views.CityTimelineView.century21') },
 ]
 
 function eventImg(e) {
@@ -123,68 +125,68 @@ onBeforeUnmount(() => observer?.disconnect())
   <div class="page">
     <div class="spacer" />
 
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-    <p v-else-if="!city" class="state-msg">Город не найден.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+    <p v-else-if="!city" class="state-msg">{{ t('views.CityTimelineView.cityNotFound') }}</p>
 
     <template v-else>
       <section class="hero">
         <div class="hero-bg" :style="{ backgroundImage: `url(${city.photo || fallbackHero})` }" />
         <div class="hero-overlay" />
         <div class="hero-content">
-          <p class="hero-eyebrow">К 90-летию Кировской области · Исторические города</p>
+          <p class="hero-eyebrow">{{ t('views.CityTimelineView.eyebrow') }}</p>
           <h1 class="hero-title">{{ city.name }}</h1>
           <p v-if="city.short" class="hero-subtitle">{{ city.short }}</p>
         </div>
       </section>
 
       <nav class="breadcrumb">
-        <RouterLink to="/">Главная</RouterLink><span>/</span>
-        <RouterLink to="/cities">Исторические города</RouterLink><span>/</span>
+        <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+        <RouterLink to="/cities">{{ t('views.HistoricCitiesView.title') }}</RouterLink><span>/</span>
         <span class="current">{{ city.name }}</span>
       </nav>
 
       <section v-if="city.description || city.eventsCount" class="info">
         <div class="info-grid">
           <div>
-            <h2 class="info-heading">Общие сведения</h2>
+            <h2 class="info-heading">{{ t('views.CityTimelineView.infoHeading') }}</h2>
             <p v-if="city.description">{{ city.description }}</p>
-            <p v-else class="state-msg" style="padding:0; text-align:left;">Подробное описание города пока не добавлено.</p>
+            <p v-else class="state-msg" style="padding:0; text-align:left;">{{ t('views.CityTimelineView.infoFallback') }}</p>
           </div>
           <div class="stats-col">
             <div class="stat">
               <strong class="stat-n">{{ city.eventsCount }}</strong>
-              <span class="stat-label">событий в летописи города</span>
+              <span class="stat-label">{{ t('views.CityTimelineView.eventsCountLabel') }}</span>
             </div>
           </div>
         </div>
       </section>
 
       <div class="back-bar">
-        <RouterLink to="/cities" class="cta-btn">← К списку городов</RouterLink>
-        <a v-if="editCityUrl" :href="editCityUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
+        <RouterLink to="/cities" class="cta-btn">{{ t('views.CityTimelineView.backToCities') }}</RouterLink>
+        <a v-if="editCityUrl" :href="editCityUrl" target="_blank" rel="noopener" class="edit-link">{{ t('common.edit') }}</a>
       </div>
 
       <section class="timeline-section">
-        <h2 class="section-heading">Лента времени</h2>
-        <p class="section-sub">Ключевые события в истории города от первого упоминания до наших дней</p>
+        <h2 class="section-heading">{{ t('views.CityTimelineView.timelineHeading') }}</h2>
+        <p class="section-sub">{{ t('views.CityTimelineView.timelineSubtitle') }}</p>
 
         <div class="timeline-controls">
           <div class="search-row">
             <div class="search-box">
               <svg viewBox="0 0 20 20" class="search-icon" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" /><path d="M16.5 16.5 12.8 12.8" /></svg>
               <input
-                type="search" class="search-input" placeholder="Поиск по названию и тексту события…"
-                :value="historyTimelineState.search" @input="onSearchInput" aria-label="Поиск по названию и тексту события"
+                type="search" class="search-input" :placeholder="t('views.CityTimelineView.searchPlaceholder')"
+                :value="historyTimelineState.search" @input="onSearchInput" :aria-label="t('views.CityTimelineView.searchAria')"
               />
             </div>
           </div>
-          <FilterBar label="Век" :options="centuryOptions" :active="historyTimelineState.century" @select="selectCentury" />
+          <FilterBar :label="t('views.CityTimelineView.centuryLabel')" :options="centuryOptions" :active="historyTimelineState.century" @select="selectCentury" />
         </div>
 
         <div ref="timelineTop">
-          <p v-if="eventsLoading && !events.length" class="state-msg">Загрузка…</p>
-          <p v-else-if="!total" class="state-msg">По выбранным условиям ничего не найдено.</p>
+          <p v-if="eventsLoading && !events.length" class="state-msg">{{ t('common.loading') }}</p>
+          <p v-else-if="!total" class="state-msg">{{ t('views.CityTimelineView.emptyState') }}</p>
           <div v-else class="timeline">
             <div class="tl-line" />
             <div v-for="e in events" :key="e.id" class="tl-item">
@@ -195,13 +197,13 @@ onBeforeUnmount(() => observer?.disconnect())
                 <div class="tl-img" :style="{ backgroundImage: `url(${eventImg(e)})` }" :aria-label="e.title" />
               </RouterLink>
             </div>
-            <p v-if="loadingMore" class="state-msg tl-loading-more">Загрузка ещё…</p>
+            <p v-if="loadingMore" class="state-msg tl-loading-more">{{ t('common.loadingMore') }}</p>
             <div ref="sentinel" class="tl-sentinel" aria-hidden="true" />
           </div>
         </div>
 
         <div v-if="total" class="timeline-controls timeline-controls--bottom">
-          <FilterBar label="Век" :options="centuryOptions" :active="historyTimelineState.century" @select="selectCenturyFromBottom" />
+          <FilterBar :label="t('views.CityTimelineView.centuryLabel')" :options="centuryOptions" :active="historyTimelineState.century" @select="selectCenturyFromBottom" />
         </div>
       </section>
     </template>

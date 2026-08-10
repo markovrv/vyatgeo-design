@@ -37,4 +37,11 @@ function copyDir(src, dest) {
 rmSync(destDir, { recursive: true, force: true })
 copyDir(srcDir, destDir)
 
+// Копируем strings.json в тему (нужен PHP-админке для показа дефолтных строк)
+const i18nDir = path.join(rootDir, 'wp-theme', 'naslediye-vyatki-theme', 'i18n')
+const stringsSrc = path.join(rootDir, 'src', 'i18n', 'strings.json')
+const stringsDest = path.join(i18nDir, 'strings.json')
+mkdirSync(i18nDir, { recursive: true })
+copyFileSync(stringsSrc, stringsDest)
+
 console.log(`dist/ скопирован в ${path.relative(rootDir, destDir)}`)

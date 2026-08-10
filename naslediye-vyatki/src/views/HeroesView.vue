@@ -8,6 +8,9 @@ import FilterBar from '@/components/FilterBar.vue'
 import HeroMap from '@/components/HeroMap.vue'
 import HeroControls from '@/components/HeroControls.vue'
 import { useHeroes, useHeroThumbnails, heroesCatalogState as state } from '@/composables/useHeroes'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const { heroes, loading, error, fetchHeroes } = useHeroes()
 const { thumbnails, fetchThumbnails } = useHeroThumbnails()
@@ -22,7 +25,7 @@ const statusOptions = computed(() => {
     if (h.statusSlug && !seen.has(h.statusSlug)) seen.set(h.statusSlug, h.statusName)
   }
   return [
-    { value: 'all', label: 'Все статусы' },
+    { value: 'all', label: t('views.HeroesView.statusAll') },
     ...[...seen.entries()].map(([value, label]) => ({ value, label })),
   ]
 })
@@ -64,17 +67,17 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
 </script>
 
 <template>
-  <CatalogLayout :heroImg="heroImg" eyebrow="К 90-летию Кировской области · Живая летопись ратной славы" title="Лица Победы" subtitle="Герои Советского Союза — уроженцы Вятского края. 215 имён, подвиги в Великой Отечественной войне 1941–1945 годов" :gridCount="state.viewMode === 'catalog' ? filtered.length : 0">
-    <template #heading>Герои Советского Союза — уроженцы Вятского края</template>
+  <CatalogLayout :heroImg="heroImg" :eyebrow="t('views.HeroesView.eyebrow')" :title="t('views.HeroesView.title')" :subtitle="t('views.HeroesView.subtitle')" :gridCount="state.viewMode === 'catalog' ? filtered.length : 0">
+    <template #heading>{{ t('views.HeroesView.heading') }}</template>
     <template #description>
       <p style="text-align:center; max-width:700px; margin: 0 auto var(--space-3); line-height: 1.75;">
-        Проект будет постоянно пополняться новыми именами и материалами из архивов. Если у вас есть фотографии, письма или документы ваших родных — участников войны, пришлите их нам для оцифровки и публикации.
+        {{ t('views.HeroesView.description') }}
       </p>
     </template>
     <template #filters>
       <div class="filters-block">
         <div class="filters-row">
-          <FilterBar label="По статусу" :options="statusOptions" :active="state.status" @select="v => { state.status = v; state.page = 1 }" />
+          <FilterBar :label="t('views.HeroesView.statusLabel')" :options="statusOptions" :active="state.status" @select="v => { state.status = v; state.page = 1 }" />
         </div>
       </div>
     </template>
@@ -82,17 +85,17 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
       <div class="map-shell">
         <HeroControls class="controls" :class="{ 'controls--floating': state.viewMode === 'map' }" />
         <template v-if="state.viewMode === 'map'">
-          <p v-if="loading" class="state-msg">Загрузка карты…</p>
-          <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+          <p v-if="loading" class="state-msg">{{ t('common.loadingMap') }}</p>
+          <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
           <HeroMap v-else :points="filtered" />
         </template>
       </div>
     </template>
     <template #grid>
       <template v-if="state.viewMode === 'catalog'">
-        <p v-if="loading" class="state-msg">Загрузка…</p>
-        <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-        <p v-else-if="pageItems.length === 0" class="state-msg">По запросу ничего не найдено.</p>
+        <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+        <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+        <p v-else-if="pageItems.length === 0" class="state-msg">{{ t('common.emptyQuery') }}</p>
         <RouterLink v-for="h in pageItems" :key="h.id" :to="`/victory/${h.id}`" class="card">
           <div class="card-img" :style="{ backgroundImage: `url(${cardImg(h)})` }" role="img" :aria-label="h.title" />
           <div class="card-body">
@@ -111,9 +114,9 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
     </template>
   </CatalogLayout>
   <section class="cta">
-    <h2 class="cta-heading">Помогите сохранить память</h2>
-    <p class="cta-sub">Если у вас есть фотографии, письма или документы ваших родных — участников войн, пришлите их нам для оцифровки и публикации.</p>
-    <button type="button" class="cta-btn">Связаться с проектом</button>
+    <h2 class="cta-heading">{{ t('views.HeroesView.ctaHeading') }}</h2>
+    <p class="cta-sub">{{ t('views.HeroesView.ctaSub') }}</p>
+    <button type="button" class="cta-btn">{{ t('views.HeroesView.ctaBtn') }}</button>
   </section>
 </template>
 

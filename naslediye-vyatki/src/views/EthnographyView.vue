@@ -1,12 +1,15 @@
 <script setup>
 import { onMounted, nextTick } from 'vue'
 import { RouterLink, onBeforeRouteLeave } from 'vue-router'
+import { useStrings } from '@/i18n'
 import heroImg from '@/assets/img/ethnography.jpg'
 import CatalogLayout from '@/components/CatalogLayout.vue'
 import TypeFilterTiles from '@/components/TypeFilterTiles.vue'
 import MultiSelectFilter from '@/components/MultiSelectFilter.vue'
 import Pagination from '@/components/Pagination.vue'
 import { useFindings, useFindingTypes, useTaxonomyOptions, ethnographyCatalogState as state } from '@/composables/useFindings'
+
+const { t } = useStrings()
 
 const { findings, total, totalPages, loading, error, fetchFindings } = useFindings()
 const { types, fetchFindingTypes } = useFindingTypes()
@@ -107,46 +110,46 @@ function excerpt(text, len = 120) {
 <template>
   <CatalogLayout
     :heroImg="heroImg"
-    eyebrow="К 90-летию Кировской области · Этнографическая коллекция археологической лаборатории ВятГУ"
-    title="Этнографическое наследие"
-    subtitle="Коллекция предметов быта, костюмов, орудий труда и промыслов Вятского края"
+    :eyebrow="t('views.EthnographyView.eyebrow')"
+    :title="t('views.EthnographyView.title')"
+    :subtitle="t('views.EthnographyView.subtitle')"
     :gridCount="total"
   >
-    <template #heading>Цифровой архив народной культуры</template>
-    <template #description>Коллекция собрана экспедициями археологической лаборатории ВятГУ. Каждый экспонат сопровождается подробным описанием: материал, происхождение, время создания и поступления в фонд.</template>
+    <template #heading>{{ t('views.EthnographyView.heading') }}</template>
+    <template #description>{{ t('views.EthnographyView.description') }}</template>
     <template #filters>
-      <TypeFilterTiles label="Категория экспоната" :types="types" :active="state.activeType" :allImage="heroImg" @select="selectType" />
+      <TypeFilterTiles :label="t('views.EthnographyView.typeCategoryLabel')" :types="types" :active="state.activeType" :allImage="heroImg" @select="selectType" />
 
       <div class="search-row">
         <div class="search-box">
           <svg viewBox="0 0 20 20" class="search-icon"><circle cx="8.5" cy="8.5" r="5.5" /><path d="M16.5 16.5 12.8 12.8" /></svg>
           <input
-            type="search" class="search-input" placeholder="Поиск по названию и описанию…"
+            type="search" class="search-input" :placeholder="t('views.EthnographyView.searchPlaceholder')"
             :value="state.search" @input="onSearchInput"
           />
         </div>
         <button type="button" class="filters-toggle" @click="state.filtersOpen = !state.filtersOpen">
-          <span>Дополнительные фильтры</span>
+          <span>{{ t('views.EthnographyView.filtersToggle') }}</span>
           <span v-if="activeFilterCount()" class="filters-toggle-count">{{ activeFilterCount() }}</span>
           <svg viewBox="0 0 20 20" class="filters-chevron" :class="{ 'filters-chevron--open': state.filtersOpen }"><polyline points="5 7.5 10 12.5 15 7.5" /></svg>
         </button>
-        <button v-if="activeFilterCount()" type="button" class="filters-reset" title="Сбросить дополнительные фильтры" @click="clearAllFilters">
+        <button v-if="activeFilterCount()" type="button" class="filters-reset" :title="t('views.EthnographyView.filtersResetTitle')" @click="clearAllFilters">
           <svg viewBox="0 0 20 20" class="icon"><path d="M5 5l10 10M15 5 5 15" /></svg>
-          <span>Сбросить</span>
+          <span>{{ t('common.reset') }}</span>
         </button>
       </div>
 
       <div v-if="state.filtersOpen" class="filters-panel">
-        <MultiSelectFilter label="Материал" :options="material.options.value" :modelValue="state.material" @update:modelValue="v => onMultiSelectChange('material', v)" />
-        <MultiSelectFilter label="Происхождение" :options="origin.options.value" :modelValue="state.origin" @update:modelValue="v => onMultiSelectChange('origin', v)" />
-        <MultiSelectFilter label="Время создания" :options="creationTime.options.value" :modelValue="state.creationTime" @update:modelValue="v => onMultiSelectChange('creationTime', v)" />
-        <MultiSelectFilter label="Время поступления" :options="receiptTime.options.value" :modelValue="state.receiptTime" @update:modelValue="v => onMultiSelectChange('receiptTime', v)" />
+        <MultiSelectFilter :label="t('views.EthnographyView.materialLabel')" :options="material.options.value" :modelValue="state.material" @update:modelValue="v => onMultiSelectChange('material', v)" />
+        <MultiSelectFilter :label="t('views.EthnographyView.originLabel')" :options="origin.options.value" :modelValue="state.origin" @update:modelValue="v => onMultiSelectChange('origin', v)" />
+        <MultiSelectFilter :label="t('views.EthnographyView.creationTimeLabel')" :options="creationTime.options.value" :modelValue="state.creationTime" @update:modelValue="v => onMultiSelectChange('creationTime', v)" />
+        <MultiSelectFilter :label="t('views.EthnographyView.receiptTimeLabel')" :options="receiptTime.options.value" :modelValue="state.receiptTime" @update:modelValue="v => onMultiSelectChange('receiptTime', v)" />
       </div>
     </template>
     <template #grid>
-      <p v-if="loading" class="state-msg">Загрузка…</p>
-      <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-      <p v-else-if="findings.length === 0" class="state-msg">По выбранному фильтру ничего не найдено.</p>
+      <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+      <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+      <p v-else-if="findings.length === 0" class="state-msg">{{ t('views.EthnographyView.emptyState') }}</p>
       <RouterLink v-for="f in findings" :key="f.id" :to="`/ethnography/${f.id}`" class="card">
         <div class="card-img" :style="{ backgroundImage: `url(${f.thumbnail})` }" role="img" :aria-label="f.title" />
         <div class="card-body">
@@ -171,9 +174,9 @@ function excerpt(text, len = 120) {
   </CatalogLayout>
 
   <section class="cta">
-    <h2 class="cta-heading">Помогите сохранить этнографическое наследие</h2>
-    <p class="cta-sub">Если у вас есть предметы народного быта, костюмы, фотографии или записи обрядов — свяжитесь с нами.</p>
-    <button type="button" class="cta-btn">Связаться с проектом</button>
+    <h2 class="cta-heading">{{ t('views.EthnographyView.ctaHeading') }}</h2>
+    <p class="cta-sub">{{ t('views.EthnographyView.ctaSub') }}</p>
+    <button type="button" class="cta-btn">{{ t('views.EthnographyView.ctaBtn') }}</button>
   </section>
 </template>
 

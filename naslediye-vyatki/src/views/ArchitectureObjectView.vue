@@ -1,10 +1,13 @@
 <script setup>
 import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { useStrings } from '@/i18n'
 import { useAttraction, useAttractionAdjacent, useAttractionNearby, useAttractionThumbnails, SITE_URL } from '@/composables/useAttractions'
 import { ATTRACTION_NEARBY_RADIUS_KM } from '@/config/attraction'
 import AttractionGallery from '@/components/AttractionGallery.vue'
 import CommentsSection from '@/components/CommentsSection.vue'
+
+const { t } = useStrings()
 
 const route = useRoute()
 const { attraction, loading, error, fetchAttraction } = useAttraction()
@@ -18,7 +21,7 @@ const editUrl = computed(() => attraction.value ? `${SITE_URL}wp-admin/post.php?
 
 function formatDistance(km) {
   if (km == null) return ''
-  return km < 1 ? `${Math.round(km * 1000)} м` : `${km.toFixed(1)} км`
+  return km < 1 ? t('common.distMeters', { n: Math.round(km * 1000) }) : t('common.distKm', { n: km.toFixed(1) })
 }
 
 // Карточки "Объектов рядом" крупнее миниатюры из ответа nearby (та же WP
@@ -43,14 +46,14 @@ watch(() => route.params.id, (id) => load(id))
   <div class="page">
     <div class="spacer" />
     <nav class="breadcrumb">
-      <RouterLink to="/">Главная</RouterLink><span>/</span>
-      <RouterLink to="/architecture">Архитектура Кирова</RouterLink><span>/</span>
-      <span class="current">{{ attraction?.title || '…' }}</span>
+      <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+      <RouterLink to="/architecture">{{ t('views.ArchitectureView.title') }}</RouterLink><span>/</span>
+      <span class="current">{{ attraction?.title || t('common.ellipsis') }}</span>
     </nav>
 
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-    <p v-else-if="!attraction" class="state-msg">Объект не найден.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+    <p v-else-if="!attraction" class="state-msg">{{ t('views.ArchitectureObjectView.notFound') }}</p>
 
     <template v-else>
       <section class="intro">
@@ -64,17 +67,17 @@ watch(() => route.params.id, (id) => load(id))
       </section>
 
       <section v-if="attraction.gallery?.length" class="section gallery-section">
-        <h2 class="gallery-heading">Изображения</h2>
+        <h2 class="gallery-heading">{{ t('views.ArchitectureObjectView.galleryHeading') }}</h2>
         <AttractionGallery :items="attraction.gallery" :alt="attraction.title" />
       </section>
 
-      <nav v-if="prev || next" class="item-nav" aria-label="Навигация по объектам">
+      <nav v-if="prev || next" class="item-nav" :aria-label="t('views.ArchitectureObjectView.navAria')">
         <RouterLink v-if="prev" :to="`/architecture/${prev.id}`" class="nav-card nav-card--prev">
           <div class="nav-thumb" :style="{ backgroundImage: `url(${prev.imgSrc})` }" />
           <div class="nav-text">
             <span class="nav-direction">
-              <span class="nav-direction-full">← Предыдущий</span>
-              <span class="nav-direction-short">← Пред.</span>
+              <span class="nav-direction-full">{{ t('common.prevFull') }}</span>
+              <span class="nav-direction-short">{{ t('common.prevShort') }}</span>
             </span>
             <span class="nav-title" :title="prev.title">{{ prev.title }}</span>
           </div>
@@ -84,8 +87,8 @@ watch(() => route.params.id, (id) => load(id))
         <RouterLink v-if="next" :to="`/architecture/${next.id}`" class="nav-card nav-card--next">
           <div class="nav-text">
             <span class="nav-direction">
-              <span class="nav-direction-full">Следующий →</span>
-              <span class="nav-direction-short">След. →</span>
+              <span class="nav-direction-full">{{ t('common.nextFull') }}</span>
+              <span class="nav-direction-short">{{ t('common.nextShort') }}</span>
             </span>
             <span class="nav-title" :title="next.title">{{ next.title }}</span>
           </div>
@@ -95,12 +98,12 @@ watch(() => route.params.id, (id) => load(id))
       </nav>
 
       <div class="back-bar">
-        <RouterLink to="/architecture" class="cta-btn">← К карте и каталогу</RouterLink>
-        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
+        <RouterLink to="/architecture" class="cta-btn">{{ t('views.ArchitectureObjectView.backToCatalog') }}</RouterLink>
+        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">{{ t('common.edit') }}</a>
       </div>
 
       <section v-if="nearby.length" class="section nearby-section">
-        <h2 class="nearby-heading">Объекты рядом</h2>
+        <h2 class="nearby-heading">{{ t('views.ArchitectureObjectView.nearbyHeading') }}</h2>
         <div class="nearby-grid">
           <RouterLink v-for="n in nearby" :key="n.id" :to="`/architecture/${n.id}`" class="nearby-card">
             <div class="nearby-img" :style="{ backgroundImage: `url(${nearbyImg(n)})` }" />

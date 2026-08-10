@@ -3,6 +3,9 @@ import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useOoptSite, useOoptAdjacent, useOoptNearby, useOoptThumbnails, SITE_URL } from '@/composables/useOopt'
 import CommentsSection from '@/components/CommentsSection.vue'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const route = useRoute()
 const { site, loading, error, fetchSite } = useOoptSite()
@@ -16,13 +19,13 @@ const editUrl = computed(() => site.value ? `${SITE_URL}wp-admin/post.php?post=$
 
 function formatDistance(km) {
   if (km == null) return ''
-  return km < 1 ? `${Math.round(km * 1000)} м` : `${km.toFixed(1)} км`
+  return km < 1 ? t('common.distMeters', { n: Math.round(km * 1000) }) : t('common.distKm', { n: km.toFixed(1) })
 }
 function formatArea(ha) {
   if (!ha) return ''
   const n = Number(ha)
   if (isNaN(n)) return ha.toString()
-  return n >= 1000 ? `${(n / 1000).toFixed(1)} тыс. га` : `${n} га`
+  return n >= 1000 ? t('views.NatureItemView.thousandHectares', { n: (n / 1000).toFixed(1) }) : t('views.NatureItemView.hectares', { n })
 }
 function speciesLabel(t) {
   return t.status ? `${t.name} (${t.status})` : t.name
@@ -39,13 +42,13 @@ watch(() => route.params.id, (id) => load(id))
   <div class="page">
     <div class="spacer" />
     <nav class="breadcrumb">
-      <RouterLink to="/">Главная</RouterLink><span>/</span>
-      <RouterLink to="/nature">Памятники природы</RouterLink><span>/</span>
-      <span class="current">{{ site?.title || '…' }}</span>
+      <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+      <RouterLink to="/nature">{{ t('views.NatureView.title') }}</RouterLink><span>/</span>
+      <span class="current">{{ site?.title || t('common.ellipsis') }}</span>
     </nav>
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-    <p v-else-if="!site" class="state-msg">Памятник не найден.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+    <p v-else-if="!site" class="state-msg">{{ t('views.NatureItemView.notFound') }}</p>
     <template v-else>
       <section class="intro">
         <div class="tags">
@@ -60,7 +63,7 @@ watch(() => route.params.id, (id) => load(id))
         <div v-if="site.content" class="content" v-html="site.content" />
       </section>
       <section v-if="site.speciesTerms.length" class="section">
-        <h2 class="heading">Охраняемые виды</h2>
+        <h2 class="heading">{{ t('views.NatureItemView.speciesHeading') }}</h2>
         <div class="species-chips">
           <span v-for="t in site.speciesTerms" :key="t.name" class="species-chip">{{ speciesLabel(t) }}</span>
         </div>
@@ -69,14 +72,14 @@ watch(() => route.params.id, (id) => load(id))
         <RouterLink v-if="prev" :to="`/nature/${prev.id}`" class="nav-card nav-card--prev">
           <div class="nav-thumb" :style="{ backgroundImage: `url(${prev.imgSrc})` }" />
           <div class="nav-text">
-            <span class="nav-direction"><span class="nav-direction-full">← Предыдущий</span><span class="nav-direction-short">← Пред.</span></span>
+            <span class="nav-direction"><span class="nav-direction-full">{{ t('common.prevFull') }}</span><span class="nav-direction-short">{{ t('common.prevShort') }}</span></span>
             <span class="nav-title" :title="prev.title">{{ prev.title }}</span>
           </div>
         </RouterLink>
         <span v-else class="nav-card nav-card--empty" />
         <RouterLink v-if="next" :to="`/nature/${next.id}`" class="nav-card nav-card--next">
           <div class="nav-text">
-            <span class="nav-direction"><span class="nav-direction-full">Следующий →</span><span class="nav-direction-short">След. →</span></span>
+            <span class="nav-direction"><span class="nav-direction-full">{{ t('common.nextFull') }}</span><span class="nav-direction-short">{{ t('common.nextShort') }}</span></span>
             <span class="nav-title" :title="next.title">{{ next.title }}</span>
           </div>
           <div class="nav-thumb" :style="{ backgroundImage: `url(${next.imgSrc})` }" />
@@ -84,11 +87,11 @@ watch(() => route.params.id, (id) => load(id))
         <span v-else class="nav-card nav-card--empty" />
       </nav>
       <div class="back-bar">
-        <RouterLink to="/nature" class="cta-btn">← К каталогу памятников природы</RouterLink>
-        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
+        <RouterLink to="/nature" class="cta-btn">{{ t('views.NatureItemView.backToCatalog') }}</RouterLink>
+        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">{{ t('common.edit') }}</a>
       </div>
       <section v-if="nearby.length" class="section nearby-section">
-        <h2 class="nearby-heading">Памятники природы рядом</h2>
+        <h2 class="nearby-heading">{{ t('views.NatureItemView.nearbyHeading') }}</h2>
         <div class="nearby-grid">
           <RouterLink v-for="n in nearby" :key="n.id" :to="`/nature/${n.id}`" class="nearby-card">
             <div class="nearby-img" :style="{ backgroundImage: `url(${nearbyImg(n)})` }" />

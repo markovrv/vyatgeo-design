@@ -8,6 +8,9 @@ import MultiSelectFilter from '@/components/MultiSelectFilter.vue'
 import NatureMap from '@/components/NatureMap.vue'
 import NatureControls from '@/components/NatureControls.vue'
 import { useOoptSites, useOoptThumbnails, natureCatalogState as state } from '@/composables/useOopt'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const { sites, loading, error, fetchSites } = useOoptSites()
 const { thumbnails, fetchThumbnails } = useOoptThumbnails()
@@ -74,11 +77,11 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
 </script>
 
 <template>
-  <CatalogLayout :heroImg="heroImg" eyebrow="К 90-летию Кировской области · Уникальная природа Вятского края" title="Памятники природы Кировской области" subtitle="Более 100 уникальных природных объектов: живописные озёра, древние скальные обнажения, водопады, пещеры и ботанические редкости" :gridCount="state.viewMode === 'catalog' ? filtered.length : 0">
-    <template #heading>Природное наследие региона</template>
+  <CatalogLayout :heroImg="heroImg" :eyebrow="t('views.NatureView.eyebrow')" :title="t('views.NatureView.title')" :subtitle="t('views.NatureView.subtitle')" :gridCount="state.viewMode === 'catalog' ? filtered.length : 0">
+    <template #heading>{{ t('views.NatureView.heading') }}</template>
     <template #description>
       <p style="text-align:center; max-width:700px; margin: 0 auto var(--space-3); line-height: 1.75;">
-        Для каждого памятника указано точное географическое положение, размеры, происхождение и уникальные природные особенности. Представлены сведения об охраняемом статусе, режиме посещения и мерах по сохранению.
+        {{ t('views.NatureView.description') }}
       </p>
     </template>
 
@@ -87,14 +90,14 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
         <div class="controls-group" :class="{ 'controls-group--floating': state.viewMode === 'map' }">
           <NatureControls />
           <div v-if="state.filtersOpen" class="filters-panel">
-            <MultiSelectFilter label="Район" :options="districtOptions" :modelValue="state.district" @update:modelValue="v => onMultiSelectChange('district', v)" />
-            <MultiSelectFilter label="Профиль" :options="profileOptions" :modelValue="state.profile" @update:modelValue="v => onMultiSelectChange('profile', v)" />
-            <MultiSelectFilter label="Охраняемые виды" :options="speciesOptions" :modelValue="state.species" @update:modelValue="v => onMultiSelectChange('species', v)" />
+            <MultiSelectFilter :label="t('views.NatureView.districtLabel')" :options="districtOptions" :modelValue="state.district" @update:modelValue="v => onMultiSelectChange('district', v)" />
+            <MultiSelectFilter :label="t('views.NatureView.profileLabel')" :options="profileOptions" :modelValue="state.profile" @update:modelValue="v => onMultiSelectChange('profile', v)" />
+            <MultiSelectFilter :label="t('views.NatureView.speciesLabel')" :options="speciesOptions" :modelValue="state.species" @update:modelValue="v => onMultiSelectChange('species', v)" />
           </div>
         </div>
         <template v-if="state.viewMode === 'map'">
-          <p v-if="loading" class="state-msg">Загрузка карты…</p>
-          <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+          <p v-if="loading" class="state-msg">{{ t('common.loadingMap') }}</p>
+          <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
           <NatureMap v-else :points="filtered" />
         </template>
       </div>
@@ -102,9 +105,9 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
 
     <template #grid>
       <template v-if="state.viewMode === 'catalog'">
-        <p v-if="loading" class="state-msg">Загрузка…</p>
-        <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-        <p v-else-if="pageItems.length === 0" class="state-msg">По запросу ничего не найдено.</p>
+        <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+        <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+        <p v-else-if="pageItems.length === 0" class="state-msg">{{ t('common.emptyQuery') }}</p>
         <RouterLink v-for="s in pageItems" :key="s.id" :to="`/nature/${s.id}`" class="card">
           <div class="card-img" :style="{ backgroundImage: `url(${cardImg(s)})` }" role="img" :aria-label="s.title" />
           <div class="card-body">
@@ -113,7 +116,7 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
               <span v-for="t in s.districtTerms" :key="t.slug" class="tag tag--ochre">{{ t.name }}</span>
             </div>
             <h3 class="card-title">{{ s.title }}</h3>
-            <p class="card-meta">{{ s.place }}<span v-if="s.area"> · {{ s.area }} га</span></p>
+            <p class="card-meta">{{ s.place }}<span v-if="s.area">{{ t('views.NatureView.areaSuffix', { area: s.area }) }}</span></p>
           </div>
         </RouterLink>
       </template>
@@ -125,9 +128,9 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
   </CatalogLayout>
 
   <section class="cta">
-    <h2 class="cta-heading">Сохранение природного наследия</h2>
-    <p class="cta-sub">Более 100 памятников природы находятся под охраной государства</p>
-    <button type="button" class="cta-btn">Карта маршрутов</button>
+    <h2 class="cta-heading">{{ t('views.NatureView.ctaHeading') }}</h2>
+    <p class="cta-sub">{{ t('views.NatureView.ctaSub') }}</p>
+    <button type="button" class="cta-btn">{{ t('views.NatureView.ctaBtn') }}</button>
   </section>
 </template>
 

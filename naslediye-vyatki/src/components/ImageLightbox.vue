@@ -4,6 +4,9 @@
 // плагина): зум колесиком/кнопками, перетаскивание при увеличении, яркость/
 // контраст, навигация между фото, миниатюры, клавиатура, настройки в localStorage.
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const props = defineProps({
   images: { type: Array, required: true },
@@ -145,23 +148,23 @@ function next() { goTo(index.value + 1) }
 function changeBrightness(delta) {
   brightness.value = Math.max(0, Math.min(200, brightness.value + delta))
   saveSettings()
-  notify(`Яркость: ${brightness.value}%`)
+  notify(t('components.ImageLightbox.brightness', { value: brightness.value }))
 }
 function changeContrast(delta) {
   contrast.value = Math.max(0, Math.min(200, contrast.value + delta))
   saveSettings()
-  notify(`Контраст: ${contrast.value}%`)
+  notify(t('components.ImageLightbox.contrast', { value: contrast.value }))
 }
 function resetFilters() {
   brightness.value = 100
   contrast.value = 100
   saveSettings()
-  notify('Настройки сброшены')
+  notify(t('components.ImageLightbox.filtersReset'))
 }
 function toggleZoom() {
   zoomEnabled.value = !zoomEnabled.value
   saveSettings()
-  notify(zoomEnabled.value ? 'Зум колесиком включён' : 'Зум колесиком выключен')
+  notify(zoomEnabled.value ? t('components.ImageLightbox.wheelZoomOn') : t('components.ImageLightbox.wheelZoomOff'))
 }
 
 function onWheel(e) {
@@ -224,55 +227,55 @@ onUnmounted(() => {
     <div class="lightbox-container">
       <div class="lightbox-controls">
         <div class="controls-group">
-          <button type="button" class="ctrl-btn ctrl-btn--labeled" title="Уменьшить яркость (B)" @click="changeBrightness(-10)">
+          <button type="button" class="ctrl-btn ctrl-btn--labeled" :title="t('components.ImageLightbox.brightnessDownTitle')" @click="changeBrightness(-10)">
             <svg viewBox="0 0 20 20" class="icon"><circle cx="10" cy="10" r="3.5" /><path d="M10 2v2.2M10 15.8V18M2 10h2.2M15.8 10H18M4.8 4.8l1.6 1.6M13.6 13.6l1.6 1.6M4.8 15.2l1.6-1.6M13.6 6.4l1.6-1.6" /></svg>
             <span>−</span>
           </button>
-          <button type="button" class="ctrl-btn ctrl-btn--labeled" title="Увеличить яркость (Shift+B)" @click="changeBrightness(10)">
+          <button type="button" class="ctrl-btn ctrl-btn--labeled" :title="t('components.ImageLightbox.brightnessUpTitle')" @click="changeBrightness(10)">
             <svg viewBox="0 0 20 20" class="icon"><circle cx="10" cy="10" r="3.5" /><path d="M10 2v2.2M10 15.8V18M2 10h2.2M15.8 10H18M4.8 4.8l1.6 1.6M13.6 13.6l1.6 1.6M4.8 15.2l1.6-1.6M13.6 6.4l1.6-1.6" /></svg>
             <span>+</span>
           </button>
-          <button type="button" class="ctrl-btn ctrl-btn--labeled" title="Уменьшить контраст (C)" @click="changeContrast(-10)">
+          <button type="button" class="ctrl-btn ctrl-btn--labeled" :title="t('components.ImageLightbox.contrastDownTitle')" @click="changeContrast(-10)">
             <svg viewBox="0 0 20 20" class="icon"><circle cx="10" cy="10" r="7" /><path d="M10 3a7 7 0 0 0 0 14z" fill="currentColor" stroke="none" /></svg>
             <span>−</span>
           </button>
-          <button type="button" class="ctrl-btn ctrl-btn--labeled" title="Увеличить контраст (Shift+C)" @click="changeContrast(10)">
+          <button type="button" class="ctrl-btn ctrl-btn--labeled" :title="t('components.ImageLightbox.contrastUpTitle')" @click="changeContrast(10)">
             <svg viewBox="0 0 20 20" class="icon"><circle cx="10" cy="10" r="7" /><path d="M10 3a7 7 0 0 0 0 14z" fill="currentColor" stroke="none" /></svg>
             <span>+</span>
           </button>
-          <button type="button" class="ctrl-btn" title="Сбросить фильтры (R)" @click="resetFilters">
+          <button type="button" class="ctrl-btn" :title="t('components.ImageLightbox.filtersResetTitle')" @click="resetFilters">
             <svg viewBox="0 0 20 20" class="icon"><path d="M16 10a6 6 0 1 1-2-4.5" /><path d="M16 3v3.5h-3.5" /></svg>
           </button>
         </div>
         <div class="controls-center">
           <span class="counter" v-if="images.length > 1">{{ index + 1 }} / {{ images.length }}</span>
           <span class="indicator">{{ Math.round(scale * 100) }}%</span>
-          <span class="indicator indicator--muted">Ярк {{ brightness }}% · Контр {{ contrast }}%</span>
+          <span class="indicator indicator--muted">{{ t('components.ImageLightbox.indicator', { brightness, contrast }) }}</span>
         </div>
         <div class="controls-group">
           <button
             type="button" class="ctrl-btn" :class="{ 'ctrl-btn--active': zoomEnabled }"
-            :title="`Зум колесиком (Z) — ${zoomEnabled ? 'ВКЛ' : 'ВЫКЛ'}`" @click="toggleZoom"
+            :title="t('components.ImageLightbox.wheelZoomTitle', { state: zoomEnabled ? 'ВКЛ' : 'ВЫКЛ' })" @click="toggleZoom"
           >
             <svg viewBox="0 0 20 20" class="icon"><circle cx="8.5" cy="8.5" r="5.5" /><path d="M16.5 16.5 12.8 12.8" /><path v-if="!zoomEnabled" d="M4 4l9 9" /></svg>
           </button>
-          <button type="button" class="ctrl-btn" title="Уменьшить (-)" @click="zoomOut">
+          <button type="button" class="ctrl-btn" :title="t('components.ImageLightbox.zoomOutTitle')" @click="zoomOut">
             <svg viewBox="0 0 20 20" class="icon"><circle cx="8.5" cy="8.5" r="5.5" /><path d="M16.5 16.5 12.8 12.8" /><path d="M6 8.5h5" /></svg>
           </button>
-          <button type="button" class="ctrl-btn" title="Сбросить масштаб (0)" @click="resetZoom">
+          <button type="button" class="ctrl-btn" :title="t('components.ImageLightbox.zoomResetTitle')" @click="resetZoom">
             <svg viewBox="0 0 20 20" class="icon"><path d="M3 7V4a1 1 0 0 1 1-1h3M17 7V4a1 1 0 0 0-1-1h-3M3 13v3a1 1 0 0 0 1 1h3M17 13v3a1 1 0 0 1-1 1h-3" /></svg>
           </button>
-          <button type="button" class="ctrl-btn" title="Увеличить (+)" @click="zoomIn">
+          <button type="button" class="ctrl-btn" :title="t('components.ImageLightbox.zoomInTitle')" @click="zoomIn">
             <svg viewBox="0 0 20 20" class="icon"><circle cx="8.5" cy="8.5" r="5.5" /><path d="M16.5 16.5 12.8 12.8" /><path d="M6 8.5h5M8.5 6v5" /></svg>
           </button>
-          <button type="button" class="ctrl-btn ctrl-btn--close" title="Закрыть (Esc)" @click="emit('close')">
+          <button type="button" class="ctrl-btn ctrl-btn--close" :title="t('components.ImageLightbox.closeTitle')" @click="emit('close')">
             <svg viewBox="0 0 20 20" class="icon"><path d="M5 5l10 10M15 5 5 15" /></svg>
           </button>
         </div>
       </div>
 
       <div class="lightbox-image-area">
-        <button v-if="images.length > 1" type="button" class="nav-btn nav-prev" aria-label="Предыдущее изображение" @click="prev">
+        <button v-if="images.length > 1" type="button" class="nav-btn nav-prev" :aria-label="t('components.ImageLightbox.prevAria')" @click="prev">
           <svg viewBox="0 0 20 20" class="icon icon--nav"><polyline points="12.5 4 6.5 10 12.5 16" /></svg>
         </button>
 
@@ -295,7 +298,7 @@ onUnmounted(() => {
           />
         </div>
 
-        <button v-if="images.length > 1" type="button" class="nav-btn nav-next" aria-label="Следующее изображение" @click="next">
+        <button v-if="images.length > 1" type="button" class="nav-btn nav-next" :aria-label="t('components.ImageLightbox.nextAria')" @click="next">
           <svg viewBox="0 0 20 20" class="icon icon--nav"><polyline points="7.5 4 13.5 10 7.5 16" /></svg>
         </button>
       </div>
@@ -306,7 +309,7 @@ onUnmounted(() => {
           type="button" class="lightbox-thumb" :class="{ 'lightbox-thumb--active': i === index }"
           @click="goTo(i)"
         >
-          <img :src="img" :style="{ filter: filterCss }" :alt="`Миниатюра ${i + 1}`" />
+          <img :src="img" :style="{ filter: filterCss }" :alt="t('components.ImageLightbox.thumbAlt', { n: i + 1 })" />
         </button>
       </div>
 

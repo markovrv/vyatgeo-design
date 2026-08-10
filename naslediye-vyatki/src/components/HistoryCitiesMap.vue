@@ -16,6 +16,9 @@ import {
   YandexMapMarker,
   initYmaps,
 } from 'vue-yandex-maps'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const props = defineProps({
   points: { type: Array, required: true }, // [{ id, slug, name, photoThumb, coordinates: [lng, lat] }]
@@ -62,7 +65,7 @@ onMounted(async () => {
 
 <template>
   <div class="cities-map">
-    <p v-if="!apiReady" class="map-loading">Загрузка карты…</p>
+    <p v-if="!apiReady" class="map-loading">{{ t('common.loadingMap') }}</p>
     <yandex-map v-else v-model="map" :settings="mapSettings" width="100%" height="600px">
       <yandex-map-default-scheme-layer />
       <yandex-map-default-features-layer />

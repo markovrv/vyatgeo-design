@@ -1,7 +1,10 @@
 <script setup>
+import { useStrings } from '@/i18n'
+const { t } = useStrings()
+
 defineProps({
   heroImg: { type: String, required: true },
-  eyebrow: { type: String, default: 'К 90-летию Кировской области' },
+  eyebrow: { type: String, default: '' },
   title: { type: String, required: true },
   subtitle: { type: String, default: '' },
   showGrid: { type: Boolean, default: true },
@@ -14,7 +17,7 @@ defineProps({
     <div class="hero-bg" :style="{ backgroundImage: `url(${heroImg})` }" />
     <div class="hero-overlay" />
     <div class="hero-content">
-      <p class="hero-eyebrow">{{ eyebrow }}</p>
+      <p class="hero-eyebrow">{{ eyebrow || t('components.CatalogLayout.defaultEyebrow') }}</p>
       <h1 class="hero-title">{{ title }}</h1>
       <p v-if="subtitle" class="hero-subtitle">{{ subtitle }}</p>
     </div>
@@ -26,7 +29,7 @@ defineProps({
   </section>
   <section class="content">
     <slot name="map" />
-    <div v-if="showGrid && gridCount > 0" class="grid-count">Показано: {{ gridCount }}</div>
+    <div v-if="showGrid && gridCount > 0" class="grid-count">{{ t('components.CatalogLayout.gridCount', { count: gridCount }) }}</div>
     <div class="grid"><slot name="grid" /></div>
     <slot name="pagination" />
   </section>

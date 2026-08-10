@@ -6,6 +6,9 @@
 // картинкой (см. useAttractions.js: extractGalleryAndCleanContent).
 import { ref, computed } from 'vue'
 import ImageLightbox from '@/components/ImageLightbox.vue'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const props = defineProps({
   items: { type: Array, required: true }, // [{ src, caption }]
@@ -25,14 +28,14 @@ function goTo(i) {
   <div v-if="items.length" class="gallery">
     <div class="gallery-frame">
       <span v-if="items.length > 1" class="gallery-counter">{{ activeIndex + 1 }} / {{ items.length }}</span>
-      <button v-if="items.length > 1" type="button" class="gallery-nav gallery-nav--prev" @click="goTo(activeIndex - 1)" aria-label="Предыдущее фото">
+      <button v-if="items.length > 1" type="button" class="gallery-nav gallery-nav--prev" @click="goTo(activeIndex - 1)" :aria-label="t('common.galleryPrev')">
         <svg viewBox="0 0 20 20" class="icon"><polyline points="12.5 4 6.5 10 12.5 16" /></svg>
       </button>
       <transition name="gallery-fade" mode="out-in">
         <img :key="activeIndex" :src="active.src" :alt="active.caption || alt" class="gallery-img" @click="lightboxOpen = true" />
       </transition>
-      <span class="gallery-zoom-hint" aria-hidden="true">⤢ Во весь экран</span>
-      <button v-if="items.length > 1" type="button" class="gallery-nav gallery-nav--next" @click="goTo(activeIndex + 1)" aria-label="Следующее фото">
+      <span class="gallery-zoom-hint" aria-hidden="true">{{ t('common.fullscreenHint') }}</span>
+      <button v-if="items.length > 1" type="button" class="gallery-nav gallery-nav--next" @click="goTo(activeIndex + 1)" :aria-label="t('common.galleryNext')">
         <svg viewBox="0 0 20 20" class="icon"><polyline points="7.5 4 13.5 10 7.5 16" /></svg>
       </button>
     </div>
@@ -45,9 +48,9 @@ function goTo(i) {
       <button
         v-for="(item, i) in items" :key="item.src" type="button"
         class="gallery-thumb" :class="{ 'gallery-thumb--active': i === activeIndex }"
-        @click="goTo(i)" :aria-label="`Фото ${i + 1}`" :aria-current="i === activeIndex"
+        @click="goTo(i)" :aria-label="t('common.photoAlt', { n: i + 1 })" :aria-current="i === activeIndex"
       >
-        <img :src="item.src" :alt="`Фото ${i + 1}`" />
+        <img :src="item.src" :alt="t('common.photoAlt', { n: i + 1 })" />
       </button>
     </div>
 

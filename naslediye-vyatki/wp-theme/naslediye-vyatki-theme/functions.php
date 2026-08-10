@@ -20,6 +20,7 @@ define('NV_SPA_DIST_DIR', get_template_directory() . '/dist');
 define('NV_SPA_INDEX_FILE', NV_SPA_DIST_DIR . '/index.html');
 
 require_once get_template_directory() . '/admin/import.php';
+require_once get_template_directory() . '/admin/i18n-strings.php';
 require_once get_template_directory() . '/menu-api.php';
 
 add_action('after_setup_theme', 'nv_spa_theme_setup');
@@ -487,6 +488,21 @@ function nv_spa_user_script() {
     );
 }
 
+/**
+ * Строки интерфейса из админки «Внешний вид → Строки интерфейса».
+ * Редактор сохраняет переопределения в опцию nv_i18n_strings (ассоциативный
+ * массив dot-path → значение). SPA читает window.__I18N_STRINGS__ и накладывает
+ * их поверх дефолтных значений из своего бандла — см. src/i18n/index.js.
+ *
+ * Если опция пустая (ни одного переопределения), скрипт не выводится.
+ */
+function nv_spa_i18n_script() {
+    $overrides = get_option('nv_i18n_strings', []);
+    if (empty($overrides) || !is_array($overrides)) return '';
+    $json = json_encode($overrides, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    return "<script>\nwindow.__I18N_STRINGS__ = $json;\n</script>\n";
+}
+
 function nv_spa_render_app() {
     if (!is_file(NV_SPA_INDEX_FILE)) {
         status_header(503);
@@ -500,7 +516,7 @@ function nv_spa_render_app() {
     header('Cache-Control: no-cache, must-revalidate');
 
     $html = file_get_contents(NV_SPA_INDEX_FILE);
-    $html = str_replace('</head>', nv_spa_customizer_script() . nv_spa_user_script() . nv_spa_admin_bar_head_html() . '</head>', $html);
+    $html = str_replace('</head>', nv_spa_customizer_script() . nv_spa_user_script() . nv_spa_i18n_script() . nv_spa_admin_bar_head_html() . '</head>', $html);
 
     if (is_admin_bar_showing()) {
         $html = nv_spa_add_body_class($html, 'admin-bar');

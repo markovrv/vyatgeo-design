@@ -1,6 +1,7 @@
 import { reactive, ref } from 'vue'
 import { API_BASE_URL } from '@/config/api'
 import { SITE_URL, decodeEntities, resolveRelativeUrls } from '@/composables/useHtmlContent'
+import { t } from '@/i18n'
 
 export { SITE_URL }
 
@@ -16,12 +17,18 @@ export const archeologyCatalogState = reactive({
 })
 
 const ERA_LABELS = {
-  mezolit: 'Мезолит', neolit: 'Неолит', bronze: 'Эпоха бронзы',
-  iron: 'Ранний железный век', medieval: 'Средневековье',
+  mezolit: t('composables.useArcheology.eraMezolit'),
+  neolit: t('composables.useArcheology.eraNeolit'),
+  bronze: t('composables.useArcheology.eraBronze'),
+  iron: t('composables.useArcheology.eraIron'),
+  medieval: t('composables.useArcheology.eraMedieval'),
 }
 const TYPE_LABELS = {
-  gorodishche: 'Городище', selishche: 'Селище', stoyanka: 'Стоянка',
-  mogilnik: 'Могильник', klad: 'Клад',
+  gorodishche: t('composables.useArcheology.typeGorodishche'),
+  selishche: t('composables.useArcheology.typeSelishche'),
+  stoyanka: t('composables.useArcheology.typeStoyanka'),
+  mogilnik: t('composables.useArcheology.typeMogilnik'),
+  klad: t('composables.useArcheology.typeKlad'),
 }
 
 function normalizeSite(raw) {

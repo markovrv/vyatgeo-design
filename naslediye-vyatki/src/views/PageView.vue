@@ -4,6 +4,9 @@ import { RouterLink } from 'vue-router'
 import { usePage } from '@/composables/usePage'
 import CommentsSection from '@/components/CommentsSection.vue'
 import defaultHeroImage from '@/assets/img/kremlin.jpeg'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 // Общий шаблон для любой WP-страницы (Страницы, включая "О проекте") —
 // slug приходит либо параметром маршрута (/page/:slug), либо статично
@@ -36,16 +39,16 @@ watch(() => props.slug, (slug) => load(slug))
     <div v-else class="spacer" />
 
     <nav class="breadcrumb">
-      <RouterLink to="/">Главная</RouterLink><span>/</span>
-      <span class="current">{{ page?.title || '…' }}</span>
+      <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+      <span class="current">{{ page?.title || t('common.ellipsis') }}</span>
     </nav>
 
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить страницу. Попробуйте обновить.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('views.PageView.loadError') }}</p>
     <template v-else-if="!page">
-      <p class="state-msg">Страница не найдена.</p>
+      <p class="state-msg">{{ t('views.PageView.notFound') }}</p>
       <div class="back-bar">
-        <RouterLink to="/" class="cta-btn">На главную</RouterLink>
+        <RouterLink to="/" class="cta-btn">{{ t('views.PageView.homeCta') }}</RouterLink>
       </div>
     </template>
 

@@ -3,6 +3,9 @@ import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useArcheologySite, useArcheologyAdjacent, useArcheologyNearby, useArcheologyThumbnails, SITE_URL } from '@/composables/useArcheology'
 import CommentsSection from '@/components/CommentsSection.vue'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const route = useRoute()
 const { site, loading, error, fetchSite } = useArcheologySite()
@@ -16,7 +19,7 @@ const editUrl = computed(() => site.value ? `${SITE_URL}wp-admin/post.php?post=$
 
 function formatDistance(km) {
   if (km == null) return ''
-  return km < 1 ? `${Math.round(km * 1000)} м` : `${km.toFixed(1)} км`
+  return km < 1 ? t('common.distMeters', { n: Math.round(km * 1000) }) : t('common.distKm', { n: km.toFixed(1) })
 }
 
 function nearbyImg(n) {
@@ -38,14 +41,14 @@ watch(() => route.params.id, (id) => load(id))
   <div class="page">
     <div class="spacer" />
     <nav class="breadcrumb">
-      <RouterLink to="/">Главная</RouterLink><span>/</span>
-      <RouterLink to="/archeology">Памятники археологии</RouterLink><span>/</span>
-      <span class="current">{{ site?.title || '…' }}</span>
+      <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+      <RouterLink to="/archeology">{{ t('views.ArcheologyView.title') }}</RouterLink><span>/</span>
+      <span class="current">{{ site?.title || t('common.ellipsis') }}</span>
     </nav>
 
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-    <p v-else-if="!site" class="state-msg">Памятник не найден.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+    <p v-else-if="!site" class="state-msg">{{ t('views.ArcheologyItemView.notFound') }}</p>
 
     <template v-else>
       <section class="intro">
@@ -62,13 +65,13 @@ watch(() => route.params.id, (id) => load(id))
         <div v-if="site.content" class="content" v-html="site.content" />
       </section>
 
-      <nav v-if="prev || next" class="item-nav" aria-label="Навигация по памятникам">
+      <nav v-if="prev || next" class="item-nav" :aria-label="t('views.ArcheologyItemView.navAria')">
         <RouterLink v-if="prev" :to="`/archeology/${prev.id}`" class="nav-card nav-card--prev">
           <div class="nav-thumb" :style="{ backgroundImage: `url(${prev.imgSrc})` }" />
           <div class="nav-text">
             <span class="nav-direction">
-              <span class="nav-direction-full">← Предыдущий</span>
-              <span class="nav-direction-short">← Пред.</span>
+              <span class="nav-direction-full">{{ t('common.prevFull') }}</span>
+              <span class="nav-direction-short">{{ t('common.prevShort') }}</span>
             </span>
             <span class="nav-title" :title="prev.title">{{ prev.title }}</span>
           </div>
@@ -78,8 +81,8 @@ watch(() => route.params.id, (id) => load(id))
         <RouterLink v-if="next" :to="`/archeology/${next.id}`" class="nav-card nav-card--next">
           <div class="nav-text">
             <span class="nav-direction">
-              <span class="nav-direction-full">Следующий →</span>
-              <span class="nav-direction-short">След. →</span>
+              <span class="nav-direction-full">{{ t('common.nextFull') }}</span>
+              <span class="nav-direction-short">{{ t('common.nextShort') }}</span>
             </span>
             <span class="nav-title" :title="next.title">{{ next.title }}</span>
           </div>
@@ -89,12 +92,12 @@ watch(() => route.params.id, (id) => load(id))
       </nav>
 
       <div class="back-bar">
-        <RouterLink to="/archeology" class="cta-btn">← К карте и каталогу</RouterLink>
-        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
+        <RouterLink to="/archeology" class="cta-btn">{{ t('views.ArcheologyItemView.backToCatalog') }}</RouterLink>
+        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">{{ t('common.edit') }}</a>
       </div>
 
       <section v-if="nearby.length" class="section nearby-section">
-        <h2 class="nearby-heading">Памятники рядом</h2>
+        <h2 class="nearby-heading">{{ t('views.ArcheologyItemView.nearbyHeading') }}</h2>
         <div class="nearby-grid">
           <RouterLink v-for="n in nearby" :key="n.id" :to="`/archeology/${n.id}`" class="nearby-card">
             <div class="nearby-img" :style="{ backgroundImage: `url(${nearbyImg(n)})` }" />

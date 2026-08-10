@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useStrings } from '@/i18n'
 import videoSrc from '@/assets/img/kremlin.mp4'
+
+const { t } = useStrings()
 
 const videoEl = ref(null)
 const soundOn = ref(false)
@@ -40,8 +43,8 @@ onUnmounted(() => {
 
 <template>
   <div class="video-wrap">
-    <video ref="videoEl" :src="videoSrc" muted playsinline loop class="video" aria-label="Трифонов монастырь — вид на Кремль" />
-    <button class="sound-btn" :aria-label="soundOn ? 'Выключить звук' : 'Включить звук'" :title="soundOn ? 'Выключить звук' : 'Включить звук'" @click="toggleSound">
+    <video ref="videoEl" :src="videoSrc" muted playsinline loop class="video" :aria-label="t('components.KremlinVideo.videoAria')" />
+    <button class="sound-btn" :aria-label="soundOn ? t('components.KremlinVideo.soundOff') : t('components.KremlinVideo.soundOn')" :title="soundOn ? t('components.KremlinVideo.soundOff') : t('components.KremlinVideo.soundOn')" @click="toggleSound">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#E8DFC8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" v-html="soundOn ? unmutedIcon : mutedIcon" />
     </button>
   </div>

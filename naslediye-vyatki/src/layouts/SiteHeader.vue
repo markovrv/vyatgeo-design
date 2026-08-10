@@ -3,6 +3,11 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useHeaderScroll } from '@/composables/useHeaderScroll'
 import { useResolvedNav } from '@/composables/useMenu'
+import { useSiteInfo } from '@/composables/useSiteInfo'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
+const { siteName, fetchSiteInfo } = useSiteInfo()
 
 const props = defineProps({ solid: { type: Boolean, default: false } })
 
@@ -13,19 +18,19 @@ const $route = useRoute()
 const isSolid = computed(() => props.solid || scrolled.value)
 
 const HARDCODED_NAV = [
-  ['home', 'Главная', '/'],
-  ['victory', 'Лица Победы', '/victory'],
-  ['ethnography', 'Этнография', '/ethnography'],
-  ['cities', 'Города', '/cities'],
-  ['nature', 'Природа', '/nature'],
-  ['archeology', 'Археология', '/archeology'],
-  ['architecture', 'Архитектура', '/architecture'],
-  ['about', 'О проекте', '/about'],
+  ['home', t('layouts.SiteHeader.navHome'), '/'],
+  ['victory', t('layouts.SiteHeader.navVictory'), '/victory'],
+  ['ethnography', t('layouts.SiteHeader.navEthnography'), '/ethnography'],
+  ['cities', t('layouts.SiteHeader.navCities'), '/cities'],
+  ['nature', t('layouts.SiteHeader.navNature'), '/nature'],
+  ['archeology', t('layouts.SiteHeader.navArcheology'), '/archeology'],
+  ['architecture', t('layouts.SiteHeader.navArchitecture'), '/architecture'],
+  ['about', t('layouts.SiteHeader.navAbout'), '/about'],
 ]
 
 const { navItems, load: loadMenu } = useResolvedNav('spa_primary', HARDCODED_NAV)
 
-onMounted(loadMenu)
+onMounted(() => { loadMenu(); fetchSiteInfo() })
 
 // Раздел подсвечен не только на своей странице-каталоге, но и на вложенных
 // страницах объектов (/architecture/42, /news/5 и т.п.) — раньше это давал
@@ -58,7 +63,7 @@ onUnmounted(() => window.removeEventListener('keydown', onEscape))
           <circle cx="28" cy="10" r="2" fill="currentColor" opacity="0.6" />
           <circle cx="12" cy="10" r="2" fill="currentColor" opacity="0.6" />
         </svg>
-        <span class="logo-text">Наследие Вятки</span>
+        <span class="logo-text">{{ siteName }}</span>
       </RouterLink>
 
       <nav v-if="!isMobile" class="desktop-nav">
@@ -72,7 +77,7 @@ onUnmounted(() => window.removeEventListener('keydown', onEscape))
         </template>
       </nav>
 
-      <button v-if="isMobile" class="burger" aria-label="Открыть меню" :aria-expanded="menuOpen" @click="openMenu">
+      <button v-if="isMobile" class="burger" :aria-label="t('layouts.SiteHeader.menuToggleLabel')" :aria-expanded="menuOpen" @click="openMenu">
         <span class="burger-line" />
         <span class="burger-line" />
         <span class="burger-line" />
@@ -83,7 +88,7 @@ onUnmounted(() => window.removeEventListener('keydown', onEscape))
   <div class="overlay" :class="{ '--visible': menuOpen }" @click="closeMenu" />
 
   <nav class="sidebar" :class="{ '--open': menuOpen }">
-    <button class="sidebar-close" aria-label="Закрыть" @click="closeMenu">&times;</button>
+    <button class="sidebar-close" :aria-label="t('layouts.SiteHeader.menuCloseLabel')" @click="closeMenu">&times;</button>
     <template v-for="item in navItems" :key="item.key">
       <RouterLink v-if="item.spaRoute" :to="item.to" class="sidebar-link" :class="{ active: isActiveItem(item) }" @click="closeMenu">
         {{ item.label }}

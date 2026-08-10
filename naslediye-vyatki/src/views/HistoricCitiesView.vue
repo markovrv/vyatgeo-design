@@ -5,13 +5,15 @@ import CatalogLayout from '@/components/CatalogLayout.vue'
 import FilterBar from '@/components/FilterBar.vue'
 import HistoryCitiesMap from '@/components/HistoryCitiesMap.vue'
 import { useHistoryCities } from '@/composables/useHistory'
+import { useStrings } from '@/i18n'
 
+const { t } = useStrings()
 const placeholderImg = heroCities
 const { cities, loading, error, fetchCities } = useHistoryCities()
 onMounted(fetchCities)
 
 const viewMode = ref('map')
-const viewOptions = [{ value: 'map', label: 'На карте' }, { value: 'catalog', label: 'Каталог' }]
+const viewOptions = [{ value: 'map', label: t('common.onMap') }, { value: 'catalog', label: t('common.catalog') }]
 
 // На карту попадают только города с заданными координатами (город без
 // координат — только карточка в каталоге, пин рисовать не из чего).
@@ -23,14 +25,14 @@ const mapPoints = computed(() => cities.value
 <template>
   <CatalogLayout
     :heroImg="heroCities"
-    eyebrow="Исторические города · К 90-летию Кировской области"
-    title="Исторические города Вятской земли"
-    subtitle="Семь городов, каждый из которых хранит свою уникальную историю — от крепостей и купеческих центров до современных городов"
+    :eyebrow="t('views.HistoricCitiesView.eyebrow')"
+    :title="t('views.HistoricCitiesView.title')"
+    :subtitle="t('views.HistoricCitiesView.subtitle')"
     :gridCount="cities.length"
     :showGrid="false"
   >
-    <template #heading>Города на карте и в каталоге</template>
-    <template #description>Семь исторических городов: Киров (Вятка / Хлынов), Котельнич, Орлов, Слободской, Яранск, Малмыж и Уржум. Нажмите на метку или карточку, чтобы открыть ленту времени города.</template>
+    <template #heading>{{ t('views.HistoricCitiesView.heading') }}</template>
+    <template #description>{{ t('views.HistoricCitiesView.description') }}</template>
 
     <template #map>
       <div class="map-shell">
@@ -38,8 +40,8 @@ const mapPoints = computed(() => cities.value
           <FilterBar :options="viewOptions" :active="viewMode" @select="v => viewMode = v" />
         </div>
         <template v-if="viewMode === 'map'">
-          <p v-if="loading" class="state-msg">Загрузка…</p>
-          <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+          <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+          <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
           <HistoryCitiesMap v-else :points="mapPoints" />
         </template>
       </div>
@@ -47,17 +49,17 @@ const mapPoints = computed(() => cities.value
 
     <template #grid>
       <template v-if="viewMode === 'catalog'">
-        <p v-if="loading" class="state-msg">Загрузка…</p>
-        <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+        <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+        <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
         <template v-else>
-          <div class="grid-count">Показано: {{ cities.length }} городов</div>
+          <div class="grid-count">{{ t('views.HistoricCitiesView.cityCount', { count: cities.length }) }}</div>
           <template v-for="c in cities" :key="c.slug">
             <RouterLink v-if="c.eventsCount > 0" :to="`/cities/${c.slug}`" class="city-card">
               <div class="city-img" :style="{ backgroundImage: `url(${c.photo || placeholderImg})` }" />
               <div class="city-body">
                 <h3 class="city-name">{{ c.name }}</h3>
                 <p class="city-desc">{{ c.short }}</p>
-                <span class="btn-sm">Лента времени →</span>
+                <span class="btn-sm">{{ t('views.HistoricCitiesView.timelineCta') }}</span>
               </div>
             </RouterLink>
             <div v-else class="city-card city-card--soon">
@@ -65,7 +67,7 @@ const mapPoints = computed(() => cities.value
               <div class="city-body">
                 <h3 class="city-name">{{ c.name }}</h3>
                 <p class="city-desc">{{ c.short }}</p>
-                <span class="badge-soon">Скоро</span>
+                <span class="badge-soon">{{ t('views.HistoricCitiesView.soonBadge') }}</span>
               </div>
             </div>
           </template>

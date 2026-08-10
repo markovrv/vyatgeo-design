@@ -24,6 +24,9 @@ import {
 import AttractionClusterIcon from '@/components/AttractionClusterIcon.vue'
 import AttractionPopup from '@/components/AttractionPopup.vue'
 import { useAttraction } from '@/composables/useAttractions'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const props = defineProps({
   points: { type: Array, required: true }, // [{ id, title, place, imgSrc, color, coordinates: [lng, lat] }]
@@ -139,7 +142,7 @@ onUnmounted(() => clearInterval(zoomInterval))
 
 <template>
   <div class="attraction-map">
-    <p v-if="!apiReady" class="map-loading">Загрузка карты…</p>
+    <p v-if="!apiReady" class="map-loading">{{ t('common.loadingMap') }}</p>
     <yandex-map v-else v-model="map" :settings="mapSettings" width="100%" height="600px">
       <yandex-map-default-scheme-layer />
       <yandex-map-default-features-layer />
@@ -154,7 +157,7 @@ onUnmounted(() => clearInterval(zoomInterval))
               <path d="M2.5 10.5 10 14.5l7.5-4" />
               <path d="M2.5 13.5 10 17.5l7.5-4" />
             </svg>
-            <span class="poly-tooltip">Исторические границы города</span>
+            <span class="poly-tooltip">{{ t('components.AttractionMap.historicalBoundaries') }}</span>
           </span>
         </yandex-map-control-button>
       </yandex-map-controls>

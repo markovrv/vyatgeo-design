@@ -21,6 +21,9 @@ import {
   initYmaps,
 } from 'vue-yandex-maps'
 import AttractionClusterIcon from '@/components/AttractionClusterIcon.vue'
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
 
 const props = defineProps({
   points: { type: Array, required: true }, // [{ id, title, place, imgSrc, color, coordinates: [lng, lat] }]
@@ -96,7 +99,7 @@ onUnmounted(() => clearInterval(zoomInterval))
 
 <template>
   <div class="archeology-map">
-    <p v-if="!apiReady" class="map-loading">Загрузка карты…</p>
+    <p v-if="!apiReady" class="map-loading">{{ t('common.loadingMap') }}</p>
     <yandex-map v-else v-model="map" :settings="mapSettings" width="100%" height="560px">
       <yandex-map-default-scheme-layer />
       <yandex-map-default-features-layer />
@@ -138,7 +141,7 @@ onUnmounted(() => clearInterval(zoomInterval))
         </template>
       </yandex-map-hint>
     </yandex-map>
-    <p v-if="apiReady && !points.length" class="state-msg">Нет памятников с заданными координатами.</p>
+    <p v-if="apiReady && !points.length" class="state-msg">{{ t('components.ArcheologyMap.noPoints') }}</p>
   </div>
 </template>
 

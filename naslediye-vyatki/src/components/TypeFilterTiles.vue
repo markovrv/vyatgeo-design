@@ -1,4 +1,8 @@
 <script setup>
+import { useStrings } from '@/i18n'
+
+const { t } = useStrings()
+
 const props = defineProps({
   label: { type: String, default: '' },
   types: { type: Array, default: () => [] }, // [{ id, name, image, count }]
@@ -11,9 +15,9 @@ const emit = defineEmits(['select'])
 // Короткие подписи для плиток — полное название термина (для фильтрации и
 // точности) остаётся в t.name и виден по наведению через title.
 const SHORT_LABELS = {
-  'Прядение, ткачество, шитьё': 'Текстиль',
-  'Сельско-хозяйственные инструменты': 'Земледелие',
-  'Плотницко-столярные инструменты': 'Столярство',
+  'Прядение, ткачество, шитьё': t('components.TypeFilterTiles.shortSpinningLabel'),
+  'Сельско-хозяйственные инструменты': t('components.TypeFilterTiles.shortAgricultureLabel'),
+  'Плотницко-столярные инструменты': t('components.TypeFilterTiles.shortCarpentryLabel'),
 }
 
 function shortLabel(name) {
@@ -35,7 +39,7 @@ function shortLabel(name) {
         <div class="tile-bg" :style="allImage ? { backgroundImage: `url(${allImage})` } : null" />
         <div class="tile-overlay" />
         <span v-if="active === 'all'" class="tile-check" aria-hidden="true">✓</span>
-        <span class="tile-title">Все</span>
+        <span class="tile-title">{{ t('components.TypeFilterTiles.all') }}</span>
       </button>
 
       <button

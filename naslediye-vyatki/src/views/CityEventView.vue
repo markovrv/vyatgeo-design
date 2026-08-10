@@ -4,7 +4,9 @@ import { RouterLink, useRoute } from 'vue-router'
 import { useHistoryEvent, useHistoryAdjacent, useHistoryNearby, useHistoryThumbnails, SITE_URL } from '@/composables/useHistory'
 import AttractionGallery from '@/components/AttractionGallery.vue'
 import CommentsSection from '@/components/CommentsSection.vue'
+import { useStrings } from '@/i18n'
 
+const { t } = useStrings()
 const route = useRoute()
 const { event, loading, error, fetchEvent } = useHistoryEvent()
 const { prev, next, fetchAdjacent } = useHistoryAdjacent()
@@ -41,15 +43,15 @@ watch(() => route.params.id, id => load(id))
   <div class="page">
     <div class="spacer" />
     <nav class="breadcrumb">
-      <RouterLink to="/">Главная</RouterLink><span>/</span>
-      <RouterLink to="/cities">Исторические города</RouterLink><span>/</span>
+      <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+      <RouterLink to="/cities">{{ t('views.HistoricCitiesView.title') }}</RouterLink><span>/</span>
       <RouterLink v-if="event?.citySlug" :to="`/cities/${event.citySlug}`">{{ event.cityName }}</RouterLink><span>/</span>
-      <span class="current">{{ event?.dateText || '…' }}</span>
+      <span class="current">{{ event?.dateText || t('common.ellipsis') }}</span>
     </nav>
 
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-    <p v-else-if="!event" class="state-msg">Событие не найдено.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+    <p v-else-if="!event" class="state-msg">{{ t('views.CityEventView.notFound') }}</p>
 
     <template v-else>
       <section class="intro">
@@ -62,17 +64,17 @@ watch(() => route.params.id, id => load(id))
       </section>
 
       <section v-if="event.gallery?.length" class="section gallery-section">
-        <h2 class="gallery-heading">Изображения</h2>
+        <h2 class="gallery-heading">{{ t('views.CityEventView.galleryHeading') }}</h2>
         <AttractionGallery :items="event.gallery" :alt="event.title" />
       </section>
 
-      <nav v-if="prev || next" class="item-nav" aria-label="Навигация по событиям">
+      <nav v-if="prev || next" class="item-nav" :aria-label="t('views.CityEventView.navAria')">
         <RouterLink v-if="prev" :to="`/cities/${event.citySlug}/event/${prev.id}`" class="nav-card nav-card--prev">
           <div class="nav-thumb" :style="{ backgroundImage: `url(${prev.imgSrc})` }" />
           <div class="nav-text">
             <span class="nav-direction">
-              <span class="nav-direction-full">← Предыдущее</span>
-              <span class="nav-direction-short">← Пред.</span>
+              <span class="nav-direction-full">{{ t('views.CityEventView.prevFull') }}</span>
+              <span class="nav-direction-short">{{ t('views.CityEventView.prevShort') }}</span>
             </span>
             <span class="nav-title" :title="prev.title">{{ prev.title }}</span>
           </div>
@@ -82,8 +84,8 @@ watch(() => route.params.id, id => load(id))
         <RouterLink v-if="next" :to="`/cities/${event.citySlug}/event/${next.id}`" class="nav-card nav-card--next">
           <div class="nav-text">
             <span class="nav-direction">
-              <span class="nav-direction-full">Следующее →</span>
-              <span class="nav-direction-short">След. →</span>
+              <span class="nav-direction-full">{{ t('views.CityEventView.nextFull') }}</span>
+              <span class="nav-direction-short">{{ t('views.CityEventView.nextShort') }}</span>
             </span>
             <span class="nav-title" :title="next.title">{{ next.title }}</span>
           </div>
@@ -93,12 +95,12 @@ watch(() => route.params.id, id => load(id))
       </nav>
 
       <div class="back-bar">
-        <RouterLink v-if="event.citySlug" :to="`/cities/${event.citySlug}`" class="cta-btn">← К ленте времени</RouterLink>
-        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
+        <RouterLink v-if="event.citySlug" :to="`/cities/${event.citySlug}`" class="cta-btn">{{ t('views.CityEventView.backToTimeline') }}</RouterLink>
+        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">{{ t('common.edit') }}</a>
       </div>
 
       <section v-if="nearbyOthers.length" class="section nearby-section">
-        <h2 class="nearby-heading">Ближайшие даты</h2>
+        <h2 class="nearby-heading">{{ t('views.CityEventView.nearbyHeading') }}</h2>
         <div class="nearby-grid">
           <RouterLink v-for="n in nearbyOthers" :key="n.id" :to="`/cities/${event.citySlug}/event/${n.id}`" class="nearby-card">
             <div class="nearby-img" :style="{ backgroundImage: `url(${nearbyImg(n)})` }" />

@@ -5,11 +5,14 @@
 // в режиме каталога — см. .controls/.controls--floating в NatureView.vue.
 import { computed } from 'vue'
 import FilterBar from '@/components/FilterBar.vue'
+import { useStrings } from '@/i18n'
 import { natureCatalogState as state } from '@/composables/useOopt'
 
+const { t } = useStrings()
+
 const viewOptions = [
-  { value: 'map', label: 'На карте' },
-  { value: 'catalog', label: 'Каталог' },
+  { value: 'map', label: t('common.onMap') },
+  { value: 'catalog', label: t('common.catalog') },
 ]
 
 function onSearchInput(e) {
@@ -36,18 +39,18 @@ function clearAllFilters() {
     <div class="search-box">
       <svg viewBox="0 0 20 20" class="search-icon" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" /><path d="M16.5 16.5 12.8 12.8" /></svg>
       <input
-        type="search" class="search-input" placeholder="Поиск по названию и месту…"
-        :value="state.search" @input="onSearchInput" aria-label="Поиск по названию и месту"
+        type="search" class="search-input" :placeholder="t('components.NatureControls.searchPlaceholder')"
+        :value="state.search" @input="onSearchInput" :aria-label="t('components.NatureControls.searchAria')"
       />
     </div>
     <button type="button" class="filters-toggle" @click="state.filtersOpen = !state.filtersOpen">
-      <span>Фильтры</span>
+      <span>{{ t('components.NatureControls.filtersToggle') }}</span>
       <span v-if="activeFilterCount" class="filters-toggle-count">{{ activeFilterCount }}</span>
       <svg viewBox="0 0 20 20" class="filters-chevron" :class="{ 'filters-chevron--open': state.filtersOpen }"><polyline points="5 7.5 10 12.5 15 7.5" /></svg>
     </button>
-    <button v-if="activeFilterCount" type="button" class="filters-reset" title="Сбросить фильтры" @click="clearAllFilters">
+    <button v-if="activeFilterCount" type="button" class="filters-reset" :title="t('components.NatureControls.filtersResetTitle')" @click="clearAllFilters">
       <svg viewBox="0 0 20 20" class="icon"><path d="M5 5l10 10M15 5 5 15" /></svg>
-      <span>Сбросить</span>
+      <span>{{ t('common.reset') }}</span>
     </button>
   </div>
 </template>

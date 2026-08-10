@@ -1,9 +1,12 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { useStrings } from '@/i18n'
 import { useFinding, useFindingTypes, useFindingNav, useFindingSimilar, ethnographyCatalogState as catalogState, SITE_URL } from '@/composables/useFindings'
 import ImageLightbox from '@/components/ImageLightbox.vue'
 import CommentsSection from '@/components/CommentsSection.vue'
+
+const { t } = useStrings()
 
 const route = useRoute()
 const { finding, loading, error, fetchFinding } = useFinding()
@@ -74,13 +77,13 @@ const fields = computed(() => {
   if (!finding.value) return []
   const f = finding.value
   return [
-    { label: 'Функционал', value: f.functionality },
-    { label: 'Особенности', value: f.features },
-    { label: 'Материал', value: f.materials.join(', ') },
-    { label: 'Размеры (ш×д×в) см', value: f.dimensions },
-    { label: 'Происхождение', value: f.origin.join(', ') },
-    { label: 'Время поступления', value: f.receiptTime.join(', ') },
-    { label: 'Время создания', value: f.creationTime.join(', ') },
+    { label: t('views.EthnographyItemView.fieldFunctionality'), value: f.functionality },
+    { label: t('views.EthnographyItemView.fieldFeatures'), value: f.features },
+    { label: t('views.EthnographyItemView.fieldMaterial'), value: f.materials.join(', ') },
+    { label: t('views.EthnographyItemView.fieldDimensions'), value: f.dimensions },
+    { label: t('views.EthnographyItemView.fieldOrigin'), value: f.origin.join(', ') },
+    { label: t('views.EthnographyItemView.fieldReceiptTime'), value: f.receiptTime.join(', ') },
+    { label: t('views.EthnographyItemView.fieldCreationTime'), value: f.creationTime.join(', ') },
   ].filter(field => field.value && field.value.trim())
 })
 </script>
@@ -89,14 +92,14 @@ const fields = computed(() => {
   <div class="page">
     <div class="spacer" />
     <nav class="breadcrumb">
-      <RouterLink to="/">Главная</RouterLink><span>/</span>
-      <RouterLink to="/ethnography">Этнографическое наследие</RouterLink><span>/</span>
-      <span class="current">{{ finding?.title || '…' }}</span>
+      <RouterLink to="/">{{ t('common.home') }}</RouterLink><span>/</span>
+      <RouterLink to="/ethnography">{{ t('views.EthnographyView.title') }}</RouterLink><span>/</span>
+      <span class="current">{{ finding?.title || t('common.ellipsis') }}</span>
     </nav>
 
-    <p v-if="loading" class="state-msg">Загрузка…</p>
-    <p v-else-if="error" class="state-msg state-msg--error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>
-    <p v-else-if="!finding" class="state-msg">Экспонат не найден.</p>
+    <p v-if="loading" class="state-msg">{{ t('common.loading') }}</p>
+    <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
+    <p v-else-if="!finding" class="state-msg">{{ t('views.EthnographyItemView.notFound') }}</p>
 
     <template v-else>
       <section class="intro">
@@ -108,7 +111,7 @@ const fields = computed(() => {
                 @mouseenter="onFrameMouseEnter" @mousemove="onFrameMouseMove" @mouseleave="onFrameMouseLeave"
                 @click="lightboxOpen = true"
               />
-              <span class="zoom-hint" aria-hidden="true">⤢ Нажмите для детального просмотра</span>
+              <span class="zoom-hint" aria-hidden="true">{{ t('common.viewFullscreen') }}</span>
             </div>
             <div v-if="finding.images.length > 1" class="thumbs">
               <button
@@ -143,13 +146,13 @@ const fields = computed(() => {
         </div>
       </section>
 
-      <nav v-if="prev || next" class="item-nav" aria-label="Навигация по экспонатам категории">
+      <nav v-if="prev || next" class="item-nav" :aria-label="t('views.EthnographyItemView.navAria')">
         <RouterLink v-if="prev" :to="`/ethnography/${prev.id}`" class="nav-card nav-card--prev">
           <div class="nav-thumb" :style="{ backgroundImage: `url(${prev.thumbnail})` }" />
           <div class="nav-text">
             <span class="nav-direction">
-              <span class="nav-direction-full">← Предыдущий</span>
-              <span class="nav-direction-short">← Пред.</span>
+              <span class="nav-direction-full">{{ t('common.prevFull') }}</span>
+              <span class="nav-direction-short">{{ t('common.prevShort') }}</span>
             </span>
             <span class="nav-title">{{ prev.title }}</span>
           </div>
@@ -159,8 +162,8 @@ const fields = computed(() => {
         <RouterLink v-if="next" :to="`/ethnography/${next.id}`" class="nav-card nav-card--next">
           <div class="nav-text">
             <span class="nav-direction">
-              <span class="nav-direction-full">Следующий →</span>
-              <span class="nav-direction-short">След. →</span>
+              <span class="nav-direction-full">{{ t('common.nextFull') }}</span>
+              <span class="nav-direction-short">{{ t('common.nextShort') }}</span>
             </span>
             <span class="nav-title">{{ next.title }}</span>
           </div>
@@ -170,12 +173,12 @@ const fields = computed(() => {
       </nav>
 
       <div class="back-bar">
-        <RouterLink to="/ethnography" class="cta-btn">← К каталогу экспонатов</RouterLink>
-        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">Редактировать</a>
+        <RouterLink to="/ethnography" class="cta-btn">{{ t('views.EthnographyItemView.backToCatalog') }}</RouterLink>
+        <a v-if="editUrl" :href="editUrl" target="_blank" rel="noopener" class="edit-link">{{ t('common.edit') }}</a>
       </div>
 
       <section v-if="similar.length" class="section similar-section">
-        <h2 class="similar-heading">Похожие экспонаты</h2>
+        <h2 class="similar-heading">{{ t('views.EthnographyItemView.similarHeading') }}</h2>
         <div class="similar-grid">
           <RouterLink v-for="s in similar" :key="s.id" :to="`/ethnography/${s.id}`" class="similar-card">
             <div class="similar-img" :style="{ backgroundImage: `url(${s.thumbnail})` }" />
