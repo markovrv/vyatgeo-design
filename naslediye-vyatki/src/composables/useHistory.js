@@ -1,7 +1,8 @@
 import { computed, reactive, ref } from 'vue'
 import { API_BASE_URL } from '@/config/api'
+import { SITE_URL, decodeEntities, resolveRelativeUrls } from '@/composables/useHtmlContent'
 
-export const SITE_URL = API_BASE_URL.replace(/wp-json\/?$/, '')
+export { SITE_URL }
 
 // Состояние ленты времени — как и в других модулях, живёт на уровне модуля,
 // переживает переход на страницу события и обратно (фильтр по веку, scrollY).
@@ -29,21 +30,6 @@ const historyEventsCache = reactive({
   total: 0,
   loaded: false,
 })
-
-// Раскрываем HTML entity-коды в заголовках/подписях, как и в остальных модулях —
-// WP не разворачивает уже присутствующий в тексте entity-код сам.
-const entityDecoder = typeof document !== 'undefined' ? document.createElement('textarea') : null
-function decodeEntities(str) {
-  if (!str || !entityDecoder) return str || ''
-  entityDecoder.innerHTML = str
-  return entityDecoder.value.replace(/\s+/g, ' ').trim()
-}
-
-// Контент авторился в расчёте на страницу двумя уровнями глубже корня сайта
-// (../../wp-content/...) — как и в Архитектуре/Этнографии.
-function resolveRelativeUrls(html) {
-  return (html || '').replaceAll('../../', SITE_URL)
-}
 
 // Фото в тексте события свёрстаны как <center><a><img><br><i>подпись</i></a></center>
 // перед остальным текстом абзаца — тот же почерк, что и в модуле "Архитектура"
@@ -431,6 +417,7 @@ export function useHistoryEvent() {
         dateValue: raw.history_date_value || '',
         citySlug: cityTerm?.slug || '',
         cityName: cityTerm ? decodeEntities(cityTerm.name) : '',
+        commentStatus: raw.comment_status || 'closed',
       }
     } catch (e) {
       error.value = e

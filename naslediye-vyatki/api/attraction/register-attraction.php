@@ -1,10 +1,10 @@
 <?php
-// Регистрируем Объект
+// Регистрируем Архитектуру Кирова
 add_action('init', function () {
     register_post_type('attraction', [
         'labels' => [
-            'name' => 'Объекты',
-            'singular_name' => 'Объект',
+            'name' => 'Архитектура Кирова',
+            'singular_name' => 'Объект архитектуры',
             'add_new' => 'Добавить объект',
             'add_new_item' => 'Добавить новый объект',
             'edit' => 'Изменить',

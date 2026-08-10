@@ -20,7 +20,7 @@ add_action('init', function () {
         'public' => true,
         'show_in_rest' => true,
         'menu_position' => 16,
-        'supports' => ['title', 'editor', 'thumbnail'],
+        'supports' => ['title', 'editor', 'comments', 'thumbnail'],
         'taxonomies' => ['finding_material', 'finding_origin', 'finding_receipt_time', 'finding_creation_time', 'finding_type'],
         'menu_icon' => "dashicons-search",
         'has_archive' => true

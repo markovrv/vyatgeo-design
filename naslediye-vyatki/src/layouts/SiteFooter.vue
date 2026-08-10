@@ -1,13 +1,21 @@
 <script setup>
-const sections = [
-  ['victory', 'Лица Победы'],
-  ['ethnography', 'Этнографическое наследие'],
-  ['cities', 'Исторические города'],
-  ['nature', 'Памятники природы'],
-  ['archeology', 'Памятники археологии'],
-  ['architecture', 'Архитектура Кирова'],
-  ['about', 'О проекте'],
+import { onMounted } from 'vue'
+import { useResolvedNav } from '@/composables/useMenu'
+
+const HARDCODED_FOOTER_NAV = [
+  ['home', 'Главная', '/'],
+  ['victory', 'Лица Победы', '/victory'],
+  ['ethnography', 'Этнографическое наследие', '/ethnography'],
+  ['cities', 'Исторические города', '/cities'],
+  ['nature', 'Памятники природы', '/nature'],
+  ['archeology', 'Памятники археологии', '/archeology'],
+  ['architecture', 'Архитектура Кирова', '/architecture'],
+  ['about', 'О проекте', '/about'],
 ]
+
+const { navItems, load: loadMenu } = useResolvedNav('spa_footer', HARDCODED_FOOTER_NAV)
+
+onMounted(loadMenu)
 </script>
 
 <template>
@@ -37,8 +45,10 @@ const sections = [
       <div>
         <strong class="footer-heading">Разделы</strong>
         <div class="footer-links">
-          <RouterLink to="/">Главная</RouterLink>
-          <RouterLink v-for="[key, label] in sections" :key="key" :to="`/${key}`">{{ label }}</RouterLink>
+          <template v-for="item in navItems" :key="item.key">
+            <RouterLink v-if="item.spaRoute" :to="item.to">{{ item.label }}</RouterLink>
+            <a v-else :href="item.to" :target="item.external ? (item.target || '_blank') : (item.target || undefined)">{{ item.label }}</a>
+          </template>
         </div>
       </div>
       <div>

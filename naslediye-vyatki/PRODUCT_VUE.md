@@ -26,20 +26,22 @@ The only digital archive that unifies all seven heritage domains of Kirov Oblast
 
 ## Operating Context
 
-Visitors browse the site on desktop and mobile. The landing page serves as a navigational hub with parallax hero, a real-data timeline of Kirov history milestones, module grid, video, and crafts carousel. Each module offers a filterable catalog with map and list views, linking to individual detail pages. Three modules — Ethnography, Architecture of Kirov, and Historic Cities — are wired to their live WordPress REST APIs (see `src/composables/useFindings.js`, `useAttractions.js`, `useHistory.js`, and the shared module patterns documented in `CLAUDE.md`). Historic Cities has a different shape from the other two: a `city` taxonomy groups events by city, a real Yandex map plots cities by their taxonomy-term coordinates, and each city's timeline is server-paginated (10 events per page, infinite scroll) with server-side century filter and search — the dataset (666+ events for Kirov alone) is too large to load and filter client-side like the other catalogs. The remaining modules (Victory Faces, Nature, Archeology) still run on static prototype data.
+Visitors browse the site on desktop and mobile. The landing page serves as a navigational hub with parallax hero, a real-data timeline of Kirov history milestones, module grid, video, and crafts carousel. Each module offers a filterable catalog with map and list views, linking to individual detail pages. All 6 catalog modules — Ethnography, Architecture of Kirov, Historic Cities, Archeology, Nature, and Victory Faces — are wired to their live WordPress REST APIs (see `src/composables/useFindings.js`, `useAttractions.js`, `useHistory.js`, `useArcheology.js`, `useOopt.js`, `useHeroes.js`, and the shared module patterns documented in `CLAUDE.md`). No catalog module runs on static/mock data anymore. Historic Cities has a different shape from the others: a `city` taxonomy groups events by city, a real Yandex map plots cities by their taxonomy-term coordinates, and each city's timeline is server-paginated (10 events per page, infinite scroll) with server-side century filter and search — the dataset (666+ events for Kirov alone) is too large to load and filter client-side like the other catalogs. Nature and Archeology additionally collapse their taxonomy filters (district/profile/species; era/type) into a toggleable "Фильтры" panel next to the map/catalog switch and search, instead of always-visible filter rows.
+
+Beyond the 6 catalog modules plus the "About" section, cross-cutting WordPress features are also wired to the live backend, independent of any single module: WP Pages (`usePage.js` + a shared `PageView.vue` — hero with page title/photo + HTML content + comments; the "About" section is a regular WP page at slug `about`, auto-created on theme activation, not a hardcoded component anymore), WP Posts (a "News" section at `/news`), comments (guest read/write on all 6 catalog modules' object pages plus Pages/Posts), and a WordPress-managed nav menu for both header and footer (`useMenu.js`, custom `nv/v1/menu/{location}` REST route, auto-created default menus on theme activation, falling back to the hardcoded nav list until an editor customizes it in wp-admin).
 
 ## Capabilities and Constraints
 
-- 7 thematic modules with catalog/map views and detail pages
-- Filtering by era, type, ethnicity, style, preservation status
+- 6 catalog modules (thematic sections) with catalog/map views and detail pages, plus a 7th non-catalog section ("About")
+- Filtering by era, type, ethnicity, style, preservation status, district, profile, protected species, personality status
 - Fully responsive: desktop (1024px+) and mobile (<1024px hamburger nav)
 - WCAG AA accessibility (4.5:1 contrast, focus-visible, min 44px targets)
 - Design token system via CSS custom properties in `tokens.css`
-- SPA architecture — 15 routes, lazy-loaded
-- Shared components: FilterBar, CatalogCard, CatalogMap, CatalogLayout, KremlinVideo, Pagination, ImageLightbox, MultiSelectFilter, TypeFilterTiles, plus module-specific ones for Architecture (AttractionMap, AttractionControls, AttractionGallery, AttractionPopup, AttractionClusterIcon) and Historic Cities (HistoryCitiesMap — lighter Yandex map with photo pins, no clustering)
-- Composables: useScrollFadeIn, useHeaderScroll (UI-only) alongside useFindings.js, useAttractions.js and useHistory.js (live WP REST API data for Ethnography/Architecture/Historic Cities — list, single item, adjacent nav, nearby/similar, image-size thumbnails)
-- Ethnography, Architecture, and Historic Cities have live WordPress backends (see `CLAUDE.md` for the established integration patterns); the other 3 catalog modules are still static-only
-- Design + live-data integration complete for Ethnography/Architecture/Historic Cities; the remaining 3 modules (Victory Faces, Nature, Archeology) are still design-mockup-only, integration not started
+- SPA architecture — lazy-loaded routes, plus short-form `/archives/*` matchers that resolve slug->ID client-side
+- Shared components: FilterBar, MultiSelectFilter, CatalogLayout, KremlinVideo, Pagination, ImageLightbox, TypeFilterTiles, CommentsSection (guest comments, reused across object pages and WP Pages/Posts), plus module-specific map/controls components per module with a map (Architecture: AttractionMap/Controls/Gallery/Popup/ClusterIcon; Historic Cities: HistoryCitiesMap; Archeology: ArcheologyMap/Controls, reusing AttractionClusterIcon; Nature: NatureMap/Controls)
+- Composables: useScrollFadeIn, useHeaderScroll (UI-only) alongside useFindings.js, useAttractions.js, useHistory.js, useArcheology.js, useOopt.js, useHeroes.js (live WP REST API data for all 6 catalog modules — list, single item, adjacent nav, nearby/similar, image-size thumbnails); useHtmlContent.js (shared decodeEntities/resolveRelativeUrls/SITE_URL helper); usePage.js, usePosts.js, useComments.js, useMenu.js (cross-cutting WP Pages/Posts/comments/menu, not tied to one catalog module)
+- All 6 catalog modules have live WordPress backends (see `CLAUDE.md` for the established integration patterns, including two gotchas found while wiring up Nature/Victory Faces: WP REST caps `per_page` at 100 so datasets over that need pagination, and WP-generated taxonomy slugs are percent-encoded Cyrillic rather than transliterated, so filter options must never be hardcoded). Cross-cutting features (Pages, Posts, comments, menu) are live for all modules.
+- Design + live-data integration complete for all 6 catalog modules. Victory Faces' real data covers only WWII Heroes of the Soviet Union — the mock's other historical-period cards (Golden Horde, WWI, etc.) were removed rather than kept as static filler, since the copy would otherwise overclaim coverage the data doesn't have.
 
 ## Brand Commitments
 
@@ -73,13 +75,14 @@ naslediye-vyatki/
       SiteFooter.vue     # SVG wave, 3-column grid, 449px breakpoint
     components/
       FilterBar.vue      # pill chips, label, @select
-      CatalogCard.vue    # image + tags + title + desc, slots for customization
-      CatalogMap.vue     # SVG map wrapper, viewBox prop (static modules)
       CatalogLayout.vue  # hero + filters + map/grid, slot-based (shared by all modules)
       KremlinVideo.vue   # muted, playbackRate 0.5, IntersectionObserver, disconnect
-      Pagination.vue, ImageLightbox.vue, MultiSelectFilter.vue, TypeFilterTiles.vue
+      Pagination.vue, ImageLightbox.vue, MultiSelectFilter.vue, TypeFilterTiles.vue, CommentsSection.vue
       AttractionMap/Controls/Gallery/Popup/ClusterIcon.vue  # Architecture module (Yandex map)
       HistoryCitiesMap.vue  # Historic Cities module (lighter Yandex map, no clustering/polygons/popup)
+      ArcheologyMap/Controls.vue  # Archeology module (Yandex map, reuses AttractionClusterIcon)
+      NatureMap/Controls.vue      # Nature module (Yandex map)
+      HeroMap/Controls.vue        # Victory Faces module (Yandex map)
     composables/
       useScrollFadeIn.js  # staggered entrance (fadeStyle pattern)
       useHeaderScroll.js  # scrolled + isMobile reactive
@@ -87,31 +90,44 @@ naslediye-vyatki/
       useAttractions.js   # live API — Architecture (attraction/v1/*)
       useHistory.js       # live API — Historic Cities (history/v1/*): cities, paginated events, thumbnails
                            # (sessionStorage-backed cache), event detail, adjacent/nearby, homepage milestones
+      useArcheology.js    # live API — Archeology (archeology/v1/* for adjacent/nearby, /wp/v2/archeology for catalog)
+      useOopt.js           # live API — Nature (oopt/v1/* for adjacent/nearby, /wp/v2/oopt for catalog)
+      useHeroes.js         # live API — Victory Faces (hero/v1/* for adjacent/nearby, /wp/v2/hero for catalog,
+                           # paginated past WP's 100-per-page cap — 215/216 records)
+      useHtmlContent.js   # shared decodeEntities/resolveRelativeUrls/SITE_URL helper
+      usePage.js          # WP Pages, incl. "About" (slug "about") -- shared PageView.vue template
+      usePosts.js         # WP Posts -- "News" section
+      useComments.js      # comments: read approved + guest submit
+      useMenu.js           # WP nav menu: useMenu (raw items) + useResolvedNav (render-ready, header+footer)
     views/
       IndexView.vue              # hero+parallax, modules, video, real-data Kirov milestones timeline, crafts, quote
-      VictoryFacesView.vue       # catalog, era filter, 1:1 cards, no map
-      VictoryPersonView.vue      # detail: timeline, stat cards, awards
+      HeroesView.vue              # live API: catalog + map, hero_status filter, search
+      HeroItemView.vue            # live API: detail, adjacent nav, nearby-by-distance, comments
       EthnographyView.vue        # live API: catalog + map view, type tiles, multi-select filters, search
       EthnographyItemView.vue    # live API: detail, gallery+lightbox, adjacent nav, similar items, edit link
       HistoricCitiesView.vue     # live API: city selection, real Yandex map (HistoryCitiesMap) + catalog, "coming soon" for cities with no events yet
       CityTimelineView.vue       # live API: server-paginated timeline per city (10/page, infinite scroll), server-side century filter + search, real event thumbnails
       CityEventView.vue          # live API: event detail, text-parsed gallery+captions, adjacent + nearby-in-time nav (Architecture-style item-nav/nearby-grid), edit link
-      NatureView.vue             # static: catalog + map, type + view filters
-      NatureSiteView.vue         # static: detail: landscape, stats
-      ArcheologyView.vue         # static: catalog + map, era + type + view filters
-      ArcheologySiteView.vue     # static: detail: research, findings, stats
+      NatureView.vue              # live API: catalog + map, collapsible "Фильтры" panel (district/profile/species multi-select), search
+      NatureItemView.vue          # live API: detail, protected-species chips w/ status, adjacent nav, nearby-by-distance, edit link, comments
+      ArcheologyView.vue          # live API: catalog + map, collapsible "Фильтры" panel (era/type multi-select), search
+      ArcheologyItemView.vue      # live API: detail, adjacent nav, nearby-by-distance, edit link, comments
       ArchitectureView.vue       # live API: catalog + Yandex map (clustering, historical polygons), search
       ArchitectureObjectView.vue # live API: detail, text-parsed gallery+captions, adjacent nav, nearby-by-distance, edit link
-      AboutView.vue              # hero, stats, modules, partners, CTA
+      PageView.vue               # live API: shared template for any WP page (hero with page title
+                                  # + featured photo/fallback + HTML content + comments); used at
+                                  # /page/:slug and at /about (slug fixed to "about")
+      NewsView.vue                # live API: WP Posts catalog ("News"), server-paginated + search
+      NewsItemView.vue            # live API: WP Post detail, comments
 ```
 
 ## Evidence on Hand
 
-- 26 `.vue` files with complete UI (15 views + 11 shared)
-- 16 location/cultural images + 1 video in `src/assets/`
+- 42 `.vue` files with complete UI (17 views + the rest shared components/layouts)
+- 14 location/cultural images + 1 video in `src/assets/img/`
 - Custom SVG logo embedded in SiteHeader/SiteFooter
 - Full design token system in CSS custom properties
-- About page with real stats (7 modules, ~150 archeology sites, 100+ nature sites, 5 ethnic groups)
+- About page (real stats, module links, partners, CTA) now lives as an editable WP page (slug "about") rendered through the shared PageView.vue template, auto-created on theme activation -- not a standalone component anymore
 - Original prototype in `project/*.dc.html` preserved for reference
 
 ## Product Principles

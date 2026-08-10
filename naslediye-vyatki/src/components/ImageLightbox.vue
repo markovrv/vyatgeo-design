@@ -404,3 +404,20 @@ onUnmounted(() => {
   .nav-btn { width: 40px; height: 40px; }
 }
 </style>
+
+<style>
+/* Смещение лайтбокса под панель администратора WordPress — тот же приём и
+ * те же значения (32px / 46px на 782px), что и у .site-header/.sidebar в
+ * SiteHeader.vue. #wpadminbar фиксирован с z-index 99999 (ядро WP), выше
+ * любого разумного --z-overlay в проекте, поэтому просто поднять z-index
+ * лайтбокса нельзя — админ-панель в любом случае останется поверх; вместо
+ * этого, как и у шапки, сдвигаем сам лайтбокс вниз на её высоту, а не
+ * пытаемся перекрыть.
+ */
+@media screen {
+  body.admin-bar .lightbox-overlay { top: 32px; }
+}
+@media screen and (max-width: 782px) {
+  body.admin-bar .lightbox-overlay { top: 46px; }
+}
+</style>

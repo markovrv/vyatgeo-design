@@ -18,20 +18,29 @@ async function resolveSlugToId(cpt, slug) {
 
 const routes = [
   { path: '/',                        name: 'home',                 component: () => import('@/views/IndexView.vue') },
-  { path: '/victory',                 name: 'victory',              component: () => import('@/views/VictoryFacesView.vue') },
-  { path: '/victory/:slug',           name: 'victory-person',       component: () => import('@/views/VictoryPersonView.vue'), meta: { headerSolid: true } },
+  { path: '/victory',                 name: 'victory',              component: () => import('@/views/HeroesView.vue') },
+  { path: '/victory/:id',             name: 'victory-person',       component: () => import('@/views/HeroItemView.vue'), meta: { headerSolid: true } },
   { path: '/ethnography',             name: 'ethnography',          component: () => import('@/views/EthnographyView.vue') },
   { path: '/ethnography/:id',         name: 'ethnography-item',     component: () => import('@/views/EthnographyItemView.vue'), meta: { headerSolid: true } },
   { path: '/cities',                  name: 'cities',               component: () => import('@/views/HistoricCitiesView.vue') },
   { path: '/cities/:citySlug',        name: 'city-timeline',        component: () => import('@/views/CityTimelineView.vue') },
   { path: '/cities/:citySlug/event/:id', name: 'city-event',        component: () => import('@/views/CityEventView.vue'), meta: { headerSolid: true } },
   { path: '/nature',                  name: 'nature',               component: () => import('@/views/NatureView.vue') },
-  { path: '/nature/:slug',            name: 'nature-site',          component: () => import('@/views/NatureSiteView.vue'), meta: { headerSolid: true } },
+  { path: '/nature/:id',              name: 'nature-site',          component: () => import('@/views/NatureItemView.vue'), meta: { headerSolid: true } },
   { path: '/archeology',              name: 'archeology',           component: () => import('@/views/ArcheologyView.vue') },
-  { path: '/archeology/:slug',        name: 'archeology-site',      component: () => import('@/views/ArcheologySiteView.vue'), meta: { headerSolid: true } },
+  { path: '/archeology/:id',          name: 'archeology-item',      component: () => import('@/views/ArcheologyItemView.vue'), meta: { headerSolid: true } },
   { path: '/architecture',            name: 'architecture',         component: () => import('@/views/ArchitectureView.vue') },
   { path: '/architecture/:id',        name: 'architecture-object',  component: () => import('@/views/ArchitectureObjectView.vue'), meta: { headerSolid: true } },
-  { path: '/about',                   name: 'about',                component: () => import('@/views/AboutView.vue') },
+  // "О проекте" — обычная WP-страница (slug "about", см. nv_spa_ensure_about_page
+  // в functions.php), рендерится тем же общим PageView.vue, что и /page/:slug —
+  // просто slug зафиксирован пропсом маршрута, а не берётся из параметра.
+  // headerSolid не ставим: PageView.vue сам рисует hero с тёмной подложкой
+  // (margin-top: -80px, "уезжает под шапку" — как на / и /cities/:citySlug),
+  // поверх которого шапка должна оставаться прозрачной до прокрутки.
+  { path: '/about',                   name: 'about',                component: () => import('@/views/PageView.vue'), props: { slug: 'about' } },
+  { path: '/news',                    name: 'news',                 component: () => import('@/views/NewsView.vue') },
+  { path: '/news/:id',                name: 'news-item',            component: () => import('@/views/NewsItemView.vue'), meta: { headerSolid: true } },
+  { path: '/page/:slug',              name: 'page',                 component: () => import('@/views/PageView.vue'), props: true },
 
   // Short-form /archives/* — матчим паттерн, но резолвим slug→ID на уровне
   // глобального beforeEach (ниже), потому что beforeEnter без component
@@ -40,6 +49,7 @@ const routes = [
   { path: '/archives/attraction/:slug' },
   { path: '/archives/history/:slug' },
   { path: '/archives/city/:slug'      },
+  { path: '/archives/archeology/:slug' },
 ]
 
 const router = createRouter({
@@ -50,10 +60,10 @@ const router = createRouter({
   },
 })
 
-const moduleToCpt = { finding: 'finding', attraction: 'attraction', history: 'history' }
-const moduleToRoute = { finding: 'ethnography', attraction: 'architecture' }
+const moduleToCpt = { finding: 'finding', attraction: 'attraction', history: 'history', archeology: 'archeology' }
+const moduleToRoute = { finding: 'ethnography', attraction: 'architecture', archeology: 'archeology' }
 
-const ARCHIVES_RE = /^\/archives\/(finding|attraction|history|city)\/(.+)$/
+const ARCHIVES_RE = /^\/archives\/(finding|attraction|history|city|archeology)\/(.+)$/
 
 router.beforeEach(async (to) => {
   const m = to.path.match(ARCHIVES_RE)
@@ -63,8 +73,10 @@ router.beforeEach(async (to) => {
 
   if (mod === 'city') return `/cities/${slug}`
 
+  // mod здесь всегда 'finding'|'attraction'|'history' (city обработан выше,
+  // остальные варианты ARCHIVES_RE не пропускает) — оба ключа есть в
+  // moduleToCpt, поэтому cpt гарантированно определён.
   const cpt = moduleToCpt[mod]
-  if (!cpt) return '/'
 
   const id = await resolveSlugToId(cpt, slug)
   if (!id) return `/${moduleToRoute[mod] || 'cities'}`

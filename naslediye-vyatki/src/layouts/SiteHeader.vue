@@ -1,16 +1,18 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { useHeaderScroll } from '@/composables/useHeaderScroll'
+import { useResolvedNav } from '@/composables/useMenu'
 
-const props = defineProps({ active: { type: String, default: 'home' }, solid: { type: Boolean, default: false } })
+const props = defineProps({ solid: { type: Boolean, default: false } })
 
 const { scrolled, isMobile } = useHeaderScroll()
 const menuOpen = ref(false)
+const $route = useRoute()
 
 const isSolid = computed(() => props.solid || scrolled.value)
 
-const navItems = [
+const HARDCODED_NAV = [
   ['home', 'Главная', '/'],
   ['victory', 'Лица Победы', '/victory'],
   ['ethnography', 'Этнография', '/ethnography'],
@@ -20,6 +22,21 @@ const navItems = [
   ['architecture', 'Архитектура', '/architecture'],
   ['about', 'О проекте', '/about'],
 ]
+
+const { navItems, load: loadMenu } = useResolvedNav('spa_primary', HARDCODED_NAV)
+
+onMounted(loadMenu)
+
+// Раздел подсвечен не только на своей странице-каталоге, но и на вложенных
+// страницах объектов (/architecture/42, /news/5 и т.п.) — раньше это давал
+// App.vue через navMap (карту route.name → ключ раздела), но она была
+// завязана на фиксированный список захардкоженных разделов и не могла
+// покрыть произвольные пункты меню, пришедшие из WP. Сравнение по префиксу
+// пути работает одинаково для обоих источников меню.
+function isActiveItem(item) {
+  if (item.to === '/') return $route.path === '/'
+  return $route.path === item.to || $route.path.startsWith(item.to + '/')
+}
 
 function closeMenu() { menuOpen.value = false }
 function openMenu() { menuOpen.value = true }
@@ -45,9 +62,14 @@ onUnmounted(() => window.removeEventListener('keydown', onEscape))
       </RouterLink>
 
       <nav v-if="!isMobile" class="desktop-nav">
-        <RouterLink v-for="[key, label, to] in navItems" :key="key" :to="to" class="nav-link" :class="{ active: key === active }">
-          {{ label }}
-        </RouterLink>
+        <template v-for="item in navItems" :key="item.key">
+          <RouterLink v-if="item.spaRoute" :to="item.to" class="nav-link" :class="{ active: isActiveItem(item) }">
+            {{ item.label }}
+          </RouterLink>
+          <a v-else :href="item.to" class="nav-link" :target="item.external ? (item.target || '_blank') : (item.target || undefined)">
+            {{ item.label }}
+          </a>
+        </template>
       </nav>
 
       <button v-if="isMobile" class="burger" aria-label="Открыть меню" :aria-expanded="menuOpen" @click="openMenu">
@@ -62,9 +84,14 @@ onUnmounted(() => window.removeEventListener('keydown', onEscape))
 
   <nav class="sidebar" :class="{ '--open': menuOpen }">
     <button class="sidebar-close" aria-label="Закрыть" @click="closeMenu">&times;</button>
-    <RouterLink v-for="[key, label, to] in navItems" :key="key" :to="to" class="sidebar-link" :class="{ active: key === active }" @click="closeMenu">
-      {{ label }}
-    </RouterLink>
+    <template v-for="item in navItems" :key="item.key">
+      <RouterLink v-if="item.spaRoute" :to="item.to" class="sidebar-link" :class="{ active: isActiveItem(item) }" @click="closeMenu">
+        {{ item.label }}
+      </RouterLink>
+      <a v-else :href="item.to" class="sidebar-link" :target="item.external ? (item.target || '_blank') : (item.target || undefined)" @click="closeMenu">
+        {{ item.label }}
+      </a>
+    </template>
   </nav>
 </template>
 

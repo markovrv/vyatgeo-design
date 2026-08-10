@@ -4,6 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { useAttraction, useAttractionAdjacent, useAttractionNearby, useAttractionThumbnails, SITE_URL } from '@/composables/useAttractions'
 import { ATTRACTION_NEARBY_RADIUS_KM } from '@/config/attraction'
 import AttractionGallery from '@/components/AttractionGallery.vue'
+import CommentsSection from '@/components/CommentsSection.vue'
 
 const route = useRoute()
 const { attraction, loading, error, fetchAttraction } = useAttraction()
@@ -111,6 +112,8 @@ watch(() => route.params.id, (id) => load(id))
           </RouterLink>
         </div>
       </section>
+
+      <CommentsSection :post-id="attraction.id" :comment-status="attraction.commentStatus" />
     </template>
   </div>
 </template>

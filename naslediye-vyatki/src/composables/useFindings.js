@@ -1,7 +1,8 @@
 import { reactive, ref } from 'vue'
 import { API_BASE_URL } from '@/config/api'
+import { SITE_URL } from '@/composables/useHtmlContent'
 
-export const SITE_URL = API_BASE_URL.replace(/wp-json\/?$/, '')
+export { SITE_URL }
 
 // Общее состояние каталога «Этнография» — вынесено на уровень модуля (singleton),
 // поэтому переживает переход на страницу объекта и обратно: при возврате
@@ -112,7 +113,17 @@ export function useFinding() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       const raw = (data.findings || [])[0]
-      finding.value = raw ? normalizeFinding(raw) : null
+      let commentStatus = 'closed'
+      if (raw) {
+        try {
+          const csRes = await fetch(`${API_BASE_URL}wp/v2/finding/${encodeURIComponent(id)}?_fields=comment_status`)
+          if (csRes.ok) {
+            const csData = await csRes.json()
+            commentStatus = csData.comment_status || 'closed'
+          }
+        } catch { /* оставляем 'closed' */ }
+      }
+      finding.value = raw ? { ...normalizeFinding(raw), commentStatus } : null
     } catch (e) {
       error.value = e
     } finally {

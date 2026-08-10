@@ -4,7 +4,8 @@
  *
  * Добавляет страницу Инструменты → Импорт из API. Содержимое импортируется
  * пошагово через AJAX — виден прогресс по каждому типу данных. Поддерживаются
- * все CPT и таксономии трёх плагинов: attraction, history, artifact-finder.
+ * все CPT и таксономии шести плагинов: attraction, history, artifact-finder,
+ * geroi-vyatki, oopt-kirov, archeology.
  */
 
 add_action('admin_menu', 'nv_import_register_page');
@@ -448,6 +449,261 @@ function nv_import_step_finding_objects($source_url, $from_idx, $download_images
     return ['log' => $log, 'created' => $created, 'errors' => $errors, 'total' => $total, 'done' => $done];
 }
 
+/**
+ * Импорт объектов hero (пакетный). Единственная таксономия hero_status
+ * приходит в _embedded['wp:term'] у детального ответа (как city у history).
+ */
+function nv_import_step_hero_objects($source_url, $from_idx, $download_images, $skip_existing) {
+    $log = []; $created = 0; $errors = 0;
+    static $all_items = null;
+    if ($all_items === null) {
+        $all_items = nv_import_fetch($source_url . 'hero/v1/objects');
+        if (!$all_items || !is_array($all_items)) return ['log' => ['Не удалось получить список героев.'], 'created' => 0, 'errors' => 1, 'total' => 0];
+    }
+
+    $total = count($all_items);
+    $batch = array_slice($all_items, $from_idx, NV_IMPORT_BATCH);
+
+    foreach ($batch as $item) {
+        $id = $item['id'] ?? 0; $title = $item['title'] ?? '';
+        if (empty($title)) { $errors++; continue; }
+        if ($skip_existing && nv_import_post_exists($title, 'hero')) continue;
+
+        $detail = nv_import_fetch($source_url . 'wp/v2/hero/' . $id . '?_embed=1');
+        if (!$detail) { $errors++; $log[] = "Ошибка: не удалось загрузить героя «{$title}»."; continue; }
+
+        $content = nv_import_fix_content_urls($detail['content']['rendered'] ?? '', $source_url);
+
+        $post_id = wp_insert_post([
+            'post_type' => 'hero', 'post_title' => $title,
+            'post_content' => $content, 'post_status' => 'publish',
+        ], true);
+        if (is_wp_error($post_id)) { $errors++; $log[] = "Ошибка: «{$title}» — {$post_id->get_error_message()}"; continue; }
+
+        $status_name = null;
+        foreach ((array)($detail['_embedded']['wp:term'] ?? []) as $group) {
+            foreach ((array)$group as $t) {
+                if (($t['taxonomy'] ?? '') === 'hero_status') { $status_name = $t['name'] ?? null; break 2; }
+            }
+        }
+        if ($status_name) {
+            $tid = nv_import_find_or_create_term($status_name, 'hero_status');
+            if ($tid) wp_set_post_terms($post_id, [$tid], 'hero_status', false);
+        }
+
+        $feat_id = null;
+        if ($download_images) {
+            $feat = $detail['_embedded']['wp:featuredmedia'][0] ?? null;
+            if ($feat) $feat_id = nv_import_download_image($feat['source_url'] ?? '', $post_id, $title);
+            $updated = nv_import_download_content_images($content, $post_id, $source_url);
+            if ($updated !== $content) {
+                wp_update_post(['ID' => $post_id, 'post_content' => $updated]);
+            }
+        }
+
+        update_post_meta($post_id, 'hero_birth_date', $detail['hero_birth_date'] ?? '');
+        update_post_meta($post_id, 'hero_death_date', $detail['hero_death_date'] ?? '');
+        update_post_meta($post_id, 'hero_birth_place', $detail['hero_birth_place'] ?? '');
+        update_post_meta($post_id, 'hero_death_place', $detail['hero_death_place'] ?? '');
+        update_post_meta($post_id, 'hero_feat_description', $detail['hero_feat_description'] ?? '');
+        update_post_meta($post_id, 'hero_awards', $detail['hero_awards'] ?? '');
+        update_post_meta($post_id, 'hero_profession', $detail['hero_profession'] ?? '');
+        update_post_meta($post_id, 'hero_connection', $detail['hero_connection'] ?? '');
+        update_post_meta($post_id, 'hero_coord', $detail['hero_coord'] ?? '');
+        update_post_meta($post_id, 'hero_color', $detail['hero_color'] ?? '');
+
+        $img_src = $detail['hero_imgSrc'] ?? '';
+        if ($download_images && $feat_id && !empty($img_src)) {
+            $local_url = wp_get_attachment_url($feat_id);
+            if ($local_url) $img_src = $local_url;
+        }
+        update_post_meta($post_id, 'hero_imgSrc', $img_src);
+        $created++;
+    }
+
+    $done = ($from_idx + count($batch)) >= $total;
+    return ['log' => $log, 'created' => $created, 'errors' => $errors, 'total' => $total, 'done' => $done];
+}
+
+/**
+ * Импорт терминов oopt_species — единственная таксономия проекта с term meta
+ * (oopt_species_status), поэтому не подходит под generic nv_import_step_taxonomy.
+ * register_term_meta у источника явно включает context "view" (см.
+ * api/docs/oopt-kirov.md), поэтому статус приходит прямо в списке термина,
+ * без отдельного запроса на каждый вид.
+ */
+function nv_import_step_oopt_species($source_url) {
+    $log = []; $created = 0; $errors = 0;
+    $terms = nv_import_fetch($source_url . 'wp/v2/oopt_species?per_page=100');
+    if (!$terms || !is_array($terms)) return ['log' => ['Не удалось получить охраняемые виды.'], 'created' => 0, 'errors' => 1];
+
+    foreach ($terms as $t) {
+        $slug = $t['slug'] ?? ''; $name = $t['name'] ?? '';
+        if (empty($name)) { $errors++; continue; }
+        $existing = get_term_by('slug', $slug, 'oopt_species');
+        if ($existing) { $term_id = $existing->term_id; }
+        else {
+            $term = wp_insert_term($name, 'oopt_species', ['slug' => $slug, 'description' => $t['description'] ?? '']);
+            if (is_wp_error($term)) {
+                if ($term->get_error_code() === 'term_exists') { $existing = get_term_by('slug', $slug, 'oopt_species'); if (!$existing) { $errors++; continue; } $term_id = $existing->term_id; }
+                else { $errors++; $log[] = "Ошибка: вид «{$name}» — {$term->get_error_message()}"; continue; }
+            } else { $term_id = $term['term_id']; $created++; }
+        }
+        $status = $t['meta']['oopt_species_status'] ?? '';
+        if ($status !== '') update_term_meta($term_id, 'oopt_species_status', $status);
+    }
+    $log[] = "Охраняемые виды: обработано " . count($terms) . ", создано {$created}, ошибок {$errors}.";
+    return ['log' => $log, 'created' => $created, 'errors' => $errors];
+}
+
+/**
+ * Импорт объектов oopt (пакетный). Три таксономии приходят в _embedded['wp:term']
+ * у детального ответа; oopt_species к этому моменту уже импортирован отдельным
+ * шагом вместе со своим term meta — здесь их достаточно найти по имени.
+ */
+function nv_import_step_oopt_objects($source_url, $from_idx, $download_images, $skip_existing) {
+    $log = []; $created = 0; $errors = 0;
+    static $all_items = null;
+    if ($all_items === null) {
+        $all_items = nv_import_fetch($source_url . 'oopt/v1/objects');
+        if (!$all_items || !is_array($all_items)) return ['log' => ['Не удалось получить список памятников природы.'], 'created' => 0, 'errors' => 1, 'total' => 0];
+    }
+
+    $total = count($all_items);
+    $batch = array_slice($all_items, $from_idx, NV_IMPORT_BATCH);
+    $tax_list = ['oopt_district', 'oopt_profile', 'oopt_species'];
+
+    foreach ($batch as $item) {
+        $id = $item['id'] ?? 0; $title = $item['title'] ?? '';
+        if (empty($title)) { $errors++; continue; }
+        if ($skip_existing && nv_import_post_exists($title, 'oopt')) continue;
+
+        $detail = nv_import_fetch($source_url . 'wp/v2/oopt/' . $id . '?_embed=1');
+        if (!$detail) { $errors++; $log[] = "Ошибка: не удалось загрузить объект «{$title}»."; continue; }
+
+        $content = nv_import_fix_content_urls($detail['content']['rendered'] ?? '', $source_url);
+
+        $post_id = wp_insert_post([
+            'post_type' => 'oopt', 'post_title' => $title,
+            'post_content' => $content, 'post_status' => 'publish',
+        ], true);
+        if (is_wp_error($post_id)) { $errors++; $log[] = "Ошибка: «{$title}» — {$post_id->get_error_message()}"; continue; }
+
+        $terms_by_tax = [];
+        foreach ((array)($detail['_embedded']['wp:term'] ?? []) as $group) {
+            foreach ((array)$group as $t) {
+                $tax = $t['taxonomy'] ?? '';
+                if (in_array($tax, $tax_list, true)) $terms_by_tax[$tax][] = $t['name'] ?? '';
+            }
+        }
+        foreach ($tax_list as $tax) {
+            $ids = [];
+            foreach ((array)($terms_by_tax[$tax] ?? []) as $n) {
+                if (empty($n)) continue;
+                $tid = nv_import_find_or_create_term($n, $tax);
+                if ($tid) $ids[] = $tid;
+            }
+            if ($ids) wp_set_post_terms($post_id, $ids, $tax, false);
+        }
+
+        $feat_id = null;
+        if ($download_images) {
+            $feat = $detail['_embedded']['wp:featuredmedia'][0] ?? null;
+            if ($feat) $feat_id = nv_import_download_image($feat['source_url'] ?? '', $post_id, $title);
+            $updated = nv_import_download_content_images($content, $post_id, $source_url);
+            if ($updated !== $content) {
+                wp_update_post(['ID' => $post_id, 'post_content' => $updated]);
+            }
+        }
+
+        update_post_meta($post_id, 'oopt_coord', $detail['oopt_coord'] ?? '');
+        update_post_meta($post_id, 'oopt_area', $detail['oopt_area'] ?? '');
+        update_post_meta($post_id, 'oopt_summary', $detail['oopt_summary'] ?? '');
+        update_post_meta($post_id, 'oopt_color', $detail['oopt_color'] ?? '');
+
+        $img_src = $detail['oopt_imgSrc'] ?? '';
+        if ($download_images && $feat_id && !empty($img_src)) {
+            $local_url = wp_get_attachment_url($feat_id);
+            if ($local_url) $img_src = $local_url;
+        }
+        update_post_meta($post_id, 'oopt_imgSrc', $img_src);
+        $created++;
+    }
+
+    $done = ($from_idx + count($batch)) >= $total;
+    return ['log' => $log, 'created' => $created, 'errors' => $errors, 'total' => $total, 'done' => $done];
+}
+
+/**
+ * Импорт объектов archeology (пакетный). Две таксономии приходят в
+ * _embedded['wp:term'] у детального ответа.
+ */
+function nv_import_step_archeology_objects($source_url, $from_idx, $download_images, $skip_existing) {
+    $log = []; $created = 0; $errors = 0;
+    static $all_items = null;
+    if ($all_items === null) {
+        $all_items = nv_import_fetch($source_url . 'archeology/v1/objects');
+        if (!$all_items || !is_array($all_items)) return ['log' => ['Не удалось получить список памятников археологии.'], 'created' => 0, 'errors' => 1, 'total' => 0];
+    }
+
+    $total = count($all_items);
+    $batch = array_slice($all_items, $from_idx, NV_IMPORT_BATCH);
+
+    foreach ($batch as $item) {
+        $id = $item['id'] ?? 0; $title = $item['title'] ?? '';
+        if (empty($title)) { $errors++; continue; }
+        if ($skip_existing && nv_import_post_exists($title, 'archeology')) continue;
+
+        $detail = nv_import_fetch($source_url . 'wp/v2/archeology/' . $id . '?_embed=1');
+        if (!$detail) { $errors++; $log[] = "Ошибка: не удалось загрузить памятник «{$title}»."; continue; }
+
+        $content = nv_import_fix_content_urls($detail['content']['rendered'] ?? '', $source_url);
+
+        $post_id = wp_insert_post([
+            'post_type' => 'archeology', 'post_title' => $title,
+            'post_content' => $content, 'post_status' => 'publish',
+        ], true);
+        if (is_wp_error($post_id)) { $errors++; $log[] = "Ошибка: «{$title}» — {$post_id->get_error_message()}"; continue; }
+
+        $tax_list = ['archeology_era', 'archeology_type'];
+        foreach ((array)($detail['_embedded']['wp:term'] ?? []) as $group) {
+            foreach ((array)$group as $t) {
+                $tax = $t['taxonomy'] ?? '';
+                if (in_array($tax, $tax_list, true)) {
+                    $tid = nv_import_find_or_create_term($t['name'] ?? '', $tax);
+                    if ($tid) wp_set_post_terms($post_id, [$tid], $tax, false);
+                }
+            }
+        }
+
+        $feat_id = null;
+        if ($download_images) {
+            $feat = $detail['_embedded']['wp:featuredmedia'][0] ?? null;
+            if ($feat) $feat_id = nv_import_download_image($feat['source_url'] ?? '', $post_id, $title);
+            $updated = nv_import_download_content_images($content, $post_id, $source_url);
+            if ($updated !== $content) {
+                wp_update_post(['ID' => $post_id, 'post_content' => $updated]);
+            }
+        }
+
+        update_post_meta($post_id, 'archeology_coord', $detail['archeology_coord'] ?? '');
+        update_post_meta($post_id, 'archeology_place', $detail['archeology_place'] ?? '');
+        update_post_meta($post_id, 'archeology_color', $detail['archeology_color'] ?? '');
+        update_post_meta($post_id, 'archeology_summarize', $detail['archeology_summarize'] ?? '');
+
+        $img_src = $detail['archeology_imgSrc'] ?? '';
+        if ($download_images && $feat_id && !empty($img_src)) {
+            $local_url = wp_get_attachment_url($feat_id);
+            if ($local_url) $img_src = $local_url;
+        }
+        update_post_meta($post_id, 'archeology_imgSrc', $img_src);
+        $created++;
+    }
+
+    $done = ($from_idx + count($batch)) >= $total;
+    return ['log' => $log, 'created' => $created, 'errors' => $errors, 'total' => $total, 'done' => $done];
+}
+
 // ---------------------------------------------------------------------------
 // AJAX-обработчик
 // ---------------------------------------------------------------------------
@@ -504,10 +760,19 @@ function nv_import_ajax_step() {
         case 'finding_material':
         case 'finding_origin':
         case 'finding_receipt_time':
-        case 'finding_creation_time': $result = nv_import_step_taxonomy($su, $current_step); $batch_done = true; break;
+        case 'finding_creation_time':
+        case 'hero_status':
+        case 'oopt_district':
+        case 'oopt_profile':        $result = nv_import_step_taxonomy($su, $current_step); $batch_done = true; break;
+        case 'oopt_species':        $result = nv_import_step_oopt_species($su); $batch_done = true; break;
+        case 'archeology_era':
+        case 'archeology_type':     $result = nv_import_step_taxonomy($su, $current_step); $batch_done = true; break;
         case 'attraction_objects':  $result = nv_import_step_attraction_objects($su, $state['from_idx'], $di, $se); $batch_done = $result['done'] ?? false; break;
         case 'history_events':      $result = nv_import_step_history_events($su, $state['from_idx'], $di, $se); $batch_done = $result['done'] ?? false; break;
         case 'finding_objects':     $result = nv_import_step_finding_objects($su, $state['from_idx'], $di, $se); $batch_done = $result['done'] ?? false; break;
+        case 'hero_objects':        $result = nv_import_step_hero_objects($su, $state['from_idx'], $di, $se); $batch_done = $result['done'] ?? false; break;
+        case 'oopt_objects':        $result = nv_import_step_oopt_objects($su, $state['from_idx'], $di, $se); $batch_done = $result['done'] ?? false; break;
+        case 'archeology_objects':  $result = nv_import_step_archeology_objects($su, $state['from_idx'], $di, $se); $batch_done = $result['done'] ?? false; break;
         default: $result = ['log' => ["Неизвестный шаг: {$current_step}"], 'errors' => 1]; $batch_done = true;
     }
 
@@ -549,9 +814,18 @@ function nv_import_render_page() {
         'finding_origin'           => 'Происхождение (finding_origin)',
         'finding_receipt_time'     => 'Время поступления (finding_receipt_time)',
         'finding_creation_time'    => 'Время создания (finding_creation_time)',
+        'hero_status'              => 'Статус персоналии (hero_status)',
+        'oopt_district'            => 'Районы (oopt_district)',
+        'oopt_profile'             => 'Профили (oopt_profile)',
+        'oopt_species'             => 'Охраняемые виды (oopt_species)',
         'attraction_objects'       => 'Объекты архитектуры',
         'history_events'           => 'События истории',
         'finding_objects'          => 'Находки этнографии',
+        'hero_objects'             => 'Герои Вятского края',
+        'oopt_objects'             => 'Памятники природы',
+        'archeology_era'           => 'Эпохи (archeology_era)',
+        'archeology_type'          => 'Типы памятников (archeology_type)',
+        'archeology_objects'       => 'Памятники археологии',
     ];
 
     $default_url = esc_attr('https://testsite.vyatgeo.ru/wp-json/');
@@ -605,6 +879,39 @@ function nv_import_render_page() {
                                     <li><label><input type="checkbox" name="steps[]" value="finding_receipt_time" data-group="finding" checked /> Таксономия «Время поступления»</label></li>
                                     <li><label><input type="checkbox" name="steps[]" value="finding_creation_time" data-group="finding" checked /> Таксономия «Время создания»</label></li>
                                     <li><label><input type="checkbox" name="steps[]" value="finding_objects" data-group="finding" checked /> Находки</label></li>
+                                </ul>
+                            </div>
+                            <div class="nv-plugin-group">
+                                <label class="nv-plugin-toggle">
+                                    <input type="checkbox" class="nv-group-check" data-group="hero" checked />
+                                    <strong>Герои Вятского края</strong> <code>(geroi-vyatki)</code>
+                                </label>
+                                <ul class="nv-plugin-items">
+                                    <li><label><input type="checkbox" name="steps[]" value="hero_status" data-group="hero" checked /> Таксономия «Статус персоналии»</label></li>
+                                    <li><label><input type="checkbox" name="steps[]" value="hero_objects" data-group="hero" checked /> Герои</label></li>
+                                </ul>
+                            </div>
+                            <div class="nv-plugin-group">
+                                <label class="nv-plugin-toggle">
+                                    <input type="checkbox" class="nv-group-check" data-group="oopt" checked />
+                                    <strong>Памятники природы</strong> <code>(oopt-kirov)</code>
+                                </label>
+                                <ul class="nv-plugin-items">
+                                    <li><label><input type="checkbox" name="steps[]" value="oopt_district" data-group="oopt" checked /> Таксономия «Районы»</label></li>
+                                    <li><label><input type="checkbox" name="steps[]" value="oopt_profile" data-group="oopt" checked /> Таксономия «Профили»</label></li>
+                                    <li><label><input type="checkbox" name="steps[]" value="oopt_species" data-group="oopt" checked /> Таксономия «Охраняемые виды»</label></li>
+                                    <li><label><input type="checkbox" name="steps[]" value="oopt_objects" data-group="oopt" checked /> Памятники природы</label></li>
+                                </ul>
+                            </div>
+                            <div class="nv-plugin-group">
+                                <label class="nv-plugin-toggle">
+                                    <input type="checkbox" class="nv-group-check" data-group="archeology" checked />
+                                    <strong>Археология</strong> <code>(archeology)</code>
+                                </label>
+                                <ul class="nv-plugin-items">
+                                    <li><label><input type="checkbox" name="steps[]" value="archeology_era" data-group="archeology" checked /> Таксономия «Эпохи»</label></li>
+                                    <li><label><input type="checkbox" name="steps[]" value="archeology_type" data-group="archeology" checked /> Таксономия «Типы памятников»</label></li>
+                                    <li><label><input type="checkbox" name="steps[]" value="archeology_objects" data-group="archeology" checked /> Памятники археологии</label></li>
                                 </ul>
                             </div>
                         </div>

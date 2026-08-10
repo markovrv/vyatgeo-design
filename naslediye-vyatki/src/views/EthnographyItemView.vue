@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useFinding, useFindingTypes, useFindingNav, useFindingSimilar, ethnographyCatalogState as catalogState, SITE_URL } from '@/composables/useFindings'
 import ImageLightbox from '@/components/ImageLightbox.vue'
+import CommentsSection from '@/components/CommentsSection.vue'
 
 const route = useRoute()
 const { finding, loading, error, fetchFinding } = useFinding()
@@ -193,6 +194,8 @@ const fields = computed(() => {
           @close="lightboxOpen = false" @change-index="i => activeImage = i"
         />
       </Teleport>
+
+      <CommentsSection :post-id="finding.id" :comment-status="finding.commentStatus" />
     </template>
   </div>
 </template>

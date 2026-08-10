@@ -1,7 +1,8 @@
 import { reactive, ref } from 'vue'
 import { API_BASE_URL } from '@/config/api'
+import { SITE_URL, decodeEntities, resolveRelativeUrls } from '@/composables/useHtmlContent'
 
-export const SITE_URL = API_BASE_URL.replace(/wp-json\/?$/, '')
+export { SITE_URL }
 
 // Общее состояние каталога «Архитектура Кирова» — как и в Этнографии, живёт на
 // уровне модуля, переживает переход на страницу объекта и обратно.
@@ -12,25 +13,6 @@ export const attractionCatalogState = reactive({
   viewMode: 'map', // 'map' | 'catalog'
   scrollY: 0,
 })
-
-// У части находок (~35 из 423) заголовок в WP набран с буквальным HTML-кодом
-// вместо символа (например "1870 &#8212; 1883 гг." вместо тире) — get_the_title()
-// на сервере не разворачивает уже присутствующий в тексте entity-код, только
-// добавляет типографику к обычным символам. Раскрываем сами на фронте, заодно
-// схлопывая случайные переносы строк внутри заголовка.
-const entityDecoder = typeof document !== 'undefined' ? document.createElement('textarea') : null
-function decodeEntities(str) {
-  if (!str || !entityDecoder) return str || ''
-  entityDecoder.innerHTML = str
-  return entityDecoder.value.replace(/\s+/g, ' ').trim()
-}
-
-// Контент авторился так, будто страница живёт на 2 уровня глубже корня сайта
-// (../../wp-content/...) — так же, как в модулях "История"/"Этнография".
-// Разворачиваем в абсолютные ссылки, иначе картинки в контенте не откроются.
-function resolveRelativeUrls(html) {
-  return (html || '').replaceAll('../../', SITE_URL)
-}
 
 function extractImages(html) {
   if (!html) return []
@@ -205,6 +187,7 @@ export function useAttraction() {
         id: raw.id,
         title: decodeEntities(raw.title?.rendered),
         content: cleanedHtml,
+        commentStatus: raw.comment_status || 'closed',
         // Popup (AttractionMap) ждёт плоский массив URL — оставляем как есть,
         // с фолбэком на featured-фото, если в тексте вообще нет картинок.
         images: gallery.length ? gallery.map(g => g.src) : (imgSrc ? [imgSrc] : []),

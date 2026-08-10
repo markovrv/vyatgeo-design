@@ -3,6 +3,7 @@ import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useHistoryEvent, useHistoryAdjacent, useHistoryNearby, useHistoryThumbnails, SITE_URL } from '@/composables/useHistory'
 import AttractionGallery from '@/components/AttractionGallery.vue'
+import CommentsSection from '@/components/CommentsSection.vue'
 
 const route = useRoute()
 const { event, loading, error, fetchEvent } = useHistoryEvent()
@@ -108,6 +109,8 @@ watch(() => route.params.id, id => load(id))
           </RouterLink>
         </div>
       </section>
+
+      <CommentsSection :post-id="event.id" :comment-status="event.commentStatus" />
     </template>
   </div>
 </template>
