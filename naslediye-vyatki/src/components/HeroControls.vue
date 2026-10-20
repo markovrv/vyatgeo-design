@@ -20,12 +20,13 @@ function onSearchInput(e) {
   state.page = 1
 }
 
-// Кнопка «Фильтры» (характер связи с краем) — в той же строке, справа от
-// поиска, панель разворачивается в HeroesView.vue (тот же приём, что у
-// NatureControls.vue/ArcheologyControls.vue).
-const activeFilterCount = computed(() => state.connectionType.length)
+// Кнопка «Фильтры» (статус + характер связи с краем) — в той же строке,
+// справа от поиска, панель разворачивается в HeroesView.vue (тот же приём,
+// что у NatureControls.vue/ArcheologyControls.vue).
+const activeFilterCount = computed(() => state.status.length + state.connectionType.length)
 
 function clearAllFilters() {
+  state.status = []
   state.connectionType = []
   state.page = 1
 }

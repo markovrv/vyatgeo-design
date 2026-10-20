@@ -5,7 +5,7 @@ import { SITE_URL, decodeEntities, resolveRelativeUrls } from '@/composables/use
 export { SITE_URL }
 
 export const heroesCatalogState = reactive({
-  status: 'all',
+  status: [],
   connectionType: [],
   search: '',
   page: 1,

@@ -4,7 +4,6 @@ import { RouterLink, onBeforeRouteLeave } from 'vue-router'
 import heroImg from '@/assets/img/victory-hero.jpg'
 import CatalogLayout from '@/components/CatalogLayout.vue'
 import Pagination from '@/components/Pagination.vue'
-import FilterBar from '@/components/FilterBar.vue'
 import MultiSelectFilter from '@/components/MultiSelectFilter.vue'
 import HeroMap from '@/components/HeroMap.vue'
 import HeroControls from '@/components/HeroControls.vue'
@@ -16,24 +15,18 @@ const { t } = useStrings()
 const { heroes, loading, error, fetchHeroes } = useHeroes()
 const { thumbnails, fetchThumbnails } = useHeroThumbnails()
 
-// Реальные slug'и термов hero_status — WP генерирует их из кириллического
-// названия без транслитерации (процент-кодированная строка вида
-// "%d0%b8%d1%81..."), а не "istoricheskaya"/"sovremennaya" — хардкодить
-// такие значения нельзя, собираем опции из уже загруженных данных.
+// Опции строим из уже загруженных данных, не хардкодим — slug термина
+// WP генерирует без транслитерации (процент-кодированная кириллица),
+// хардкод неизбежно разойдётся с реальными значениями (см. историю
+// багов с hero_status/oopt_profile в CLAUDE.md).
 const statusOptions = computed(() => {
   const seen = new Map()
   for (const h of heroes.value) {
-    if (h.statusSlug && !seen.has(h.statusSlug)) seen.set(h.statusSlug, h.statusName)
+    if (h.statusSlug && !seen.has(h.statusSlug)) seen.set(h.statusSlug, { id: h.statusSlug, slug: h.statusSlug, name: h.statusName, count: 0 })
   }
-  return [
-    { value: 'all', label: t('views.HeroesView.statusAll') },
-    ...[...seen.entries()].map(([value, label]) => ({ value, label })),
-  ]
+  return [...seen.values()]
 })
 
-// Опции строим из уже загруженных данных, не хардкодим — slug термина
-// hero_connection_type WP генерирует без транслитерации (та же ловушка,
-// что уже была с hero_status/oopt_profile).
 function buildTermOptions(items, termsKey) {
   const seen = new Map()
   for (const h of items) {
@@ -53,7 +46,7 @@ function onMultiSelectChange(field, value) {
 const filtered = computed(() => {
   const q = state.search.trim().toLowerCase()
   return heroes.value.filter(h => {
-    if (state.status !== 'all' && h.statusSlug !== state.status) return false
+    if (state.status.length && !state.status.includes(h.statusSlug)) return false
     if (state.connectionType.length && !state.connectionType.some(sl => h.connectionTypeTerms.some(t => t.slug === sl))) return false
     if (q) return h.title.toLowerCase().includes(q) || h.place.toLowerCase().includes(q) || h.summarize.toLowerCase().includes(q)
     return true
@@ -95,18 +88,12 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
         {{ t('views.HeroesView.description') }}
       </p>
     </template>
-    <template #filters>
-      <div class="filters-block">
-        <div class="filters-row">
-          <FilterBar :label="t('views.HeroesView.statusLabel')" :options="statusOptions" :active="state.status" @select="v => { state.status = v; state.page = 1 }" />
-        </div>
-      </div>
-    </template>
     <template #map>
       <div class="map-shell">
         <div class="controls-group" :class="{ 'controls-group--floating': state.viewMode === 'map' }">
           <HeroControls />
           <div v-if="state.filtersOpen" class="filters-panel">
+            <MultiSelectFilter :label="t('views.HeroesView.statusLabel')" :options="statusOptions" :modelValue="state.status" @update:modelValue="v => onMultiSelectChange('status', v)" />
             <MultiSelectFilter :label="t('views.HeroesView.connectionTypeLabel')" :options="connectionTypeOptions" :modelValue="state.connectionType" @update:modelValue="v => onMultiSelectChange('connectionType', v)" />
           </div>
         </div>
@@ -149,8 +136,6 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
 <style scoped>
 .state-msg { grid-column: 1 / -1; text-align: center; color: var(--color-muted); padding: var(--space-4) 0; }
 .state-msg--error { color: var(--color-error, #b3261e); }
-.filters-block { display: flex; flex-direction: column; gap: var(--space-2); }
-.filters-row { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; }
 .map-shell { position: relative; margin-bottom: var(--space-3); }
 .filters-panel {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-2);
