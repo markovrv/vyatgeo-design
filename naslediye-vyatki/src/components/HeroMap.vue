@@ -153,7 +153,7 @@ onUnmounted(() => clearInterval(zoomInterval))
 .pin { position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
 .pin-photo {
   width: 70px; height: 70px; border-radius: 50%; border: 4px solid var(--color-ochre);
-  background-color: var(--color-birch); background-size: cover; background-position: center;
+  background-color: var(--color-birch); background-size: cover; background-position: center 20%;
   box-shadow: 0 2px 10px rgba(42,33,24,0.4); transition: transform 150ms;
 }
 .pin:hover .pin-photo { transform: scale(1.08); }

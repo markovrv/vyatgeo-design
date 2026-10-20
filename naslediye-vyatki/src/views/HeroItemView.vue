@@ -42,6 +42,7 @@ watch(() => route.params.id, (id) => load(id))
     <p v-else-if="!hero" class="state-msg">{{ t('views.HeroItemView.notFound') }}</p>
     <template v-else>
       <section class="intro">
+        <img v-if="hero.imgSrc" :src="hero.imgSrc" :alt="hero.title" class="portrait" />
         <div class="tags">
           <span v-if="hero.statusName" class="tag tag--teal">{{ hero.statusName }}</span>
         </div>
@@ -114,6 +115,7 @@ watch(() => route.params.id, (id) => load(id))
 .breadcrumb a { color: var(--color-ochre); text-decoration: none }
 .current { color: var(--color-ink) }
 .intro { max-width: 1000px; margin: 0 auto; padding: var(--space-3) var(--space-3) 0; text-align: center }
+.portrait { display: block; width: 220px; aspect-ratio: 3/4; object-fit: cover; object-position: center 20%; border-radius: var(--radius); border: 1.5px dashed var(--color-border); background: var(--color-birch); margin: 0 auto var(--space-3); }
 .tags { display: flex; gap: var(--space-1); flex-wrap: wrap; justify-content: center; margin-bottom: 12px }
 .tag { font-size: 11px; padding: 2px 10px; border-radius: 999px; color: var(--color-bg) }
 .tag--teal { background: var(--color-teal) }
@@ -132,7 +134,7 @@ watch(() => route.params.id, (id) => load(id))
 .nav-card:hover { border-color: var(--color-ochre); transform: translateY(-2px); }
 .nav-card--next { justify-content: flex-end; text-align: right; }
 .nav-card--empty { border-style: solid; border-color: transparent; background: none; }
-.nav-thumb { flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius); background-size: cover; background-position: center; background-color: var(--color-birch); }
+.nav-thumb { flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius); background-size: cover; background-position: center 20%; background-color: var(--color-birch); }
 .nav-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .nav-direction { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-teal); }
 .nav-direction-short { display: none; }
@@ -144,7 +146,7 @@ watch(() => route.params.id, (id) => load(id))
 .nearby-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-2); }
 .nearby-card { display: block; text-decoration: none; color: inherit; background: var(--color-surface); border: 1.5px dashed var(--color-border); border-radius: var(--radius); overflow: hidden; transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out), border-color 150ms; }
 .nearby-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--color-ochre); }
-.nearby-img { width: 100%; aspect-ratio: 4/3; background-size: cover; background-position: center; background-color: var(--color-birch); }
+.nearby-img { width: 100%; aspect-ratio: 4/3; background-size: cover; background-position: center 20%; background-color: var(--color-birch); }
 .nearby-body { padding: var(--space-2); }
 .nearby-distance { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; color: var(--color-bg); background: var(--color-teal); padding: 2px 10px; border-radius: 999px; margin-bottom: 6px; }
 .nearby-title { font-family: var(--font-display); font-weight: 700; font-size: 14px; margin: 0; color: var(--color-ink); line-height: 1.3; }

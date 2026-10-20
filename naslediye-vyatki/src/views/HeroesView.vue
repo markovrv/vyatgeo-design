@@ -135,7 +135,7 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
 .cta-btn:hover { background: var(--color-teal) }
 .card { display: block; background: var(--color-surface); border: 1.5px dashed var(--color-border); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: inherit; transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out); }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--color-ochre) }
-.card-img { width: 100%; aspect-ratio: 16/9; background-color: var(--color-birch); background-size: cover; background-position: center }
+.card-img { width: 100%; aspect-ratio: 16/9; background-color: var(--color-birch); background-size: cover; background-position: center 20% }
 .card-body { padding: var(--space-3) }
 .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px }
 .tag { font-size: 11px; padding: 2px 10px; border-radius: 999px; color: var(--color-bg) }
