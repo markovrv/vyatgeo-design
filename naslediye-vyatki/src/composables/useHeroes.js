@@ -6,10 +6,12 @@ export { SITE_URL }
 
 export const heroesCatalogState = reactive({
   status: 'all',
+  connectionType: [],
   search: '',
   page: 1,
   perPage: 20,
   viewMode: 'map',
+  filtersOpen: false,
   scrollY: 0,
 })
 
@@ -27,6 +29,7 @@ function normalizeHero(raw) {
 
   const terms = raw._embedded?.['wp:term']?.flat() || []
   const statusTerm = terms.find(t => t.taxonomy === 'hero_status')
+  const connectionTypeTerms = terms.filter(t => t.taxonomy === 'hero_connection_type')
 
   return {
     id: raw.id,
@@ -39,6 +42,7 @@ function normalizeHero(raw) {
     summarize: decodeEntities(raw.hero_feat_description || ''),
     statusSlug: statusTerm?.slug || '',
     statusName: statusTerm?.name || '',
+    connectionTypeTerms,
   }
 }
 

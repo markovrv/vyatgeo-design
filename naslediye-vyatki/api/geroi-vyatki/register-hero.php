@@ -20,7 +20,7 @@ add_action('init', function () {
         'show_in_rest' => true,
         'menu_position' => 16,
         'supports' => ['title', 'editor', 'comments', 'revisions', 'thumbnail', 'post-thumbnails'],
-        'taxonomies' => ['hero_status'],
+        'taxonomies' => ['hero_status', 'hero_connection_type'],
         'menu_icon' => 'dashicons-awards',
         'has_archive' => true
     ]);
@@ -37,6 +37,28 @@ add_action('init', function () {
             'new_item_name' => 'Название нового статуса',
         ],
         'hierarchical' => true,
+        'show_in_rest' => true,
+        'show_admin_column' => true,
+    ]);
+
+    // Классификация свободного текста hero_connection («Характер связи с
+    // Вятским краем») по категориям для фильтра в каталоге — нехиерархическая
+    // (как oopt_species), один герой может быть отмечен сразу несколькими
+    // категориями («родился» + «увековечен» и т.п.). Само поле hero_connection
+    // не меняется, таксономия — дополнительный слой поверх него, заполняется
+    // разовым скриптом classify_hero_connection.py (api/), не руками.
+    register_taxonomy('hero_connection_type', 'hero', [
+        'labels' => [
+            'name' => 'Характер связи с краем',
+            'singular_name' => 'Категория связи',
+            'search_items' => 'Поиск категорий',
+            'all_items' => 'Все категории',
+            'edit_item' => 'Изменить категорию',
+            'update_item' => 'Обновить категорию',
+            'add_new_item' => 'Добавить новую категорию',
+            'new_item_name' => 'Название новой категории',
+        ],
+        'hierarchical' => false,
         'show_in_rest' => true,
         'show_admin_column' => true,
     ]);

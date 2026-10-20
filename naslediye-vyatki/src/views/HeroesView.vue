@@ -5,6 +5,7 @@ import heroImg from '@/assets/img/victory-hero.jpg'
 import CatalogLayout from '@/components/CatalogLayout.vue'
 import Pagination from '@/components/Pagination.vue'
 import FilterBar from '@/components/FilterBar.vue'
+import MultiSelectFilter from '@/components/MultiSelectFilter.vue'
 import HeroMap from '@/components/HeroMap.vue'
 import HeroControls from '@/components/HeroControls.vue'
 import { useHeroes, useHeroThumbnails, heroesCatalogState as state } from '@/composables/useHeroes'
@@ -30,10 +31,30 @@ const statusOptions = computed(() => {
   ]
 })
 
+// Опции строим из уже загруженных данных, не хардкодим — slug термина
+// hero_connection_type WP генерирует без транслитерации (та же ловушка,
+// что уже была с hero_status/oopt_profile).
+function buildTermOptions(items, termsKey) {
+  const seen = new Map()
+  for (const h of items) {
+    for (const t of h[termsKey]) {
+      if (!seen.has(t.slug)) seen.set(t.slug, { id: t.id, slug: t.slug, name: t.name, count: 0 })
+    }
+  }
+  return [...seen.values()]
+}
+const connectionTypeOptions = computed(() => buildTermOptions(heroes.value, 'connectionTypeTerms'))
+
+function onMultiSelectChange(field, value) {
+  state[field] = value
+  state.page = 1
+}
+
 const filtered = computed(() => {
   const q = state.search.trim().toLowerCase()
   return heroes.value.filter(h => {
     if (state.status !== 'all' && h.statusSlug !== state.status) return false
+    if (state.connectionType.length && !state.connectionType.some(sl => h.connectionTypeTerms.some(t => t.slug === sl))) return false
     if (q) return h.title.toLowerCase().includes(q) || h.place.toLowerCase().includes(q) || h.summarize.toLowerCase().includes(q)
     return true
   })
@@ -83,7 +104,12 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
     </template>
     <template #map>
       <div class="map-shell">
-        <HeroControls class="controls" :class="{ 'controls--floating': state.viewMode === 'map' }" />
+        <div class="controls-group" :class="{ 'controls-group--floating': state.viewMode === 'map' }">
+          <HeroControls />
+          <div v-if="state.filtersOpen" class="filters-panel">
+            <MultiSelectFilter :label="t('views.HeroesView.connectionTypeLabel')" :options="connectionTypeOptions" :modelValue="state.connectionType" @update:modelValue="v => onMultiSelectChange('connectionType', v)" />
+          </div>
+        </div>
         <template v-if="state.viewMode === 'map'">
           <p v-if="loading" class="state-msg">{{ t('common.loadingMap') }}</p>
           <p v-else-if="error" class="state-msg state-msg--error">{{ t('common.loadError') }}</p>
@@ -126,8 +152,14 @@ onBeforeRouteLeave(() => { state.scrollY = window.scrollY })
 .filters-block { display: flex; flex-direction: column; gap: var(--space-2); }
 .filters-row { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; }
 .map-shell { position: relative; margin-bottom: var(--space-3); }
-.controls { margin: 0 16px var(--space-2); padding-top: 16px; }
-.controls--floating { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 20; margin: 0; padding-top: 0; }
+.filters-panel {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-2);
+  margin-top: var(--space-2); padding: var(--space-2);
+  background: var(--color-birch); border: 1.5px dashed var(--color-border); border-radius: var(--radius);
+  align-items: start;
+}
+.controls-group { display: flex; flex-direction: column; margin: 0 16px var(--space-2); padding-top: 16px; }
+.controls-group--floating { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 20; margin: 0; padding-top: 0; }
 .cta { background: var(--color-birch); padding: var(--space-5) var(--space-3); text-align: center }
 .cta-heading { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px,3vw,36px); margin: 0 0 var(--space-2) }
 .cta-sub { font-size: 16px; color: var(--color-teal); margin: 0 0 var(--space-3) }
